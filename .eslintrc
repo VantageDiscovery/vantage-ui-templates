@@ -1,0 +1,75 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "plugin:unicorn/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:import/recommended",
+    "prettier"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "react",
+    "react-hooks",
+    "@typescript-eslint",
+    "vitest",
+    "prettier",
+    "testing-library",
+    "jsx-a11y",
+    "import"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "unicorn/no-array-reduce": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "unicorn/expiring-todo-comments": "off",
+    "unicorn/filename-case": [
+      "error",
+      {
+        "cases": {
+          "camelCase": true,
+          "kebabCase": true,
+          "pascalCase": true
+        }
+      }
+    ]
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "typescript": {},
+      "node": {}
+    }
+  },
+  "ignorePatterns": [
+    "**/node_modules",
+    "**/dist",
+    "**/windi.config.ts",
+    "**/vite.config.ts",
+    "**/.eslintrc.js",
+    "**/public",
+    "**/coverage",
+    "**/lint-staged.config.cjs",
+    "**/postcss.config.js",
+    "**/tailwind.config.js",
+    "**/cypress.config.ts",
+    "**/cypress/*"
+  ]
+}
