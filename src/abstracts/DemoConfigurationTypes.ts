@@ -17,10 +17,13 @@ export type Configuration = DataConfiguration & {
 };
 
 export interface BrandingConfiguration {
-  primary: string;
-  secondary: string;
-  tertiary: string;
-  logo: string | JSX.Element;
+  colors: {
+    primary: string;
+    secondary: string;
+  };
+  logoUrl: string;
+  title?: string;
+  searchPlaceholder?: string;
 }
 
 export interface DataConfiguration {
@@ -29,8 +32,15 @@ export interface DataConfiguration {
   collectionId: string;
   apiKey: string;
   defaultAccuracy: string;
-  getItemsByIds: (ids: string[]) => Promise<Item[]>;
-  getFilters: (search?: string) => Promise<Filter[]>;
-  filtersType: EFiltersType;
-  isFilterExpandable: boolean;
+  defaultSearchQuery: string;
+  getCustomerItems: (ids: string[]) => Promise<Omit<Item, "score">[]>;
+  filter: FilterConfiguration;
+  pageNumber?: number;
+  pageSize?: number;
+}
+
+interface FilterConfiguration {
+  type: EFiltersType;
+  getFilters: () => Promise<Filter[]>;
+  getPopularFilters?: (filters: Filter[]) => Filter[];
 }

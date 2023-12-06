@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tsconfigPaths()],
     server: {
-      port: env.VITE_PORT as unknown as number,
+      port: 3000,
     },
     test: {
       globals: true,
