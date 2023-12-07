@@ -61,6 +61,7 @@ const ProductDemoTemplate = ({
                 searchQuery={variables.query}
                 setSearchQuery={demoActions.setQuery}
                 onSearchPerformed={demoActions.performSearch}
+                searchPlaceholder={brandingConfiguration.searchPlaceholder}
                 useFiltersHook={filterActions}
                 isSingleFilter={
                   itemState.dataConfiguration.filter.type ===

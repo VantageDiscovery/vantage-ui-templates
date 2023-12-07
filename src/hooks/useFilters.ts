@@ -84,7 +84,7 @@ const useFilters = ({
     );
   };
 
-  const getBooleanFilterString = (): string => {
+  const getFilterString = (): string => {
     const orSets = activeFilters.reduce((reducer, currentFilter) => {
       if (!reducer[currentFilter.categorySlug]) {
         reducer[currentFilter.categorySlug] = [];
@@ -116,7 +116,7 @@ const useFilters = ({
     activeFilters,
     setActiveFilters,
     toggleFilters,
-    getFilterString: getBooleanFilterString,
+    getFilterString,
     clearActiveFilters,
   };
 };

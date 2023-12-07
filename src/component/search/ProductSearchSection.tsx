@@ -1,8 +1,8 @@
-import SearchIcon from "icons/SearchIcon";
 import React, { ChangeEvent } from "react";
 import Combobox from "../Combobox";
 import cn from "utils/cn";
 import { UseFiltersType } from "abstracts/FilterTypes";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const ProductSearchSection = ({
   searchQuery,
@@ -10,12 +10,14 @@ const ProductSearchSection = ({
   setSearchQuery,
   useFiltersHook,
   isSingleFilter,
+  searchPlaceholder = "Search for anything...",
 }: {
   searchQuery: string;
   onSearchPerformed: () => void;
   setSearchQuery: (value: string) => void;
   useFiltersHook: UseFiltersType;
   isSingleFilter: boolean;
+  searchPlaceholder?: string;
 }) => {
   const { availableFilters, activeFilters, toggleFilters, clearActiveFilters } =
     useFiltersHook;
@@ -30,10 +32,10 @@ const ProductSearchSection = ({
       }}
       className="flex w-full justify-center gap-6"
     >
-      <span className="flex border border-black text-gray-900 text-sm rounded-lg w-full gap-2 pl-2">
-        <SearchIcon className="w-6 h-auto fill-gray-60" />
+      <span className="flex flex-row items-center border border-black text-gray-900 text-sm rounded-lg w-full gap-2 pl-2">
+        <MagnifyingGlassIcon className="w-6 h-6 text-gray-600" />
         <input
-          placeholder="Search for anything..."
+          placeholder={searchPlaceholder}
           type="text"
           data-testid="search-input"
           className={cn(

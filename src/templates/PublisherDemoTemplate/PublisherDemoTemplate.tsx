@@ -10,9 +10,9 @@ import React from "react";
 import cn from "utils/cn";
 
 const PublisherDemoTemplate = ({
-  configuration,
+  brandingConfiguration,
 }: {
-  configuration: BrandingConfiguration;
+  brandingConfiguration: BrandingConfiguration;
 }): JSX.Element => {
   const { filterActions, itemState, variables, demoActions } = useDemo();
 
@@ -30,14 +30,14 @@ const PublisherDemoTemplate = ({
   return (
     <div className="flex flex-col w-full gap-0 min-h-screen relative">
       <Navigation
-        clientLogoUrl={configuration.logoUrl}
+        clientLogoUrl={brandingConfiguration.logoUrl}
         backgroundColor="white"
         vantageLogoColor="black"
         vantageLogoColorOnAnimation="black"
         clientLogoColor="black"
         clientLogoColorOnAnimation="white"
         backgroundLeftColorOnAnimation="#333333"
-        backgroundRightColorOnAnimation={configuration.colors.primary}
+        backgroundRightColorOnAnimation={brandingConfiguration.colors.primary}
       />
       <div className="grow w-full">
         <div className="flex justify-center animate-fade-in">
@@ -56,7 +56,7 @@ const PublisherDemoTemplate = ({
                         })}
                         style={{
                           backgroundColor: activeFilters?.includes(filter)
-                            ? configuration.colors.primary
+                            ? brandingConfiguration.colors.primary
                             : "transparent",
                         }}
                         onClick={() => {
@@ -72,7 +72,7 @@ const PublisherDemoTemplate = ({
               <div className="flex flex-col justify-center items-center gap-8 mt-10 pb-12">
                 <ToggleButton
                   text="Developer debug"
-                  checkedColor={configuration.colors.primary}
+                  checkedColor={brandingConfiguration.colors.primary}
                   isEnabled={variables.isDeveloperViewToggled}
                   setIsEnabled={demoActions.setIsDeveloperViewToggled}
                 />
@@ -97,7 +97,10 @@ const PublisherDemoTemplate = ({
                     onChange={(event) =>
                       demoActions.setQuery(event.target.value)
                     }
-                    // placeholder="Search in natural language..."
+                    placeholder={
+                      brandingConfiguration.searchPlaceholder ??
+                      "Search in natural language..."
+                    }
                     type="text"
                     className="pl-3 block w-full rounded-xl border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 disabled:bg-gray-50 disabled:hover:cursor-not-allowed ring-gray-300 focus:ring-primary"
                   />
@@ -133,7 +136,7 @@ const PublisherDemoTemplate = ({
                         key={`${filter.categorySlug}-${filter.name}`}
                         isCancelVisible
                         isSelected
-                        selectedColor={configuration.colors.primary}
+                        selectedColor={brandingConfiguration.colors.primary}
                         onCancel={() => toggleFilters([filter])}
                       />
                     ))}
@@ -168,8 +171,10 @@ const PublisherDemoTemplate = ({
                               tooltipContent: paper.meta?.text,
                               title: paper.title,
                             }}
-                            primaryColor={configuration?.colors.primary}
-                            secondaryColor={configuration?.colors.secondary}
+                            primaryColor={brandingConfiguration.colors.primary}
+                            secondaryColor={
+                              brandingConfiguration.colors.secondary
+                            }
                             isDeveloperView={variables.isDeveloperViewToggled}
                             onMoreLikeThis={(documentId: string) => {
                               demoActions.setQuery(`More Like: ${paper.title}`);

@@ -1,6 +1,6 @@
 import { FunnelIcon } from "@heroicons/react/24/outline";
 import { Filter, UseFiltersType } from "abstracts/FilterTypes";
-import useModal from "hooks/useModal";
+import useToggle from "hooks/useToggle";
 import React from "react";
 import Chip from "./Chip";
 import FilterModal from "./FilterModal";
@@ -8,7 +8,7 @@ import FilterModal from "./FilterModal";
 const MultiFilterSection = ({ useFilters }: { useFilters: UseFiltersType }) => {
   const { activeFilters, toggleFilters, clearActiveFilters, popularFilters } =
     useFilters;
-  const [isModalVisible, toggleModal] = useModal();
+  const [isModalVisible, toggleModal] = useToggle();
 
   return (
     <div className="flex flex-col">

@@ -3,9 +3,9 @@ import { CustomerDataHandler, Item } from "abstracts/ItemTypes";
 import {
   SearchByQueryParameters,
   SearchMoreLikeThisParameters,
-  SearchProductConfiguration,
-  VantageSearchProductResults,
-  VantageSearchResultDTO,
+  SearchConfiguration,
+  VantageSearchResponse,
+  VantageSearchResult,
 } from "abstracts/VantageTypes";
 import VantageSearchService from "services/VantageSearchService";
 
@@ -23,7 +23,7 @@ const queryKeys = {
 };
 
 const getItemsWithScores = async (
-  vantageSearchResults: VantageSearchResultDTO[],
+  vantageSearchResults: VantageSearchResult[],
   getItemsFunction: () => Promise<Omit<Item, "score">[]>
 ): Promise<Item[]> => {
   const getItemScoreById = (id: string): number => {
@@ -49,7 +49,7 @@ const getItemsWithScores = async (
  * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
  */
 const useSearchByConfiguration = (
-  searchConfiguration: SearchProductConfiguration,
+  searchConfiguration: SearchConfiguration,
   searchParameters: SearchByQueryParameters,
   customerDataHandler: CustomerDataHandler
 ) =>
@@ -59,24 +59,24 @@ const useSearchByConfiguration = (
       searchConfiguration.customerNamespace
     ),
     queryFn: async () => {
-      const vantageSearchResults: VantageSearchProductResults =
+      const response: VantageSearchResponse =
         await VantageSearchService.searchByQuery(
           searchConfiguration,
           searchParameters
         );
       const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
         undefined,
-        vantageSearchResults.results.map((result) => result.id)
+        response.results.map((result) => result.id)
       );
 
       const customerItems = await getItemsWithScores(
-        vantageSearchResults.results,
-        vantageSearchResults.results.length > 0
+        response.results,
+        response.results.length > 0
           ? getItemsByIdsFunction
           : () => Promise.resolve([])
       );
 
-      return [vantageSearchResults.executionTime, customerItems];
+      return [response.executionTime, customerItems];
     },
   });
 
@@ -89,7 +89,7 @@ const useSearchByConfiguration = (
  * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
  */
 const useMoreLikeThisByConfiguration = (
-  searchConfiguration: SearchProductConfiguration,
+  searchConfiguration: SearchConfiguration,
   searchParameters: SearchMoreLikeThisParameters,
   customerDataHandler: CustomerDataHandler
 ) =>
@@ -100,24 +100,24 @@ const useMoreLikeThisByConfiguration = (
       //TODO: Change key according to docid.
     ),
     queryFn: async () => {
-      const vantageSearchResults: VantageSearchProductResults =
+      const response: VantageSearchResponse =
         await VantageSearchService.searchMoreLikeThis(
           searchConfiguration,
           searchParameters
         );
       const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
         undefined,
-        vantageSearchResults.results.map((result) => result.id)
+        response.results.map((result) => result.id)
       );
 
       const customerItems = await getItemsWithScores(
-        vantageSearchResults.results,
-        vantageSearchResults.results.length > 0
+        response.results,
+        response.results.length > 0
           ? getItemsByIdsFunction
           : () => Promise.resolve([])
       );
 
-      return [vantageSearchResults.executionTime, customerItems];
+      return [response.executionTime, customerItems];
     },
     enabled: !!searchParameters.documentId,
   });
