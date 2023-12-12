@@ -1,54 +1,54 @@
 import {
-  SearchProductConfiguration,
+  SearchConfiguration,
   SearchByQueryParameters,
-  VantageSearchProductResults,
-  VantageSearchProductResultsDTO,
+  VantageSearchResponse,
+  VantageSearchResponseDTO,
   SearchMoreLikeThisParameters,
 } from "abstracts/VantageTypes";
 import axios, { AxiosResponse } from "axios";
 import config from "config";
 import {
-  TransformVantageSearchProductByQueryParametersViewToDTO,
-  TransformVantageSearchResultsDTOToView,
-  TransformVantageSearchProductMoreLikeThisParametersViewToDTO,
+  TransformVantageSearchByQueryParametersViewToDTO,
+  TransformVantageSearchResponseDTOToView,
+  TransformVantageSearchMoreLikeThisParametersViewToDTO,
 } from "transformers/VantageProductTransformers";
 
 const MORE_LIKE_THIS_PATH = `${config.vantageSearchURL}/morelikethis`;
 const SEARCH_BY_QUERY_PATH = `${config.vantageSearchURL}/semantic`;
 
 const searchByQuery = async (
-  searchConfiguration: SearchProductConfiguration,
+  searchConfiguration: SearchConfiguration,
   searchParameters: SearchByQueryParameters
-): Promise<VantageSearchProductResults> => {
+): Promise<VantageSearchResponse> => {
   return axios
     .post(
       `${SEARCH_BY_QUERY_PATH}/`,
-      TransformVantageSearchProductByQueryParametersViewToDTO(
+      TransformVantageSearchByQueryParametersViewToDTO(
         searchConfiguration,
         searchParameters
       ),
       { headers: { Authorization: searchConfiguration.apiKey } }
     )
-    .then((response: AxiosResponse<VantageSearchProductResultsDTO>) =>
-      TransformVantageSearchResultsDTOToView(response.data)
+    .then((response: AxiosResponse<VantageSearchResponseDTO>) =>
+      TransformVantageSearchResponseDTOToView(response.data)
     );
 };
 
 const searchMoreLikeThis = async (
-  searchConfiguration: SearchProductConfiguration,
+  searchConfiguration: SearchConfiguration,
   searchParameters: SearchMoreLikeThisParameters
-): Promise<VantageSearchProductResults> => {
+): Promise<VantageSearchResponse> => {
   return axios
     .post(
       `${MORE_LIKE_THIS_PATH}/`,
-      TransformVantageSearchProductMoreLikeThisParametersViewToDTO(
+      TransformVantageSearchMoreLikeThisParametersViewToDTO(
         searchConfiguration,
         searchParameters
       ),
       { headers: { Authorization: searchConfiguration.apiKey } }
     )
-    .then((response: AxiosResponse<VantageSearchProductResultsDTO>) =>
-      TransformVantageSearchResultsDTOToView(response.data)
+    .then((response: AxiosResponse<VantageSearchResponseDTO>) =>
+      TransformVantageSearchResponseDTOToView(response.data)
     );
 };
 

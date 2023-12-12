@@ -1,30 +1,37 @@
-import {
-  Configuration,
-  EDemoTemplate,
-  EFiltersType,
-} from "abstracts/DemoConfigurationTypes";
+import { ClientConfiguration } from "abstracts/DemoConfigurationTypes";
+import { Filter } from "abstracts/FilterTypes";
+import { Item } from "abstracts/ItemTypes";
+import { GetConfigurationWithDefaultValues } from "transformers/ConfigurationTransformer";
 
-const defaultConfig: Configuration = {
-  template: EDemoTemplate.PRODUCT, // It is either PRODUCT or PUBLISHER - it determines page layout.
-  accountId: "Insert your Account ID",
-  collectionId: "Insert your Collection ID",
-  apiKey: "Insert your Vantage Customer API Key",
-  defaultAccuracy: "0.5",
-  defaultSearchQuery: "Insert value for initial search query",
-  vantageSearchURL: "Insert an URL to the Vantage Search API",
-  branding: {
-    logoUrl: "Insert URL to the logo",
-    title: "Insert page title",
-    colors: {
-      primary: "Hex value of primary color",
-      secondary: "Hex value of secondary color",
-    },
-  },
-  filter: {
-    getFilters: () => Promise.resolve([]), // This function is getting all filters used within the demo.
-    type: EFiltersType.SINGLE_SELECT, // Could be MULTI_SELECT if multiple filters can be selected at once.
-  },
-  getCustomerItems: (ids: string[]) => Promise.resolve([]), // A function that should get Item[] from your Item ids.
+/**
+ * Override this function to retrieve your filters from 3rd party, local folder or anywhere you like. Do not change the return type.
+ *
+ * @returns {Filter[]} The list of filters which are available in the UI.
+ */
+const getFilters = (): Promise<Filter[]> => {
+  return Promise.resolve([]);
 };
 
-export default defaultConfig;
+/**
+ * Override this function to retrieve your items from 3rd party, local folder or anywhere you like. Do not change the return type.
+ *
+ * @param ids String array of item ids retrieved from Vantage database to get the actual Items.
+ * @returns {Item[]} The list of items that will be transformed to match the UI.
+ */
+const getItemsByIds = (ids: string[]): Promise<Omit<Item, "score">[]> => {
+  return Promise.resolve([]);
+};
+
+const configuration: ClientConfiguration = {
+  accountId: "Enter your Vantage Account ID.",
+  collectionIds: ["Enter a list of Vantage Collection IDs to fetch data from."],
+  apiKey: "Enter your Vantage API Key.",
+  vantageSearchURL:
+    "Enter an url to the Vantage API you want to fetch data from.",
+  getCustomerItems: getItemsByIds,
+  filter: {
+    getFilters: getFilters,
+  },
+};
+
+export default GetConfigurationWithDefaultValues(configuration);

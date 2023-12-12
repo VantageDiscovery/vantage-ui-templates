@@ -12,7 +12,7 @@ const DemoTemplateToPageTemplate: Record<EDemoTemplate, JSX.Element> = {
     <ProductDemoTemplate brandingConfiguration={config.branding} />
   ),
   [EDemoTemplate.PUBLISHER]: (
-    <PublisherDemoTemplate configuration={config.branding} />
+    <PublisherDemoTemplate brandingConfiguration={config.branding} />
   ),
 };
 

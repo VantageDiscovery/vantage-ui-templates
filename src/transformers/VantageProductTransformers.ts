@@ -1,62 +1,64 @@
 import {
-  SearchProductConfiguration,
-  SearchProductsParameters,
-  SearchProductParametersDTO,
+  SearchConfiguration,
+  SearchParameters,
+  SearchParametersDTO,
   SearchByQueryParameters,
   SearchMoreLikeThisParameters,
   VantageSearchResultDTO,
   VantageSearchResult,
-  VantageSearchProductResultsDTO,
-  VantageSearchProductResults,
+  VantageSearchResponseDTO,
+  VantageSearchResponse,
 } from "abstracts/VantageTypes";
 
-export const TransformVantageSearchProductParametersViewToDTO = (
-  searchProductConfiguration: SearchProductConfiguration,
-  searchProductsParameters: SearchProductsParameters
-): SearchProductParametersDTO => {
+export const TransformVantageSearchParametersViewToDTO = (
+  searchConfiguration: SearchConfiguration,
+  searchParameters: SearchParameters
+): SearchParametersDTO => {
   return {
     request_id: 333_666,
     collection: {
-      account_id: searchProductConfiguration.customerId,
-      collection_id: searchProductConfiguration.customerNamespace,
-      accuracy: searchProductsParameters.accuracy,
-    },
-    filter: {
-      boolean_filter:
-        searchProductsParameters.filters === "()"
-          ? ""
-          : searchProductsParameters.filters,
+      account_id: searchConfiguration.customerId,
+      collection_id: searchConfiguration.customerNamespace,
+      accuracy: searchParameters.accuracy,
     },
     pagination: {
-      page: searchProductsParameters.pageNumber,
-      count: searchProductsParameters.pageSize,
+      page: searchParameters.pageNumber,
+      count: searchParameters.pageSize,
     },
   };
 };
 
-export const TransformVantageSearchProductByQueryParametersViewToDTO = (
-  searchProductConfiguration: SearchProductConfiguration,
-  searchProductsParameters: SearchByQueryParameters
-): SearchProductParametersDTO => {
+export const TransformVantageSearchByQueryParametersViewToDTO = (
+  searchConfiguration: SearchConfiguration,
+  searchParameters: SearchByQueryParameters
+): SearchParametersDTO => {
   return {
-    ...TransformVantageSearchProductParametersViewToDTO(
-      searchProductConfiguration,
-      searchProductsParameters
+    ...TransformVantageSearchParametersViewToDTO(
+      searchConfiguration,
+      searchParameters
     ),
-    text: searchProductsParameters?.query,
+    text: searchParameters?.query,
+    filter: {
+      boolean_filter:
+        searchParameters.filters === "()" ? "" : searchParameters.filters,
+    },
   };
 };
 
-export const TransformVantageSearchProductMoreLikeThisParametersViewToDTO = (
-  searchProductConfiguration: SearchProductConfiguration,
-  searchProductsParameters: SearchMoreLikeThisParameters
-): SearchProductParametersDTO => {
+export const TransformVantageSearchMoreLikeThisParametersViewToDTO = (
+  searchConfiguration: SearchConfiguration,
+  searchParameters: SearchMoreLikeThisParameters
+): SearchParametersDTO => {
   return {
-    ...TransformVantageSearchProductParametersViewToDTO(
-      searchProductConfiguration,
-      searchProductsParameters
+    ...TransformVantageSearchParametersViewToDTO(
+      searchConfiguration,
+      searchParameters
     ),
-    document_id: searchProductsParameters.documentId,
+    document_id: searchParameters.documentId,
+    // TODO: delete once it is removed on backend
+    filter: {
+      boolean_filter: "",
+    },
   };
 };
 
@@ -69,13 +71,13 @@ export const TransformVantageSearchResultDTOToView = (
   };
 };
 
-export const TransformVantageSearchResultsDTOToView = (
-  searchResultsDTO: VantageSearchProductResultsDTO
-): VantageSearchProductResults => {
+export const TransformVantageSearchResponseDTOToView = (
+  responseDTO: VantageSearchResponseDTO
+): VantageSearchResponse => {
   return {
-    results: searchResultsDTO.results.map((searchResult) =>
+    results: responseDTO.results.map((searchResult) =>
       TransformVantageSearchResultDTOToView(searchResult)
     ),
-    executionTime: searchResultsDTO.execution_time,
+    executionTime: responseDTO.execution_time,
   };
 };

@@ -42,7 +42,7 @@ const Navigation = ({
           <img
             src={clientLogoUrl}
             alt="Client logo"
-            className="w-48 animate-appear-left-logo"
+            className="w-48 h-20 animate-appear-left-logo"
             style={
               {
                 "--bg-start-color": clientLogoColorOnAnimation,

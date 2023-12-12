@@ -11,27 +11,33 @@ import Footer from "component/layout/Footer";
 import Navigation from "component/layout/Navigation";
 import ProductSearchSection from "component/search/ProductSearchSection";
 import useDemo from "contexts/DemoContext";
-import React from "react";
+import React, { useMemo } from "react";
 
 const ProductDemoTemplate = ({
   brandingConfiguration,
 }: {
   brandingConfiguration: BrandingConfiguration;
 }): JSX.Element => {
-  const { filterActions, itemState, variables, demoActions } = useDemo();
+  const {
+    filterActions,
+    searchResults,
+    variables,
+    demoActions,
+    dataConfiguration,
+  } = useDemo();
+
+  const searchResult = useMemo(() => searchResults[0], [searchResults]);
 
   const renderFilterSection = () => {
-    if (!itemState.dataConfiguration.filter) {
+    if (!dataConfiguration.filter) {
       return <></>;
     }
 
-    if (
-      itemState.dataConfiguration.filter.type === EFiltersType.SINGLE_SELECT
-    ) {
+    if (dataConfiguration.filter.type === EFiltersType.SINGLE_SELECT) {
       return <SingleFilterSection useFilters={filterActions} />;
     }
 
-    if (itemState.dataConfiguration.filter.type === EFiltersType.MULTI_SELECT) {
+    if (dataConfiguration.filter.type === EFiltersType.MULTI_SELECT) {
       return <MultiFilterSection useFilters={filterActions} />;
     }
   };
@@ -61,25 +67,25 @@ const ProductDemoTemplate = ({
                 searchQuery={variables.query}
                 setSearchQuery={demoActions.setQuery}
                 onSearchPerformed={demoActions.performSearch}
+                searchPlaceholder={brandingConfiguration.searchPlaceholder}
                 useFiltersHook={filterActions}
                 isSingleFilter={
-                  itemState.dataConfiguration.filter.type ===
-                  EFiltersType.SINGLE_SELECT
+                  dataConfiguration.filter.type === EFiltersType.SINGLE_SELECT
                 }
               />
             </div>
             <hr className="w-full" />
             <div className="w-full">{renderFilterSection()}</div>
             <hr className="w-full" />
-            {!!itemState.executionTime && (
+            {!!searchResult.executionTime && (
               <span className="flex justify-center text-xl">
-                You have <b className="px-1">{itemState.items.length}</b> search
-                results
-                {itemState.executionTime && (
+                You have <b className="px-1">{searchResult.items.length}</b>{" "}
+                search results
+                {searchResult.executionTime && (
                   <>
                     &nbsp;in
                     <b className="px-1">
-                      {(+itemState.executionTime / 1000).toFixed(2)} seconds
+                      {(+searchResult.executionTime / 1000).toFixed(2)} seconds
                     </b>
                   </>
                 )}
@@ -100,13 +106,15 @@ const ProductDemoTemplate = ({
                 )}
             </div>
             <ServerResponseWrapper
-              isLoading={itemState.isLoading}
-              isError={itemState.isError}
-              isSuccess={itemState.isSuccess}
-              isNoResults={!itemState.isLoading && itemState.items.length === 0}
+              isLoading={searchResult.isLoading}
+              isError={searchResult.isError}
+              isSuccess={searchResult.isSuccess}
+              isNoResults={
+                !searchResult.isLoading && searchResult.items.length === 0
+              }
             >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-12 justify-center">
-                {itemState.items.map((item, index) => (
+                {searchResult.items.map((item, index) => (
                   <ProductCard
                     key={index}
                     {...item}

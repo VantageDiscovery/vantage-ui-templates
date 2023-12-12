@@ -12,10 +12,10 @@ import React, {
   useEffect,
 } from "react";
 
-type ItemState = {
+type CollectionSearchResult = {
+  collectionId: string;
   items: Item[];
   executionTime: number;
-  dataConfiguration: DataConfiguration;
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
@@ -35,10 +35,11 @@ type DemoActions = {
 };
 
 type DemoContextType = {
+  searchResults: CollectionSearchResult[];
+  variables: DemoVariables;
+  dataConfiguration: DataConfiguration;
   filterActions: UseFiltersType;
   demoActions: DemoActions;
-  itemState: ItemState;
-  variables: DemoVariables;
 };
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
@@ -63,18 +64,12 @@ export const DemoProvider = ({
     useState<boolean>(false);
   const [moreLikeDocumentId, setMoreLikeDocumentId] = useState<string>("");
 
-  const {
-    data: searchResults,
-    isFetching: areItemsLoading,
-    isError: areItemsError,
-    isSuccess: areItemsSuccess,
-    refetch: refetchItems,
-  } = VantageSearchQueries.useSearchByConfiguration(
-    {
+  const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
+    configuration.collectionIds.map((collectionId: string) => ({
       apiKey: configuration.apiKey,
       customerId: configuration.accountId,
-      customerNamespace: configuration.collectionId,
-    },
+      customerNamespace: collectionId,
+    })),
     {
       query,
       accuracy: configuration.defaultAccuracy,
@@ -87,62 +82,62 @@ export const DemoProvider = ({
     }
   );
 
-  const {
-    data: moreLikeThisItems,
-    isFetching: isMoreLikeThisLoading,
-    isError: isMoreLikeThisError,
-    isSuccess: isMoreLikeThisSuccess,
-    refetch: refetchMoreLikeThis,
-  } = VantageSearchQueries.useMoreLikeThisByConfiguration(
-    {
-      apiKey: configuration.apiKey,
-      customerId: configuration.accountId,
-      customerNamespace: configuration.collectionId,
-    },
-    {
-      documentId: moreLikeDocumentId,
-      accuracy: configuration.defaultAccuracy,
-      filters: "",
-      pageNumber: configuration.pageNumber || DEFAULT_PAGE_NUMBER,
-      pageSize: configuration.pageSize || DEFAULT_PAGE_SIZE,
-    },
-    {
-      getItemsByIds: configuration.getCustomerItems,
-    }
-  );
+  const multiMLTSearchResults =
+    VantageSearchQueries.useMoreLikeThisByConfiguration(
+      configuration.collectionIds.map((collectionId: string) => ({
+        apiKey: configuration.apiKey,
+        customerId: configuration.accountId,
+        customerNamespace: collectionId,
+      })),
+      {
+        documentId: moreLikeDocumentId,
+        accuracy: configuration.defaultAccuracy,
+        pageNumber: configuration.pageNumber || DEFAULT_PAGE_NUMBER,
+        pageSize: configuration.pageSize || DEFAULT_PAGE_SIZE,
+      },
+      {
+        getItemsByIds: configuration.getCustomerItems,
+      }
+    );
 
-  const [executionTime, items]: [number, Item[]] = useMemo(
-    () => (moreLikeDocumentId ? moreLikeThisItems : searchResults) ?? [0, []],
-    [searchResults, moreLikeThisItems]
-  );
+  const collectionSearchResults: CollectionSearchResult[] = useMemo(() => {
+    let activeSearchResult = multiQuerySearchResults;
+    if (moreLikeDocumentId) {
+      activeSearchResult = multiMLTSearchResults;
+    }
+    return activeSearchResult.map((searchResult, index) => {
+      const { data, isError, isFetching, isSuccess } = searchResult;
+      return {
+        items: data?.[1] ?? [],
+        executionTime: data?.[0] ?? 0,
+        isError,
+        isLoading: isFetching,
+        isSuccess,
+        collectionId: configuration.collectionIds[index], // as per Tanstack useQueries configuration
+      };
+    });
+  }, [multiQuerySearchResults, multiMLTSearchResults]);
+
+  const refetchSearchQueryResults = () => {
+    for (const searchResults of multiQuerySearchResults) {
+      searchResults.refetch();
+    }
+  };
 
   useEffect(() => {
     setMoreLikeDocumentId("");
-    refetchItems();
+    refetchSearchQueryResults();
   }, [filterHandlers.activeFilters]);
-
-  useEffect(() => {
-    if (moreLikeDocumentId) {
-      refetchMoreLikeThis();
-    }
-  }, [moreLikeDocumentId]);
 
   return (
     <DemoContext.Provider
       value={{
         filterActions: filterHandlers,
-        itemState: {
-          executionTime: executionTime,
-          dataConfiguration: configuration,
-          isError: areItemsError || isMoreLikeThisError,
-          isLoading: areItemsLoading || isMoreLikeThisLoading,
-          isSuccess: areItemsSuccess || isMoreLikeThisSuccess,
-          items: items,
-        },
+        searchResults: collectionSearchResults,
         demoActions: {
           performSearch: () => {
             setMoreLikeDocumentId("");
-            refetchItems();
+            refetchSearchQueryResults();
           },
           performMoreLikeThis: (id: string) => {
             setMoreLikeDocumentId(id);
@@ -155,6 +150,7 @@ export const DemoProvider = ({
           isDeveloperViewToggled,
           moreLikeDocumentId,
         },
+        dataConfiguration: configuration,
       }}
     >
       {children}

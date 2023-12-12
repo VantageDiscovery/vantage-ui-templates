@@ -8,37 +8,38 @@ export interface VantageSearchResult {
   score: number;
 }
 
-export type VantageSearchProductResultsDTO = {
+export type VantageSearchResponseDTO = {
   results: VantageSearchResultDTO[];
   execution_time: number;
 };
 
-export type VantageSearchProductResults = {
-  results: VantageSearchResultDTO[];
+export type VantageSearchResponse = {
+  results: VantageSearchResult[];
   executionTime: number;
 };
 
-export interface SearchProductConfiguration {
+export interface SearchConfiguration {
   customerId: string;
   customerNamespace: string;
   apiKey: string;
 }
-export interface SearchProductsParameters {
-  filters: string;
+
+export interface SearchParameters {
   accuracy: string;
   pageNumber: number;
   pageSize: number;
 }
 
-export type SearchMoreLikeThisParameters = SearchProductsParameters & {
+export type SearchMoreLikeThisParameters = SearchParameters & {
   documentId: string;
 };
 
-export type SearchByQueryParameters = SearchProductsParameters & {
+export type SearchByQueryParameters = SearchParameters & {
   filters: string;
   query: string;
 };
-export interface SearchProductParametersDTO {
+
+export interface SearchParametersDTO {
   request_id: number;
   collection: {
     account_id: string;
@@ -49,7 +50,7 @@ export interface SearchProductParametersDTO {
     page: number;
     count: number;
   };
-  filter: {
+  filter?: {
     boolean_filter: string;
   };
   document_id?: string;

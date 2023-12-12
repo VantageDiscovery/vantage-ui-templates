@@ -84,14 +84,14 @@ const useFilters = ({
     );
   };
 
-  const getBooleanFilterString = (): string => {
+  const getFilterString = (): string => {
     const orSets = activeFilters.reduce((reducer, currentFilter) => {
       if (!reducer[currentFilter.categorySlug]) {
         reducer[currentFilter.categorySlug] = [];
       }
       reducer[currentFilter.categorySlug].push(
         // eslint-disable-next-line no-useless-escape
-        `${currentFilter.categorySlug}:\"${currentFilter.name}\"`
+        `${currentFilter.categorySlug}:\"${currentFilter.slug}\"`
       );
       return reducer;
     }, {} as Record<string, string[]>);
@@ -116,7 +116,7 @@ const useFilters = ({
     activeFilters,
     setActiveFilters,
     toggleFilters,
-    getFilterString: getBooleanFilterString,
+    getFilterString,
     clearActiveFilters,
   };
 };
