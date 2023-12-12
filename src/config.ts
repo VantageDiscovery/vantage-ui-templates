@@ -15,9 +15,10 @@ const getFilters = (): Promise<Filter[]> => {
 /**
  * Override this function to retrieve your items from 3rd party, local folder or anywhere you like. Do not change the return type.
  *
- * @returns {Item[]} The list of filters which are available in the UI.
+ * @param ids String array of item ids retrieved from Vantage database to get the actual Items.
+ * @returns {Item[]} The list of items that will be transformed to match the UI.
  */
-const getItemsByIds = (): Promise<Item[]> => {
+const getItemsByIds = (ids: string[]): Promise<Omit<Item, "score">[]> => {
   return Promise.resolve([]);
 };
 
