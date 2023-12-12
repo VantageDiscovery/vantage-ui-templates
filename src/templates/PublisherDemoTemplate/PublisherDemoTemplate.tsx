@@ -6,7 +6,7 @@ import ToggleButton from "component/ToggleButton";
 import Chip from "component/filter/Chip";
 import Navigation from "component/layout/Navigation";
 import useDemo from "contexts/DemoContext";
-import React from "react";
+import React, { useMemo } from "react";
 import cn from "utils/cn";
 
 const PublisherDemoTemplate = ({
@@ -14,7 +14,7 @@ const PublisherDemoTemplate = ({
 }: {
   brandingConfiguration: BrandingConfiguration;
 }): JSX.Element => {
-  const { filterActions, itemState, variables, demoActions } = useDemo();
+  const { filterActions, searchResults, variables, demoActions } = useDemo();
 
   const {
     activeFilters,
@@ -24,8 +24,10 @@ const PublisherDemoTemplate = ({
     getFilterString,
   } = filterActions;
 
-  const isNoResults = itemState.items?.length === 0;
-  const hasResults = !!itemState.items && itemState.items.length > 0;
+  const searchResult = useMemo(() => searchResults[0], [searchResults]);
+
+  const isNoResults = searchResult.items?.length === 0;
+  const hasResults = !!searchResult.items && searchResult.items.length > 0;
 
   return (
     <div className="flex flex-col w-full gap-0 min-h-screen relative">
@@ -105,13 +107,14 @@ const PublisherDemoTemplate = ({
                     className="pl-3 block w-full rounded-xl border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 disabled:bg-gray-50 disabled:hover:cursor-not-allowed ring-gray-300 focus:ring-primary"
                   />
                   <SparklesIcon className="absolute right-4 top-4 w-4 h-4 text-orange-300" />
-                  {!itemState.isLoading &&
+                  {!searchResult.isLoading &&
                     hasResults &&
-                    itemState.executionTime && (
+                    searchResult.executionTime && (
                       <p>
-                        You have {itemState.items?.length} research results in
+                        You have {searchResult.items?.length} research results
+                        in
                         <b>
-                          &nbsp;{(itemState.executionTime / 1000).toFixed(2)}
+                          &nbsp;{(searchResult.executionTime / 1000).toFixed(2)}
                           &nbsp;seconds
                         </b>
                         &nbsp;for &quot;{variables.query}&quot;
@@ -147,17 +150,17 @@ const PublisherDemoTemplate = ({
                 <div className="text-xl leading-none">{getFilterString()}</div>
               )}
               <ServerResponseWrapper
-                isLoading={itemState.isLoading}
+                isLoading={searchResult.isLoading}
                 isError={false}
-                isSuccess={itemState.isSuccess}
+                isSuccess={searchResult.isSuccess}
                 loadingMessage="Loading content"
-                isNoResults={!itemState.isLoading && isNoResults}
+                isNoResults={!searchResult.isLoading && isNoResults}
                 loadingSpinnerColor="black"
               >
                 <>
                   <section>
                     <ul className="flex flex-col gap-6">
-                      {itemState.items?.map((paper) => {
+                      {searchResult.items?.map((paper) => {
                         return (
                           <PublishCard
                             key={paper.id}

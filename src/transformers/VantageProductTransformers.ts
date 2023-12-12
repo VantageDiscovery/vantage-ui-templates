@@ -55,7 +55,7 @@ export const TransformVantageSearchMoreLikeThisParametersViewToDTO = (
       searchParameters
     ),
     document_id: searchParameters.documentId,
-    // todo: delete once it is removed on backend
+    // TODO: delete once it is removed on backend
     filter: {
       boolean_filter: "",
     },

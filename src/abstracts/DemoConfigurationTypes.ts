@@ -1,6 +1,12 @@
 import { Filter } from "./FilterTypes";
 import { Item } from "./ItemTypes";
 
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
+
 export enum EDemoTemplate {
   PUBLISHER,
   PRODUCT,
@@ -16,6 +22,16 @@ export type Configuration = DataConfiguration & {
   branding: BrandingConfiguration;
 };
 
+export type ClientConfiguration = Pick<
+  Configuration,
+  | "accountId"
+  | "collectionIds"
+  | "apiKey"
+  | "getCustomerItems"
+  | "vantageSearchURL" // mandatory fields
+> &
+  DeepPartial<Configuration>;
+
 export interface BrandingConfiguration {
   colors: {
     primary: string;
@@ -29,7 +45,7 @@ export interface BrandingConfiguration {
 export interface DataConfiguration {
   vantageSearchURL: string;
   accountId: string;
-  collectionId: string;
+  collectionIds: string[];
   apiKey: string;
   defaultAccuracy: string;
   defaultSearchQuery: string;

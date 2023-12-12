@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useMemo } from "react";
 import Combobox from "../Combobox";
 import cn from "utils/cn";
 import { UseFiltersType } from "abstracts/FilterTypes";
@@ -22,7 +22,7 @@ const ProductSearchSection = ({
   const { availableFilters, activeFilters, toggleFilters, clearActiveFilters } =
     useFiltersHook;
 
-  const activeFilter = activeFilters[0];
+  const activeFilter = useMemo(() => activeFilters[0], [activeFilters]);
 
   return (
     <form

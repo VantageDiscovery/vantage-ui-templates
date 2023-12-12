@@ -91,7 +91,7 @@ const useFilters = ({
       }
       reducer[currentFilter.categorySlug].push(
         // eslint-disable-next-line no-useless-escape
-        `${currentFilter.categorySlug}:\"${currentFilter.name}\"`
+        `${currentFilter.categorySlug}:\"${currentFilter.slug}\"`
       );
       return reducer;
     }, {} as Record<string, string[]>);

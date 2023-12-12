@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, UseQueryResult } from "@tanstack/react-query";
 import { CustomerDataHandler, Item } from "abstracts/ItemTypes";
 import {
   SearchByQueryParameters,
@@ -10,11 +10,11 @@ import {
 import VantageSearchService from "services/VantageSearchService";
 
 const queryKeys = {
-  seachMoreLikeThis: (customerId: string, customerNamespace: string) => [
-    "SEARCH_MORE_LIKE_THIS",
-    customerId,
-    customerNamespace,
-  ],
+  seachMoreLikeThis: (
+    customerId: string,
+    customerNamespace: string,
+    documentId: string
+  ) => ["SEARCH_MORE_LIKE_THIS", customerId, customerNamespace, documentId],
   searchByQuery: (customerId: string, customerNamespace: string) => [
     "SEARCH_BY_QUERY",
     customerId,
@@ -49,36 +49,39 @@ const getItemsWithScores = async (
  * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
  */
 const useSearchByConfiguration = (
-  searchConfiguration: SearchConfiguration,
+  searchConfigurations: SearchConfiguration[],
   searchParameters: SearchByQueryParameters,
   customerDataHandler: CustomerDataHandler
-) =>
-  useQuery<[number, Item[]], Error>({
-    queryKey: queryKeys.searchByQuery(
-      searchConfiguration.customerId,
-      searchConfiguration.customerNamespace
-    ),
-    queryFn: async () => {
-      const response: VantageSearchResponse =
-        await VantageSearchService.searchByQuery(
-          searchConfiguration,
-          searchParameters
+): UseQueryResult<[number, Item[]], Error>[] => {
+  return useQueries({
+    queries: searchConfigurations.map((searchConfiguration) => ({
+      queryKey: queryKeys.searchByQuery(
+        searchConfiguration.customerId,
+        searchConfiguration.customerNamespace
+      ),
+      queryFn: async () => {
+        const response: VantageSearchResponse =
+          await VantageSearchService.searchByQuery(
+            searchConfiguration,
+            searchParameters
+          );
+        const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
+          undefined,
+          response.results.map((result) => result.id)
         );
-      const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
-        undefined,
-        response.results.map((result) => result.id)
-      );
 
-      const customerItems = await getItemsWithScores(
-        response.results,
-        response.results.length > 0
-          ? getItemsByIdsFunction
-          : () => Promise.resolve([])
-      );
+        const customerItems = await getItemsWithScores(
+          response.results,
+          response.results.length > 0
+            ? getItemsByIdsFunction
+            : () => Promise.resolve([])
+        );
 
-      return [response.executionTime, customerItems];
-    },
+        return [response.executionTime, customerItems];
+      },
+    })),
   });
+};
 
 /**
  * Performs Vantage More Like This and then it performs getItemsByIds from customerDataHandler.
@@ -89,37 +92,42 @@ const useSearchByConfiguration = (
  * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
  */
 const useMoreLikeThisByConfiguration = (
-  searchConfiguration: SearchConfiguration,
+  searchConfigurations: SearchConfiguration[],
   searchParameters: SearchMoreLikeThisParameters,
   customerDataHandler: CustomerDataHandler
-) =>
-  useQuery<[number, Item[]], Error>({
-    queryKey: queryKeys.seachMoreLikeThis(
-      searchConfiguration.customerId,
-      searchConfiguration.customerNamespace
-      //TODO: Change key according to docid.
-    ),
-    queryFn: async () => {
-      const response: VantageSearchResponse =
-        await VantageSearchService.searchMoreLikeThis(
-          searchConfiguration,
-          searchParameters
+): UseQueryResult<[number, Item[]], Error>[] =>
+  useQueries({
+    queries: searchConfigurations.map((searchConfiguration) => ({
+      queryKey: queryKeys.seachMoreLikeThis(
+        searchConfiguration.customerId,
+        searchConfiguration.customerNamespace,
+        searchParameters.documentId
+      ),
+      queryFn: async () => {
+        const response: VantageSearchResponse =
+          await VantageSearchService.searchMoreLikeThis(
+            searchConfiguration,
+            searchParameters
+          );
+        const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
+          undefined,
+          response.results.map((result) => result.id)
         );
-      const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
-        undefined,
-        response.results.map((result) => result.id)
-      );
 
-      const customerItems = await getItemsWithScores(
-        response.results,
-        response.results.length > 0
-          ? getItemsByIdsFunction
-          : () => Promise.resolve([])
-      );
+        if (response.results.length === 0) {
+          return [response.executionTime, 0];
+        }
 
-      return [response.executionTime, customerItems];
-    },
-    enabled: !!searchParameters.documentId,
+        const customerItems = await getItemsWithScores(
+          response.results,
+          response.results.length > 0
+            ? getItemsByIdsFunction
+            : () => Promise.resolve([])
+        );
+        return [response.executionTime, customerItems];
+      },
+      enabled: !!searchParameters.documentId,
+    })),
   });
 
 export const VantageSearchQueries = {

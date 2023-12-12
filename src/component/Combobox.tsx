@@ -152,7 +152,11 @@ const Combobox = ({
         type: ChipComboBoxAction.SET_SELECTED_VALUE,
         value: activeValue,
       });
+      return;
     }
+    dispatchState({
+      type: ChipComboBoxAction.CLEAR_SELECTED_VALUE,
+    });
   }, [activeValue]);
 
   useEffect(() => {
