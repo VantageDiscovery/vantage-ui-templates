@@ -1,7 +1,6 @@
 import { ClientConfiguration } from "abstracts/DemoConfigurationTypes";
 import { Filter } from "abstracts/FilterTypes";
 import { Item } from "abstracts/ItemTypes";
-import { GetConfigurationWithDefaultValues } from "transformers/ConfigurationTransformer";
 
 /**
  * Override this function to retrieve your filters from 3rd party, local folder or anywhere you like. Do not change the return type.
@@ -29,9 +28,9 @@ const configuration: ClientConfiguration = {
   vantageSearchURL:
     "Enter an url to the Vantage API you want to fetch data from.",
   getCustomerItems: getItemsByIds,
-  // filter: {
-  //   getFilters: getFilters,
-  // },
+  filter: {
+    getFilters: getFilters,
+  },
 };
 
-export default GetConfigurationWithDefaultValues(configuration);
+export default configuration;
