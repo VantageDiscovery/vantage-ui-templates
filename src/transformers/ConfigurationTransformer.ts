@@ -21,13 +21,11 @@ const DEFAULT_CONFIGURATION = {
   },
 };
 
-// This is intentionally generic method
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function assignDefined(target: any, source: any) {
+function assignDefined(target: object, source: object) {
   for (const key of Object.keys(source)) {
     const keyCasted = key as keyof typeof source;
     const value = source[keyCasted];
-    if (value === Object(value) && !Array.isArray(value)) {
+    if (value != new Object(value)) {
       // it is non-primitive - do recursion.
       assignDefined(target[keyCasted], value);
       continue;
@@ -46,6 +44,8 @@ export const GetConfigurationWithDefaultValues = (
   if (!Array.isArray(collectionIds)) {
     collectionIds = [collectionIds];
   }
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
   return assignDefined(DEFAULT_CONFIGURATION, {
     ...customerConfiguration,
     collectionIds,
