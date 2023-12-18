@@ -22,15 +22,13 @@ export type Configuration = DataConfiguration & {
   branding: BrandingConfiguration;
 };
 
-export type ClientConfiguration = Pick<
-  Configuration,
-  | "accountId"
-  | "collectionIds"
-  | "apiKey"
-  | "getCustomerItems"
-  | "vantageSearchURL" // mandatory fields
+export type ClientConfiguration = DeepPartial<
+  Omit<Configuration, "collectionIds">
 > &
-  DeepPartial<Configuration>;
+  Pick<
+    Configuration,
+    "accountId" | "apiKey" | "getCustomerItems" | "vantageSearchURL" // mandatory fields
+  > & { collectionId: string | string[] };
 
 export interface BrandingConfiguration {
   colors: {

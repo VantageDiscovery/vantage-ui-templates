@@ -24,14 +24,14 @@ const getItemsByIds = (ids: string[]): Promise<Omit<Item, "score">[]> => {
 
 const configuration: ClientConfiguration = {
   accountId: "Enter your Vantage Account ID.",
-  collectionIds: ["Enter a list of Vantage Collection IDs to fetch data from."],
+  collectionId: "Enter a list of Vantage Collection IDs to fetch data from.",
   apiKey: "Enter your Vantage API Key.",
   vantageSearchURL:
     "Enter an url to the Vantage API you want to fetch data from.",
   getCustomerItems: getItemsByIds,
-  filter: {
-    getFilters: getFilters,
-  },
+  // filter: {
+  //   getFilters: getFilters,
+  // },
 };
 
 export default GetConfigurationWithDefaultValues(configuration);

@@ -42,5 +42,12 @@ function assignDefined(target: any, source: any) {
 export const GetConfigurationWithDefaultValues = (
   customerConfiguration: ClientConfiguration
 ): Configuration => {
-  return assignDefined(DEFAULT_CONFIGURATION, customerConfiguration);
+  let collectionIds = customerConfiguration.collectionId;
+  if (!Array.isArray(collectionIds)) {
+    collectionIds = [collectionIds];
+  }
+  return assignDefined(DEFAULT_CONFIGURATION, {
+    ...customerConfiguration,
+    collectionIds,
+  });
 };
