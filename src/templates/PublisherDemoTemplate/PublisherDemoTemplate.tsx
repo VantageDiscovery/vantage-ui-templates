@@ -169,9 +169,9 @@ const PublisherDemoTemplate = ({
                               description: paper.description,
                               accuracy: paper.score || 0,
                               imageUrl: paper.imageSrc,
-                              redirectUrl: paper.meta?.url,
-                              subtitle: paper.meta?.author,
-                              tooltipContent: paper.meta?.text,
+                              redirectUrl: paper.externalUrl,
+                              subtitle: paper.meta.subtitle,
+                              tooltipContent: paper.embeddingText,
                               title: paper.title,
                             }}
                             primaryColor={brandingConfiguration.colors.primary}

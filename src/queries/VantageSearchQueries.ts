@@ -1,5 +1,9 @@
 import { useQueries, UseQueryResult } from "@tanstack/react-query";
-import { CustomerDataHandler, Item } from "abstracts/ItemTypes";
+import {
+  CustomerDataHandler,
+  Item,
+  ItemWithoutScore,
+} from "abstracts/ItemTypes";
 import {
   SearchByQueryParameters,
   SearchMoreLikeThisParameters,
@@ -32,7 +36,7 @@ const getItemsWithScores = async (
     );
     return foundItem?.score || 0;
   };
-  const customerItems: Omit<Item, "score">[] = await getItemsFunction();
+  const customerItems: ItemWithoutScore[] = await getItemsFunction();
   const customerItemsWithScores: Item[] = customerItems.map((item) => ({
     ...item,
     score: getItemScoreById(item.id),
@@ -69,7 +73,6 @@ const useSearchByConfiguration = (
           undefined,
           response.results.map((result) => result.id)
         );
-
         const customerItems = await getItemsWithScores(
           response.results,
           response.results.length > 0

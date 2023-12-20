@@ -1,15 +1,47 @@
-export interface Item {
+export type Item = ItemMandatoryFields & {
+  meta: OptionalMetaFields;
+};
+
+export type ItemMandatoryFields = {
   id: string;
   title: string;
   description: string;
   imageSrc: string;
   embeddingText: string;
   score: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  meta?: any;
-}
+  externalUrl: string;
+};
+
+export type OptionalMetaFields = {
+  subtitle: string;
+  imageLabel: string;
+};
+
+export type ItemWithoutScore = Omit<Item, "score">;
+
+// new
+// export type ItemDTO = {
+//   id: string;
+//   title: string;
+//   description: string;
+//   url: string;
+//   image_url: string;
+//   text: string;
+// } & object;
+
+// old
+export type ItemDTO = {
+  id: string;
+  noopMeta: {
+    title: string;
+    description: string;
+    url: string;
+    image_url: string;
+    text: string;
+  } & object;
+};
 
 export type CustomerDataHandler = {
-  getItemsByIds: (results: string[]) => Promise<Omit<Item, "score">[]>;
+  getItemsByIds: (results: string[]) => Promise<ItemWithoutScore[]>;
   transformData?: (results: unknown[]) => Item[];
 };

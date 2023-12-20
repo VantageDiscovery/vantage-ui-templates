@@ -1,5 +1,8 @@
-import { Filter } from "./FilterTypes";
-import { Item } from "./ItemTypes";
+import { EFiltersType, Filter } from "./FilterTypes";
+import {
+  CustomAPIConfiguration,
+  VantageAPIConfiguration,
+} from "./CustomerApiTypes";
 
 type DeepPartial<T> = T extends object
   ? {
@@ -12,11 +15,6 @@ export enum EDemoTemplate {
   PRODUCT,
 }
 
-export enum EFiltersType {
-  SINGLE_SELECT,
-  MULTI_SELECT,
-}
-
 export type Configuration = DataConfiguration & {
   template: EDemoTemplate;
   branding: BrandingConfiguration;
@@ -27,7 +25,7 @@ export type ClientConfiguration = DeepPartial<
 > &
   Pick<
     Configuration,
-    "accountId" | "apiKey" | "getCustomerItems" | "vantageSearchURL" // mandatory fields
+    "accountId" | "apiKey" | "vantageSearchURL" | "customerAPI" // mandatory fields
   > & { collectionId: string | string[] };
 
 export interface BrandingConfiguration {
@@ -47,7 +45,7 @@ export interface DataConfiguration {
   apiKey: string;
   defaultAccuracy: string;
   defaultSearchQuery: string;
-  getCustomerItems: (ids: string[]) => Promise<Omit<Item, "score">[]>;
+  customerAPI: VantageAPIConfiguration | CustomAPIConfiguration;
   filter: FilterConfiguration;
   pageNumber?: number;
   pageSize?: number;

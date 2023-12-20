@@ -3,6 +3,7 @@ import { UseFiltersType } from "abstracts/FilterTypes";
 import { Item } from "abstracts/ItemTypes";
 import useFilters from "hooks/useFilters";
 import { VantageSearchQueries } from "queries/VantageSearchQueries";
+import useCustomerAPI from "../hooks/useCustomerApi";
 import React, {
   createContext,
   useContext,
@@ -59,6 +60,9 @@ export const DemoProvider = ({
     getAvailableFilters: configuration.filter.getFilters,
     getPopularFilters: configuration.filter.getPopularFilters,
   });
+  const customerAPI = useCustomerAPI({
+    dataConfiguration: configuration,
+  });
   const [query, setQuery] = useState<string>(configuration.defaultSearchQuery);
   const [isDeveloperViewToggled, setIsDeveloperViewToggled] =
     useState<boolean>(false);
@@ -78,9 +82,11 @@ export const DemoProvider = ({
       pageSize: configuration.pageSize || DEFAULT_PAGE_SIZE,
     },
     {
-      getItemsByIds: configuration.getCustomerItems,
+      getItemsByIds: customerAPI.getItemsByIds,
     }
   );
+
+  console.log(configuration);
 
   const multiMLTSearchResults =
     VantageSearchQueries.useMoreLikeThisByConfiguration(
@@ -96,7 +102,7 @@ export const DemoProvider = ({
         pageSize: configuration.pageSize || DEFAULT_PAGE_SIZE,
       },
       {
-        getItemsByIds: configuration.getCustomerItems,
+        getItemsByIds: customerAPI.getItemsByIds,
       }
     );
 
@@ -129,6 +135,7 @@ export const DemoProvider = ({
     refetchSearchQueryResults();
   }, [filterHandlers.activeFilters]);
 
+  console.log(configuration);
   return (
     <DemoContext.Provider
       value={{

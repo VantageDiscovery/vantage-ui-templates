@@ -25,11 +25,15 @@ function assignDefined(target: object, source: object) {
   for (const key of Object.keys(source)) {
     const keyCasted = key as keyof typeof source;
     const value = source[keyCasted];
-    if (value != new Object(value)) {
+    if (typeof value === "object" && !Array.isArray(value) && value !== null) {
       // it is non-primitive - do recursion.
+      if (!target[keyCasted]) {
+        (target[keyCasted] as object) = {};
+      }
       assignDefined(target[keyCasted], value);
       continue;
     }
+
     if (value !== undefined) {
       target[keyCasted] = value;
     }

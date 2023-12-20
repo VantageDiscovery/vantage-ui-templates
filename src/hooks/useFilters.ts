@@ -1,6 +1,5 @@
-import { Filter, UseFiltersType } from "../abstracts/FilterTypes";
+import { EFiltersType, Filter, UseFiltersType } from "../abstracts/FilterTypes";
 import { useEffect, useState } from "react";
-import { EFiltersType } from "abstracts/DemoConfigurationTypes";
 
 interface FilterStrategy {
   toggleFilters(activeFilters: Filter[], toggledFilters: Filter[]): Filter[];

@@ -1,7 +1,4 @@
-import {
-  BrandingConfiguration,
-  EFiltersType,
-} from "abstracts/DemoConfigurationTypes";
+import { BrandingConfiguration } from "abstracts/DemoConfigurationTypes";
 import ProductCard from "component/ProductCard";
 import ServerResponseWrapper from "component/ServerResponseWrapper";
 import ToggleButton from "component/ToggleButton";
@@ -12,6 +9,7 @@ import Navigation from "component/layout/Navigation";
 import ProductSearchSection from "component/search/ProductSearchSection";
 import useDemo from "contexts/DemoContext";
 import React, { useMemo } from "react";
+import { EFiltersType } from "abstracts/FilterTypes";
 
 const ProductDemoTemplate = ({
   brandingConfiguration,
@@ -118,11 +116,11 @@ const ProductDemoTemplate = ({
                   <ProductCard
                     key={index}
                     {...item}
-                    subtitle={item.meta.category}
+                    subtitle={item?.meta.subtitle}
                     infoContent={item.embeddingText}
                     searchAccuracy={item.score}
-                    bottomRightLabel={item.meta.timeToPrepare}
-                    redirectUrl={item.meta.url}
+                    bottomRightLabel={item?.meta?.imageLabel}
+                    redirectUrl={item?.externalUrl}
                     primaryColor={brandingConfiguration.colors.primary}
                     secondaryColor={brandingConfiguration.colors.secondary}
                     onMoreLikeThisClicked={() => {
