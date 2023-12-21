@@ -86,8 +86,6 @@ export const DemoProvider = ({
     }
   );
 
-  console.log(configuration);
-
   const multiMLTSearchResults =
     VantageSearchQueries.useMoreLikeThisByConfiguration(
       configuration.collectionIds.map((collectionId: string) => ({
@@ -135,7 +133,6 @@ export const DemoProvider = ({
     refetchSearchQueryResults();
   }, [filterHandlers.activeFilters]);
 
-  console.log(configuration);
   return (
     <DemoContext.Provider
       value={{

@@ -1,4 +1,7 @@
-import { CustomFieldTransformer } from "abstracts/CustomerApiTypes";
+import {
+  CustomFieldSpecification,
+  CustomFieldTransformer,
+} from "abstracts/CustomerApiTypes";
 import { ItemDTO, ItemWithoutScore } from "abstracts/ItemTypes";
 
 const parseStringAccessToArray = (
@@ -7,25 +10,46 @@ const parseStringAccessToArray = (
 ): object => {
   const parts = stringElement.split("[");
   let newValue = object[parts[0] as keyof typeof object];
-  for (const arrayIndex of parts.slice(1)) {
+  for (const arrayIndex of parts
+    .slice(1)
+    .map((element) => element.slice(0, -1))) {
     newValue = newValue[arrayIndex as unknown as number];
   }
   return newValue;
 };
 
 const ItemDTOCustomFieldToMetaField = (
-  item: ItemDTO,
+  item: object,
   dtoFieldName: string
 ): string => {
-  if (dtoFieldName.includes(".")) {
-    // object logic
-    return "";
+  const nestedObjects = dtoFieldName.split(".");
+  let currentValue: object = item;
+  for (const nestedObject of nestedObjects) {
+    if (nestedObject.includes("[")) {
+      currentValue = parseStringAccessToArray(currentValue, nestedObject);
+      continue;
+    }
+    currentValue = currentValue[nestedObject as keyof typeof currentValue];
   }
-  if (dtoFieldName.includes("[")) {
-    // array logic
-  }
+  return currentValue as unknown as string;
+};
 
-  return item.noopMeta[dtoFieldName as keyof typeof item.noopMeta];
+const transformWithCustomField = (
+  object: object,
+  defaultValue: string,
+  fieldMapper?: CustomFieldSpecification
+) => {
+  if (!fieldMapper) {
+    return defaultValue;
+  }
+  const fieldValue = ItemDTOCustomFieldToMetaField(
+    object,
+    fieldMapper.fieldName
+  );
+  if (fieldMapper.transformer) {
+    return fieldMapper.transformer(fieldValue);
+  }
+  return fieldValue;
 };
 
 export const TransformItemDTOToView = (
@@ -33,23 +57,43 @@ export const TransformItemDTOToView = (
   customMetaFieldsMapper?: CustomFieldTransformer
 ): ItemWithoutScore => {
   return {
-    id: item.id,
-    description: item.noopMeta.description,
-    imageSrc: item.noopMeta.image_url,
-    title: item.noopMeta.title,
-    embeddingText: item.noopMeta.text,
-    externalUrl: item.noopMeta.url,
+    id: transformWithCustomField(item, item.id, customMetaFieldsMapper?.id),
+    description: transformWithCustomField(
+      item,
+      item.description,
+      customMetaFieldsMapper?.description
+    ),
+    imageSrc: transformWithCustomField(
+      item,
+      item.image_url,
+      customMetaFieldsMapper?.imageSrc
+    ),
+    title: transformWithCustomField(
+      item,
+      item.title,
+      customMetaFieldsMapper?.title
+    ),
+    embeddingText: transformWithCustomField(
+      item,
+      item.text,
+      customMetaFieldsMapper?.embeddingText
+    ),
+    externalUrl: transformWithCustomField(
+      item,
+      item.url,
+      customMetaFieldsMapper?.externalUrl
+    ),
     meta: {
-      imageLabel: customMetaFieldsMapper?.imageLabel
-        ? item.noopMeta[
-            customMetaFieldsMapper?.imageLabel as keyof typeof item.noopMeta
-          ]
-        : "",
-      subtitle: customMetaFieldsMapper?.subtitle
-        ? item.noopMeta[
-            customMetaFieldsMapper?.subtitle as keyof typeof item.noopMeta
-          ]
-        : "",
+      imageLabel: transformWithCustomField(
+        item,
+        "",
+        customMetaFieldsMapper?.imageLabel
+      ),
+      subtitle: transformWithCustomField(
+        item,
+        "",
+        customMetaFieldsMapper?.subtitle
+      ),
     },
   };
 };

@@ -2,6 +2,7 @@ import { EFiltersType, Filter } from "./FilterTypes";
 import {
   CustomAPIConfiguration,
   VantageAPIConfiguration,
+  VantageAPIConfigurationClient,
 } from "./CustomerApiTypes";
 
 type DeepPartial<T> = T extends object
@@ -21,12 +22,14 @@ export type Configuration = DataConfiguration & {
 };
 
 export type ClientConfiguration = DeepPartial<
-  Omit<Configuration, "collectionIds">
+  Omit<Configuration, "collectionIds" | "customerAPI">
 > &
   Pick<
     Configuration,
-    "accountId" | "apiKey" | "vantageSearchURL" | "customerAPI" // mandatory fields
-  > & { collectionId: string | string[] };
+    "accountId" | "apiKey" | "vantageSearchURL" // mandatory fields
+  > & { collectionId: string | string[] } & {
+    customerAPI: VantageAPIConfigurationClient | CustomAPIConfiguration;
+  };
 
 export interface BrandingConfiguration {
   colors: {

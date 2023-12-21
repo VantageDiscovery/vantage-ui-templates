@@ -19,27 +19,14 @@ export type OptionalMetaFields = {
 
 export type ItemWithoutScore = Omit<Item, "score">;
 
-// new
-// export type ItemDTO = {
-//   id: string;
-//   title: string;
-//   description: string;
-//   url: string;
-//   image_url: string;
-//   text: string;
-// } & object;
-
-// old
 export type ItemDTO = {
   id: string;
-  noopMeta: {
-    title: string;
-    description: string;
-    url: string;
-    image_url: string;
-    text: string;
-  } & object;
-};
+  title: string;
+  description: string;
+  url: string;
+  image_url: string;
+  text: string;
+} & object;
 
 export type CustomerDataHandler = {
   getItemsByIds: (results: string[]) => Promise<ItemWithoutScore[]>;
