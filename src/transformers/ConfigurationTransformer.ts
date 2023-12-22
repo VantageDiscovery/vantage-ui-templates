@@ -12,6 +12,7 @@ const DEFAULT_CONFIGURATION = {
   template: EDemoTemplate.PRODUCT,
   defaultAccuracy: "0.5",
   defaultSearchQuery: "Type in anything you want and explore magic...",
+  vantageSearchURL: "https://api.vanta.ge/v1/search",
   branding: {
     logoUrl: "https://img.logoipsum.com/327.svg",
     title: "Empower your search!",

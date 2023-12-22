@@ -26,7 +26,7 @@ export type ClientConfiguration = DeepPartial<
 > &
   Pick<
     Configuration,
-    "accountId" | "apiKey" | "vantageSearchURL" // mandatory fields
+    "accountId" | "apiKey" // mandatory fields
   > & { collectionId: string | string[] } & {
     customerAPI: VantageAPIConfigurationClient | CustomAPIConfiguration;
   };

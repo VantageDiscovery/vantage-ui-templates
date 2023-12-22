@@ -116,11 +116,11 @@ const ProductDemoTemplate = ({
                   <ProductCard
                     key={index}
                     {...item}
-                    subtitle={item?.meta.subtitle}
+                    subtitle={item.meta.subtitle}
                     infoContent={item.embeddingText}
                     searchAccuracy={item.score}
-                    bottomRightLabel={item?.meta?.imageLabel}
-                    redirectUrl={item?.externalUrl}
+                    bottomRightLabel={item.meta.imageLabel}
+                    redirectUrl={item.externalUrl}
                     primaryColor={brandingConfiguration.colors.primary}
                     secondaryColor={brandingConfiguration.colors.secondary}
                     onMoreLikeThisClicked={() => {
