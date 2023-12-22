@@ -79,6 +79,7 @@ const useSearchByConfiguration = (
             ? getItemsByIdsFunction
             : () => Promise.resolve([])
         );
+        customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
 
         return [response.executionTime, customerItems];
       },
@@ -127,6 +128,8 @@ const useMoreLikeThisByConfiguration = (
             ? getItemsByIdsFunction
             : () => Promise.resolve([])
         );
+        customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
+
         return [response.executionTime, customerItems];
       },
       enabled: !!searchParameters.documentId,
