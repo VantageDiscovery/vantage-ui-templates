@@ -1,6 +1,7 @@
+import { ECustomerAPIType } from "abstracts/CustomerApiTypes";
 import { ClientConfiguration } from "abstracts/DemoConfigurationTypes";
 import { Filter } from "abstracts/FilterTypes";
-import { Item } from "abstracts/ItemTypes";
+import { ItemWithoutScore } from "abstracts/ItemTypes";
 import { GetConfigurationWithDefaultValues } from "transformers/ConfigurationTransformer";
 
 /**
@@ -18,17 +19,20 @@ const getFilters = (): Promise<Filter[]> => {
  * @param ids String array of item ids retrieved from Vantage database to get the actual Items.
  * @returns {Item[]} The list of items that will be transformed to match the UI.
  */
-const getItemsByIds = (ids: string[]): Promise<Omit<Item, "score">[]> => {
+const getItemsByIds = (ids: string[]): Promise<ItemWithoutScore[]> => {
   return Promise.resolve([]);
 };
 
 const configuration: ClientConfiguration = {
   accountId: "Enter your Vantage Account ID.",
-  collectionIds: ["Enter a list of Vantage Collection IDs to fetch data from."],
+  collectionId: "Enter a list of Vantage Collection IDs to fetch data from.",
   apiKey: "Enter your Vantage API Key.",
   vantageSearchURL:
     "Enter an url to the Vantage API you want to fetch data from.",
-  getCustomerItems: getItemsByIds,
+  customerAPI: {
+    type: ECustomerAPIType.CUSTOM_API,
+    getCustomerItems: getItemsByIds,
+  },
   filter: {
     getFilters: getFilters,
   },

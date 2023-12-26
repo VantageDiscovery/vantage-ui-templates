@@ -6,13 +6,17 @@ import ProductDemoTemplate from "templates/ProductsDemoTemplate/ProductDemoTempl
 import PublisherDemoTemplate from "templates/PublisherDemoTemplate/PublisherDemoTemplate";
 import { EDemoTemplate } from "abstracts/DemoConfigurationTypes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GetConfigurationWithDefaultValues } from "transformers/ConfigurationTransformer";
+
+// Encapsulation
+const configuration = GetConfigurationWithDefaultValues(config);
 
 const DemoTemplateToPageTemplate: Record<EDemoTemplate, JSX.Element> = {
   [EDemoTemplate.PRODUCT]: (
-    <ProductDemoTemplate brandingConfiguration={config.branding} />
+    <ProductDemoTemplate brandingConfiguration={configuration.branding} />
   ),
   [EDemoTemplate.PUBLISHER]: (
-    <PublisherDemoTemplate brandingConfiguration={config.branding} />
+    <PublisherDemoTemplate brandingConfiguration={configuration.branding} />
   ),
 };
 
@@ -27,8 +31,8 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <DemoProvider configuration={config}>
-        {DemoTemplateToPageTemplate[config.template]}
+      <DemoProvider configuration={configuration}>
+        {DemoTemplateToPageTemplate[configuration.template]}
       </DemoProvider>
     </QueryClientProvider>
   );

@@ -1,3 +1,7 @@
+export enum EFiltersType {
+  SINGLE_SELECT,
+  MULTI_SELECT,
+}
 export interface Filter {
   name: string;
   slug: string;

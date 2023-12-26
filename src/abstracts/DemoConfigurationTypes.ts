@@ -1,5 +1,9 @@
-import { Filter } from "./FilterTypes";
-import { Item } from "./ItemTypes";
+import { EFiltersType, Filter } from "./FilterTypes";
+import {
+  CustomAPIConfiguration,
+  VantageAPIConfiguration,
+  VantageAPIConfigurationClient,
+} from "./CustomerApiTypes";
 
 type DeepPartial<T> = T extends object
   ? {
@@ -12,25 +16,20 @@ export enum EDemoTemplate {
   PRODUCT,
 }
 
-export enum EFiltersType {
-  SINGLE_SELECT,
-  MULTI_SELECT,
-}
-
 export type Configuration = DataConfiguration & {
   template: EDemoTemplate;
   branding: BrandingConfiguration;
 };
 
-export type ClientConfiguration = Pick<
-  Configuration,
-  | "accountId"
-  | "collectionIds"
-  | "apiKey"
-  | "getCustomerItems"
-  | "vantageSearchURL" // mandatory fields
+export type ClientConfiguration = DeepPartial<
+  Omit<Configuration, "collectionIds" | "customerAPI">
 > &
-  DeepPartial<Configuration>;
+  Pick<
+    Configuration,
+    "accountId" | "apiKey" // mandatory fields
+  > & { collectionId: string | string[] } & {
+    customerAPI: VantageAPIConfigurationClient | CustomAPIConfiguration;
+  };
 
 export interface BrandingConfiguration {
   colors: {
@@ -49,7 +48,7 @@ export interface DataConfiguration {
   apiKey: string;
   defaultAccuracy: string;
   defaultSearchQuery: string;
-  getCustomerItems: (ids: string[]) => Promise<Omit<Item, "score">[]>;
+  customerAPI: VantageAPIConfiguration | CustomAPIConfiguration;
   filter: FilterConfiguration;
   pageNumber?: number;
   pageSize?: number;
