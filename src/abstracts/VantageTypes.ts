@@ -22,6 +22,7 @@ export interface SearchConfiguration {
   customerId: string;
   customerNamespace: string;
   apiKey: string;
+  shingling: ShinglingParameters;
 }
 
 export interface SearchParameters {
@@ -39,6 +40,12 @@ export type SearchByQueryParameters = SearchParameters & {
   query: string;
 };
 
+export type ShinglingParameters = {
+  cosine_similarity_score_weight: string;
+  query_match_score_weight: string;
+  document_match_score_weight: string;
+};
+
 export interface SearchParametersDTO {
   request_id: number;
   collection: {
@@ -49,6 +56,11 @@ export interface SearchParametersDTO {
   pagination: {
     page: number;
     count: number;
+  };
+  shingling?: {
+    cosine_similarity_score_weight: string;
+    query_match_score_weight: string;
+    document_match_score_weight: string;
   };
   filter?: {
     boolean_filter: string;

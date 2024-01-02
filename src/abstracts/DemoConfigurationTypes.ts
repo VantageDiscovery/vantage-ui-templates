@@ -39,6 +39,7 @@ export interface BrandingConfiguration {
   logoUrl: string;
   title?: string;
   searchPlaceholder?: string;
+  originalSearchResultsURL?: string;
 }
 
 export interface DataConfiguration {
@@ -50,6 +51,7 @@ export interface DataConfiguration {
   defaultSearchQuery: string;
   customerAPI: VantageAPIConfiguration | CustomAPIConfiguration;
   filter: FilterConfiguration;
+  shingling: ShinglingConfiguration;
   pageNumber?: number;
   pageSize?: number;
 }
@@ -58,4 +60,10 @@ interface FilterConfiguration {
   type: EFiltersType;
   getFilters: () => Promise<Filter[]>;
   getPopularFilters?: (filters: Filter[]) => Filter[];
+}
+
+interface ShinglingConfiguration {
+  document_match_score_weight: string;
+  query_match_score_weight: string;
+  cosine_similarity_score_weight: string;
 }

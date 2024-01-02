@@ -1,4 +1,4 @@
-import { SparklesIcon } from "@heroicons/react/24/outline";
+import { LinkIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { BrandingConfiguration } from "abstracts/DemoConfigurationTypes";
 import PublishCard from "component/PublishCard";
 import ServerResponseWrapper from "component/ServerResponseWrapper";
@@ -7,6 +7,7 @@ import Chip from "component/filter/Chip";
 import Navigation from "component/layout/Navigation";
 import useDemo from "contexts/DemoContext";
 import React, { useMemo } from "react";
+import { Link } from "react-router-dom";
 import cn from "utils/cn";
 
 const PublisherDemoTemplate = ({
@@ -118,6 +119,14 @@ const PublisherDemoTemplate = ({
                           &nbsp;seconds
                         </b>
                         &nbsp;for &quot;{variables.query}&quot;
+                        {brandingConfiguration.originalSearchResultsURL && (
+                          <Link
+                            to={`${brandingConfiguration.originalSearchResultsURL}${variables.query}`}
+                            target="_new"
+                          >
+                            <LinkIcon className="h-4 w-4" aria-hidden="true" />
+                          </Link>
+                        )}
                       </p>
                     )}
                 </form>

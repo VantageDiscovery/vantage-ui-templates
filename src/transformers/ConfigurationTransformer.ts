@@ -24,6 +24,11 @@ const DEFAULT_CONFIGURATION = {
   filter: {
     getFilters: () => Promise.resolve([]),
   },
+  shingling: {
+    document_match_score_weight: 0,
+    query_match_score_weight: 0,
+    cosine_similarity_score_weight: 1,
+  },
 };
 
 function assignDefined(target: object, source: object) {
@@ -43,6 +48,7 @@ function assignDefined(target: object, source: object) {
       target[keyCasted] = value;
     }
   }
+
   return target;
 }
 

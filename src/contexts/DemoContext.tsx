@@ -12,6 +12,7 @@ import React, {
   Dispatch,
   useEffect,
 } from "react";
+import useUrlParams from "hooks/useUrlParams";
 
 type CollectionSearchResult = {
   collectionId: string;
@@ -63,23 +64,28 @@ export const DemoProvider = ({
   const customerAPI = useCustomerAPI({
     dataConfiguration: configuration,
   });
+
+  const configurationWithParameters = useUrlParams({
+    dataConfiguration: configuration,
+  });
   const [query, setQuery] = useState<string>(configuration.defaultSearchQuery);
   const [isDeveloperViewToggled, setIsDeveloperViewToggled] =
     useState<boolean>(false);
   const [moreLikeDocumentId, setMoreLikeDocumentId] = useState<string>("");
 
   const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
-    configuration.collectionIds.map((collectionId: string) => ({
-      apiKey: configuration.apiKey,
-      customerId: configuration.accountId,
+    configurationWithParameters.collectionIds.map((collectionId: string) => ({
+      apiKey: configurationWithParameters.apiKey,
+      customerId: configurationWithParameters.accountId,
       customerNamespace: collectionId,
+      shingling: configurationWithParameters.shingling,
     })),
     {
       query,
-      accuracy: configuration.defaultAccuracy,
+      accuracy: configurationWithParameters.defaultAccuracy,
       filters: filterHandlers.getFilterString(),
-      pageNumber: configuration.pageNumber || DEFAULT_PAGE_NUMBER,
-      pageSize: configuration.pageSize || DEFAULT_PAGE_SIZE,
+      pageNumber: configurationWithParameters.pageNumber || DEFAULT_PAGE_NUMBER,
+      pageSize: configurationWithParameters.pageSize || DEFAULT_PAGE_SIZE,
     },
     {
       getItemsByIds: customerAPI.getItemsByIds,
@@ -88,16 +94,18 @@ export const DemoProvider = ({
 
   const multiMLTSearchResults =
     VantageSearchQueries.useMoreLikeThisByConfiguration(
-      configuration.collectionIds.map((collectionId: string) => ({
-        apiKey: configuration.apiKey,
-        customerId: configuration.accountId,
+      configurationWithParameters.collectionIds.map((collectionId: string) => ({
+        apiKey: configurationWithParameters.apiKey,
+        customerId: configurationWithParameters.accountId,
         customerNamespace: collectionId,
+        shingling: configurationWithParameters.shingling,
       })),
       {
         documentId: moreLikeDocumentId,
-        accuracy: configuration.defaultAccuracy,
-        pageNumber: configuration.pageNumber || DEFAULT_PAGE_NUMBER,
-        pageSize: configuration.pageSize || DEFAULT_PAGE_SIZE,
+        accuracy: configurationWithParameters.defaultAccuracy,
+        pageNumber:
+          configurationWithParameters.pageNumber || DEFAULT_PAGE_NUMBER,
+        pageSize: configurationWithParameters.pageSize || DEFAULT_PAGE_SIZE,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,

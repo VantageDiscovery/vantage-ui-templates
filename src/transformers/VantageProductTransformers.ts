@@ -25,6 +25,7 @@ export const TransformVantageSearchParametersViewToDTO = (
       page: searchParameters.pageNumber,
       count: searchParameters.pageSize,
     },
+    shingling: searchConfiguration.shingling,
   };
 };
 
