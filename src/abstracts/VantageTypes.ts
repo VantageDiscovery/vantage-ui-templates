@@ -22,7 +22,7 @@ export interface SearchConfiguration {
   customerId: string;
   customerNamespace: string;
   apiKey: string;
-  shingling: ShinglingParameters;
+  shingling?: ShinglingParameters;
 }
 
 export interface SearchParameters {

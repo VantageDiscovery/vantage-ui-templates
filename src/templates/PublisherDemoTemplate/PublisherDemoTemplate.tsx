@@ -6,7 +6,7 @@ import ToggleButton from "component/ToggleButton";
 import Chip from "component/filter/Chip";
 import Navigation from "component/layout/Navigation";
 import useDemo from "contexts/DemoContext";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import cn from "utils/cn";
 
@@ -24,6 +24,12 @@ const PublisherDemoTemplate = ({
     toggleFilters,
     getFilterString,
   } = filterActions;
+
+  useEffect(() => {
+    if (brandingConfiguration.pageTitle) {
+      document.title = brandingConfiguration.pageTitle;
+    }
+  }, []);
 
   const searchResult = useMemo(() => searchResults[0], [searchResults]);
 
@@ -121,7 +127,10 @@ const PublisherDemoTemplate = ({
                         &nbsp;for &quot;{variables.query}&quot;
                         {brandingConfiguration.originalSearchResultsURL && (
                           <Link
-                            to={`${brandingConfiguration.originalSearchResultsURL}${variables.query}`}
+                            to={brandingConfiguration.originalSearchResultsURL.replace(
+                              "${query}",
+                              variables.query
+                            )}
                             target="_new"
                           >
                             <LinkIcon className="h-4 w-4" aria-hidden="true" />
@@ -179,7 +188,7 @@ const PublisherDemoTemplate = ({
                               accuracy: paper.score || 0,
                               imageUrl: paper.imageSrc,
                               redirectUrl: paper.externalUrl,
-                              subtitle: paper.meta.subtitle,
+                              subtitle: paper.meta?.subtitle,
                               tooltipContent: paper.embeddingText,
                               title: paper.title,
                             }}

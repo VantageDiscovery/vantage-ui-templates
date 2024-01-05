@@ -1,5 +1,7 @@
 import { EFiltersType, Filter } from "./FilterTypes";
 import {
+  CDNAPIConfiguration,
+  CDNAPIConfigurationClient,
   CustomAPIConfiguration,
   VantageAPIConfiguration,
   VantageAPIConfigurationClient,
@@ -28,7 +30,10 @@ export type ClientConfiguration = DeepPartial<
     Configuration,
     "accountId" | "apiKey" // mandatory fields
   > & { collectionId: string | string[] } & {
-    customerAPI: VantageAPIConfigurationClient | CustomAPIConfiguration;
+    customerAPI:
+      | VantageAPIConfigurationClient
+      | CustomAPIConfiguration
+      | CDNAPIConfigurationClient;
   };
 
 export interface BrandingConfiguration {
@@ -40,6 +45,7 @@ export interface BrandingConfiguration {
   title?: string;
   searchPlaceholder?: string;
   originalSearchResultsURL?: string;
+  pageTitle: string;
 }
 
 export interface DataConfiguration {
@@ -49,16 +55,18 @@ export interface DataConfiguration {
   apiKey: string;
   defaultAccuracy: string;
   defaultSearchQuery: string;
-  customerAPI: VantageAPIConfiguration | CustomAPIConfiguration;
+  customerAPI:
+    | VantageAPIConfiguration
+    | CustomAPIConfiguration
+    | CDNAPIConfiguration;
   filter: FilterConfiguration;
   shingling: ShinglingConfiguration;
   pageNumber?: number;
   pageSize?: number;
 }
 
-interface FilterConfiguration {
+export interface FilterConfiguration {
   type: EFiltersType;
-  getFilters: () => Promise<Filter[]>;
   getPopularFilters?: (filters: Filter[]) => Filter[];
 }
 

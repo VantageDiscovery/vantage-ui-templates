@@ -21,7 +21,7 @@ const DEFAULT_CONFIGURATION = {
       secondary: "#F8C471",
     },
   },
-  filter: {
+  customerApiType: {
     getFilters: () => Promise.resolve([]),
   },
   shingling: {

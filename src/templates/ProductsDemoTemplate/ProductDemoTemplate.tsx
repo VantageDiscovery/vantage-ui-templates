@@ -8,7 +8,7 @@ import Footer from "component/layout/Footer";
 import Navigation from "component/layout/Navigation";
 import ProductSearchSection from "component/search/ProductSearchSection";
 import useDemo from "contexts/DemoContext";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { EFiltersType } from "abstracts/FilterTypes";
 import { Link } from "react-router-dom";
 import { LinkIcon } from "@heroicons/react/24/outline";
@@ -25,6 +25,12 @@ const ProductDemoTemplate = ({
     demoActions,
     dataConfiguration,
   } = useDemo();
+
+  useEffect(() => {
+    if (brandingConfiguration.pageTitle) {
+      document.title = brandingConfiguration.pageTitle;
+    }
+  }, []);
 
   const searchResult = useMemo(() => searchResults[0], [searchResults]);
 
@@ -81,10 +87,13 @@ const ProductDemoTemplate = ({
               {brandingConfiguration.originalSearchResultsURL && (
                 <span className="flex px-24 w-full justify-start gap-2 items-center text-lg">
                   <p className="font-medium">You searched: </p>
-                  <p>{variables.query}</p>
+                  <p>{variables.query}</p>a
                   <p className="mt-0.5">
                     <Link
-                      to={`${brandingConfiguration.originalSearchResultsURL}${variables.query}`}
+                      to={brandingConfiguration.originalSearchResultsURL.replace(
+                        "${query}",
+                        variables.query
+                      )}
                       target="_new"
                     >
                       <LinkIcon className="h-4 w-4" aria-hidden="true" />
@@ -135,10 +144,10 @@ const ProductDemoTemplate = ({
                   <ProductCard
                     key={index}
                     {...item}
-                    subtitle={item.meta.subtitle}
+                    subtitle={item.meta?.subtitle}
                     infoContent={item.embeddingText}
                     searchAccuracy={item.score}
-                    bottomRightLabel={item.meta.imageLabel}
+                    bottomRightLabel={item.meta?.imageLabel}
                     redirectUrl={item.externalUrl}
                     primaryColor={brandingConfiguration.colors.primary}
                     secondaryColor={brandingConfiguration.colors.secondary}
