@@ -34,9 +34,16 @@ export type SearchMoreLikeThisParameters = SearchParameters & {
   documentId: string;
 };
 
-export type SearchByQueryParameters = SearchParameters & {
-  filters: string;
-  query: string;
+export type SearchByQueryParameters = SearchParameters &
+  ShinglingParameters & {
+    filters: string;
+    query: string;
+  };
+
+export type ShinglingParameters = {
+  cosineSimilarityScoreWeight: number;
+  queryMatchScoreWeight: number;
+  documentMatchScoreWeight: number;
 };
 
 export interface SearchParametersDTO {
@@ -49,6 +56,11 @@ export interface SearchParametersDTO {
   pagination: {
     page: number;
     count: number;
+  };
+  shingling?: {
+    cosine_similarity_score_weight: number;
+    query_match_score_weight: number;
+    document_match_score_weight: number;
   };
   filter?: {
     boolean_filter: string;

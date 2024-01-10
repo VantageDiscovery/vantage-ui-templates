@@ -1,7 +1,8 @@
+import {} from "abstracts/CustomerApiTypes";
 import {
   CustomFieldSpecification,
   CustomFieldTransformer,
-} from "abstracts/CustomerApiTypes";
+} from "abstracts/DemoConfigurationTypes";
 import { ItemDTO, ItemWithoutScore } from "abstracts/ItemTypes";
 
 const parseStringAccessToArray = (

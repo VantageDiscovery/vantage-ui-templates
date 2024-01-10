@@ -6,17 +6,16 @@ import ProductDemoTemplate from "templates/ProductsDemoTemplate/ProductDemoTempl
 import PublisherDemoTemplate from "templates/PublisherDemoTemplate/PublisherDemoTemplate";
 import { EDemoTemplate } from "abstracts/DemoConfigurationTypes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { GetConfigurationWithDefaultValues } from "transformers/ConfigurationTransformer";
-
-// Encapsulation
-const configuration = GetConfigurationWithDefaultValues(config);
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { QueryParamProvider } from "use-query-params";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
 
 const DemoTemplateToPageTemplate: Record<EDemoTemplate, JSX.Element> = {
   [EDemoTemplate.PRODUCT]: (
-    <ProductDemoTemplate brandingConfiguration={configuration.branding} />
+    <ProductDemoTemplate brandingConfiguration={config.branding} />
   ),
   [EDemoTemplate.PUBLISHER]: (
-    <PublisherDemoTemplate brandingConfiguration={configuration.branding} />
+    <PublisherDemoTemplate brandingConfiguration={config.branding} />
   ),
 };
 
@@ -31,9 +30,18 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <DemoProvider configuration={configuration}>
-        {DemoTemplateToPageTemplate[configuration.template]}
-      </DemoProvider>
+      <BrowserRouter>
+        <QueryParamProvider adapter={ReactRouter6Adapter}>
+          <DemoProvider configuration={config}>
+            <Routes>
+              <Route
+                path="*"
+                element={DemoTemplateToPageTemplate[config.template]}
+              />
+            </Routes>
+          </DemoProvider>
+        </QueryParamProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }

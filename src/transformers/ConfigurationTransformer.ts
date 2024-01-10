@@ -1,12 +1,11 @@
-import {
-  CustomFieldTransformer,
-  ECustomerAPIType,
-} from "abstracts/CustomerApiTypes";
+import { ECustomerAPIType } from "abstracts/CustomerApiTypes";
 import {
   ClientConfiguration,
   Configuration,
+  CustomFieldTransformer,
   EDemoTemplate,
 } from "abstracts/DemoConfigurationTypes";
+import { EFiltersType } from "abstracts/FilterTypes";
 
 const DEFAULT_CONFIGURATION = {
   template: EDemoTemplate.PRODUCT,
@@ -22,7 +21,15 @@ const DEFAULT_CONFIGURATION = {
     },
   },
   filter: {
+    type: EFiltersType.SINGLE_SELECT,
+  },
+  customerApiType: {
     getFilters: () => Promise.resolve([]),
+  },
+  shingling: {
+    documentMatchScoreWeight: 0,
+    queryMatchScoreWeight: 0,
+    cosineSimilarityScoreWeight: 1,
   },
 };
 
@@ -43,6 +50,7 @@ function assignDefined(target: object, source: object) {
       target[keyCasted] = value;
     }
   }
+
   return target;
 }
 
@@ -52,26 +60,23 @@ const TransformCustomerAPICustomFieldsToSpecification = (
   if (configuration.customerAPI.type === ECustomerAPIType.CUSTOM_API) {
     return configuration;
   }
-  if (!configuration.customerAPI.customFieldTransformer) {
+  if (!configuration.customFieldTransformer) {
     return configuration;
   }
   return {
     ...configuration,
-    customerAPI: {
-      ...configuration.customerAPI,
-      customFieldTransformer: Object.entries(
-        configuration.customerAPI.customFieldTransformer
-      ).reduce((previous: CustomFieldTransformer, current) => {
-        if (typeof current[1] === "string") {
-          previous[current[0] as keyof typeof previous] = {
-            fieldName: current[1],
-          };
-          return previous;
-        }
-        previous[current[0] as keyof typeof previous] = current[1];
+    customFieldTransformer: Object.entries(
+      configuration.customFieldTransformer
+    ).reduce((previous: CustomFieldTransformer, current) => {
+      if (typeof current[1] === "string") {
+        previous[current[0] as keyof typeof previous] = {
+          fieldName: current[1],
+        };
         return previous;
-      }, {}),
-    },
+      }
+      previous[current[0] as keyof typeof previous] = current[1];
+      return previous;
+    }, {}),
   };
 };
 

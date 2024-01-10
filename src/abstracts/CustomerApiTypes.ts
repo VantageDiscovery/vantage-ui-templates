@@ -1,53 +1,51 @@
-import { ItemWithoutScore, OptionalMetaFields } from "./ItemTypes";
+import { Filter } from "./FilterTypes";
+import { ItemDTO, ItemWithoutScore } from "./ItemTypes";
 
 export enum ECustomerAPIType {
   VANTAGE_API,
   CUSTOM_API,
+  CDN_API,
 }
-
-export type CustomFieldSpecification = {
-  fieldName: string;
-  transformer?: (element: string) => string;
-};
-
-export type CustomFieldTransformer = Partial<
-  Record<
-    keyof Omit<ItemWithoutScore, "meta"> | keyof OptionalMetaFields,
-    CustomFieldSpecification
-  >
->;
-
-type CustomFieldTransformerClient = Partial<
-  Record<
-    keyof Omit<ItemWithoutScore, "meta"> | keyof OptionalMetaFields,
-    string | CustomFieldSpecification
-  >
->;
 
 export type VantageAPIConfiguration = {
   type: ECustomerAPIType.VANTAGE_API;
   apiKey: string;
   apiPath: string;
-  customFieldTransformer: CustomFieldTransformer;
   accountPrefix: string; // by default taken from account
   collectionPrefix: string; // by default taken from collection
+  getFilters: () => Promise<Filter[]>;
 };
 
 export type CustomAPIConfiguration = {
   type: ECustomerAPIType.CUSTOM_API;
-  getCustomerItems: (ids: string[]) => Promise<ItemWithoutScore[]>;
+  getFilters: () => Promise<Filter[]>;
+  getCustomerItems: (ids: string[]) => Promise<ItemDTO[]>;
+};
+export type CDNAPIConfiguration = {
+  type: ECustomerAPIType.CDN_API;
+  filterURL: string[];
+  itemURLPattern: string;
+  authHeader: string;
 };
 
-export type APIConfiguration = CustomAPIConfiguration | VantageAPIConfiguration;
+export type APIConfiguration =
+  | CustomAPIConfiguration
+  | VantageAPIConfiguration
+  | CDNAPIConfiguration;
 
 export type UseCustomerAPIType = {
   getItemsByIds: (id: string[]) => Promise<ItemWithoutScore[]>;
+  getFilters: () => Promise<Filter[]>;
 };
 
 export type VantageAPIConfigurationClient = Partial<
   Omit<VantageAPIConfiguration, "customFieldTransformer">
 > &
   // Mandatory fields
-  Pick<VantageAPIConfiguration, "type" | "apiKey" | "apiPath"> & {
-    customFieldTransformer?: CustomFieldTransformerClient;
-  };
+  Pick<VantageAPIConfiguration, "type" | "apiKey" | "apiPath">;
+
+export type CDNAPIConfigurationClient = Partial<
+  Omit<CDNAPIConfiguration, "customFieldTransformer">
+> &
+  // Mandatory fields
+  Pick<CDNAPIConfiguration, "itemURLPattern" | "filterURL">;

@@ -42,6 +42,12 @@ export const TransformVantageSearchByQueryParametersViewToDTO = (
       boolean_filter:
         searchParameters.filters === "()" ? "" : searchParameters.filters,
     },
+    shingling: {
+      cosine_similarity_score_weight:
+        searchParameters.cosineSimilarityScoreWeight,
+      document_match_score_weight: searchParameters.documentMatchScoreWeight,
+      query_match_score_weight: searchParameters.queryMatchScoreWeight,
+    },
   };
 };
 

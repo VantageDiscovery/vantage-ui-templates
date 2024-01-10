@@ -8,8 +8,10 @@ import Footer from "component/layout/Footer";
 import Navigation from "component/layout/Navigation";
 import ProductSearchSection from "component/search/ProductSearchSection";
 import useDemo from "contexts/DemoContext";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { EFiltersType } from "abstracts/FilterTypes";
+import { Link } from "react-router-dom";
+import { LinkIcon } from "@heroicons/react/24/outline";
 
 const ProductDemoTemplate = ({
   brandingConfiguration,
@@ -23,6 +25,12 @@ const ProductDemoTemplate = ({
     demoActions,
     dataConfiguration,
   } = useDemo();
+
+  useEffect(() => {
+    if (brandingConfiguration.pageTitle) {
+      document.title = brandingConfiguration.pageTitle;
+    }
+  }, []);
 
   const searchResult = useMemo(() => searchResults[0], [searchResults]);
 
@@ -75,20 +83,40 @@ const ProductDemoTemplate = ({
             <hr className="w-full" />
             <div className="w-full">{renderFilterSection()}</div>
             <hr className="w-full" />
-            {!!searchResult.executionTime && (
-              <span className="flex justify-center text-xl">
-                You have <b className="px-1">{searchResult.items.length}</b>{" "}
-                search results
-                {searchResult.executionTime && (
-                  <>
-                    &nbsp;in
-                    <b className="px-1">
-                      {(+searchResult.executionTime / 1000).toFixed(2)} seconds
-                    </b>
-                  </>
-                )}
-              </span>
-            )}
+            <div className="flex justify-between w-full">
+              {dataConfiguration.originalSearchResultsURL && (
+                <span className="flex px-24 w-full justify-start gap-2 items-center text-lg">
+                  <p className="font-medium">You searched: </p>
+                  <p>{variables.query}</p>a
+                  <p className="mt-0.5">
+                    <Link
+                      to={dataConfiguration.originalSearchResultsURL.replace(
+                        "${query}",
+                        variables.query
+                      )}
+                      target="_new"
+                    >
+                      <LinkIcon className="h-4 w-4" aria-hidden="true" />
+                    </Link>
+                  </p>
+                </span>
+              )}
+              {!!searchResult.executionTime && (
+                <span className="flex justify-end text-xl mr-24 w-full">
+                  You have <b className="px-1">{searchResult.items.length}</b>
+                  search results
+                  {searchResult.executionTime && (
+                    <>
+                      &nbsp;in
+                      <b className="px-1">
+                        {(+searchResult.executionTime / 1000).toFixed(2)}
+                        seconds
+                      </b>
+                    </>
+                  )}
+                </span>
+              )}
+            </div>
             <div className="px-24 w-full flex flex-row space-x-5 items-center">
               <ToggleButton
                 text="Developer debug"
@@ -116,10 +144,10 @@ const ProductDemoTemplate = ({
                   <ProductCard
                     key={index}
                     {...item}
-                    subtitle={item.meta.subtitle}
+                    subtitle={item.meta?.subtitle}
                     infoContent={item.embeddingText}
                     searchAccuracy={item.score}
-                    bottomRightLabel={item.meta.imageLabel}
+                    bottomRightLabel={item.meta?.imageLabel}
                     redirectUrl={item.externalUrl}
                     primaryColor={brandingConfiguration.colors.primary}
                     secondaryColor={brandingConfiguration.colors.secondary}

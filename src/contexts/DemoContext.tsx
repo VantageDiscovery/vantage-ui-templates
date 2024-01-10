@@ -1,6 +1,4 @@
 import { DataConfiguration } from "abstracts/DemoConfigurationTypes";
-import { UseFiltersType } from "abstracts/FilterTypes";
-import { Item } from "abstracts/ItemTypes";
 import useFilters from "hooks/useFilters";
 import { VantageSearchQueries } from "queries/VantageSearchQueries";
 import useCustomerAPI from "../hooks/useCustomerApi";
@@ -9,39 +7,13 @@ import React, {
   useContext,
   useState,
   useMemo,
-  Dispatch,
   useEffect,
 } from "react";
-
-type CollectionSearchResult = {
-  collectionId: string;
-  items: Item[];
-  executionTime: number;
-  isLoading: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-};
-
-type DemoVariables = {
-  query: string;
-  isDeveloperViewToggled: boolean;
-  moreLikeDocumentId: string;
-};
-
-type DemoActions = {
-  performSearch: () => void;
-  performMoreLikeThis: (id: string) => void;
-  setQuery: Dispatch<React.SetStateAction<string>>;
-  setIsDeveloperViewToggled: Dispatch<React.SetStateAction<boolean>>;
-};
-
-type DemoContextType = {
-  searchResults: CollectionSearchResult[];
-  variables: DemoVariables;
-  dataConfiguration: DataConfiguration;
-  filterActions: UseFiltersType;
-  demoActions: DemoActions;
-};
+import useUrlParams from "hooks/useUrlParams";
+import {
+  CollectionSearchResult,
+  DemoContextType,
+} from "abstracts/DemoContextTypes";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
 
@@ -55,31 +27,42 @@ export const DemoProvider = ({
   children: JSX.Element;
   configuration: DataConfiguration;
 }) => {
-  const filterHandlers = useFilters({
-    filterType: configuration.filter.type,
-    getAvailableFilters: configuration.filter.getFilters,
-    getPopularFilters: configuration.filter.getPopularFilters,
-  });
   const customerAPI = useCustomerAPI({
     dataConfiguration: configuration,
   });
-  const [query, setQuery] = useState<string>(configuration.defaultSearchQuery);
+  const filterHandlers = useFilters({
+    filterType: configuration.filter.type,
+    getAvailableFilters: customerAPI.getFilters,
+    getPopularFilters: configuration.filter.getPopularFilters,
+  });
+
+  const [urlSearchParameter, setUrlSearchParameter] = useState<string>();
+  const [urlDocumentId, setUrlDocumentId] = useState<string>();
+  const { dataConfiguration, search, documentId } = useUrlParams({
+    dataConfiguration: configuration,
+    search: urlSearchParameter,
+    documentId: urlDocumentId,
+  });
+  const [moreLikeDocumentId, setMoreLikeDocumentId] = useState<string>(
+    documentId ?? ""
+  );
+  const [query, setQuery] = useState<string>(search);
   const [isDeveloperViewToggled, setIsDeveloperViewToggled] =
     useState<boolean>(false);
-  const [moreLikeDocumentId, setMoreLikeDocumentId] = useState<string>("");
 
   const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
-    configuration.collectionIds.map((collectionId: string) => ({
-      apiKey: configuration.apiKey,
-      customerId: configuration.accountId,
+    dataConfiguration.collectionIds.map((collectionId: string) => ({
+      apiKey: dataConfiguration.apiKey,
+      customerId: dataConfiguration.accountId,
       customerNamespace: collectionId,
     })),
     {
-      query,
-      accuracy: configuration.defaultAccuracy,
+      query: search.length > 0 ? search : dataConfiguration.defaultSearchQuery,
+      accuracy: dataConfiguration.defaultAccuracy,
       filters: filterHandlers.getFilterString(),
-      pageNumber: configuration.pageNumber || DEFAULT_PAGE_NUMBER,
-      pageSize: configuration.pageSize || DEFAULT_PAGE_SIZE,
+      pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
+      pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
+      ...dataConfiguration.shingling,
     },
     {
       getItemsByIds: customerAPI.getItemsByIds,
@@ -88,16 +71,16 @@ export const DemoProvider = ({
 
   const multiMLTSearchResults =
     VantageSearchQueries.useMoreLikeThisByConfiguration(
-      configuration.collectionIds.map((collectionId: string) => ({
-        apiKey: configuration.apiKey,
-        customerId: configuration.accountId,
+      dataConfiguration.collectionIds.map((collectionId: string) => ({
+        apiKey: dataConfiguration.apiKey,
+        customerId: dataConfiguration.accountId,
         customerNamespace: collectionId,
       })),
       {
         documentId: moreLikeDocumentId,
-        accuracy: configuration.defaultAccuracy,
-        pageNumber: configuration.pageNumber || DEFAULT_PAGE_NUMBER,
-        pageSize: configuration.pageSize || DEFAULT_PAGE_SIZE,
+        accuracy: dataConfiguration.defaultAccuracy,
+        pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
+        pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -128,10 +111,31 @@ export const DemoProvider = ({
     }
   };
 
+  const refetchMLTSearchResults = () => {
+    for (const searchResults of multiMLTSearchResults) {
+      searchResults.refetch();
+    }
+  };
+
   useEffect(() => {
     setMoreLikeDocumentId("");
     refetchSearchQueryResults();
   }, [filterHandlers.activeFilters]);
+
+  useEffect(() => {
+    search.length > 0
+      ? (setQuery(search), refetchSearchQueryResults())
+      : (documentId.length === 0 &&
+          setQuery(dataConfiguration.defaultSearchQuery),
+        refetchSearchQueryResults());
+  }, [search]);
+
+  useEffect(() => {
+    setMoreLikeDocumentId(documentId ?? "");
+    documentId.length > 0
+      ? (refetchMLTSearchResults(), setQuery(documentId))
+      : (search.length > 0 && setQuery(search), refetchSearchQueryResults());
+  }, [documentId]);
 
   return (
     <DemoContext.Provider
@@ -141,10 +145,12 @@ export const DemoProvider = ({
         demoActions: {
           performSearch: () => {
             setMoreLikeDocumentId("");
-            refetchSearchQueryResults();
+            setUrlSearchParameter(query);
           },
           performMoreLikeThis: (id: string) => {
+            setUrlDocumentId(id);
             setMoreLikeDocumentId(id);
+            setQuery(id);
           },
           setQuery,
           setIsDeveloperViewToggled,

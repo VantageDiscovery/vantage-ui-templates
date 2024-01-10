@@ -1,15 +1,37 @@
 import { EFiltersType, Filter } from "./FilterTypes";
 import {
+  CDNAPIConfiguration,
+  CDNAPIConfigurationClient,
   CustomAPIConfiguration,
   VantageAPIConfiguration,
   VantageAPIConfigurationClient,
 } from "./CustomerApiTypes";
+import { ItemWithoutScore, OptionalMetaFields } from "./ItemTypes";
 
 type DeepPartial<T> = T extends object
   ? {
       [P in keyof T]?: DeepPartial<T[P]>;
     }
   : T;
+
+export type CustomFieldSpecification = {
+  fieldName: string;
+  transformer?: (element: string) => string;
+};
+
+export type CustomFieldTransformer = Partial<
+  Record<
+    keyof Omit<ItemWithoutScore, "meta"> | keyof OptionalMetaFields,
+    CustomFieldSpecification
+  >
+>;
+
+type CustomFieldTransformerClient = Partial<
+  Record<
+    keyof Omit<ItemWithoutScore, "meta"> | keyof OptionalMetaFields,
+    string | CustomFieldSpecification
+  >
+>;
 
 export enum EDemoTemplate {
   PUBLISHER,
@@ -28,7 +50,11 @@ export type ClientConfiguration = DeepPartial<
     Configuration,
     "accountId" | "apiKey" // mandatory fields
   > & { collectionId: string | string[] } & {
-    customerAPI: VantageAPIConfigurationClient | CustomAPIConfiguration;
+    customerAPI:
+      | VantageAPIConfigurationClient
+      | CustomAPIConfiguration
+      | CDNAPIConfigurationClient;
+    customFieldTransformer?: CustomFieldTransformerClient;
   };
 
 export interface BrandingConfiguration {
@@ -39,6 +65,7 @@ export interface BrandingConfiguration {
   logoUrl: string;
   title?: string;
   searchPlaceholder?: string;
+  pageTitle: string;
 }
 
 export interface DataConfiguration {
@@ -48,14 +75,25 @@ export interface DataConfiguration {
   apiKey: string;
   defaultAccuracy: string;
   defaultSearchQuery: string;
-  customerAPI: VantageAPIConfiguration | CustomAPIConfiguration;
+  customerAPI:
+    | VantageAPIConfiguration
+    | CustomAPIConfiguration
+    | CDNAPIConfiguration;
   filter: FilterConfiguration;
+  shingling: ShinglingConfiguration;
+  customFieldTransformer?: CustomFieldTransformer;
   pageNumber?: number;
   pageSize?: number;
+  originalSearchResultsURL?: string;
 }
 
-interface FilterConfiguration {
+export interface FilterConfiguration {
   type: EFiltersType;
-  getFilters: () => Promise<Filter[]>;
   getPopularFilters?: (filters: Filter[]) => Filter[];
+}
+
+interface ShinglingConfiguration {
+  documentMatchScoreWeight: number;
+  queryMatchScoreWeight: number;
+  cosineSimilarityScoreWeight: number;
 }

@@ -1,7 +1,7 @@
-import { CustomFieldTransformer } from "abstracts/CustomerApiTypes";
 import { ItemDTO, ItemWithoutScore } from "abstracts/ItemTypes";
 import axios, { AxiosResponse } from "axios";
 import { TransformItemDTOToView } from "../transformers/VantageItemTransformers";
+import { CustomFieldTransformer } from "abstracts/DemoConfigurationTypes";
 
 const getItemsByIds = async (
   apiPath: string,
