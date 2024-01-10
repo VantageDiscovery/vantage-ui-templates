@@ -15,7 +15,13 @@ const PublisherDemoTemplate = ({
 }: {
   brandingConfiguration: BrandingConfiguration;
 }): JSX.Element => {
-  const { filterActions, searchResults, variables, demoActions } = useDemo();
+  const {
+    filterActions,
+    searchResults,
+    variables,
+    demoActions,
+    dataConfiguration,
+  } = useDemo();
 
   const {
     activeFilters,
@@ -125,9 +131,9 @@ const PublisherDemoTemplate = ({
                           &nbsp;seconds
                         </b>
                         &nbsp;for &quot;{variables.query}&quot;
-                        {brandingConfiguration.originalSearchResultsURL && (
+                        {dataConfiguration.originalSearchResultsURL && (
                           <Link
-                            to={brandingConfiguration.originalSearchResultsURL.replace(
+                            to={dataConfiguration.originalSearchResultsURL.replace(
                               "${query}",
                               variables.query
                             )}

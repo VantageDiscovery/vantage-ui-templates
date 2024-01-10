@@ -55,7 +55,6 @@ export const DemoProvider = ({
       apiKey: dataConfiguration.apiKey,
       customerId: dataConfiguration.accountId,
       customerNamespace: collectionId,
-      shingling: dataConfiguration.shingling,
     })),
     {
       query: search.length > 0 ? search : dataConfiguration.defaultSearchQuery,
@@ -63,6 +62,7 @@ export const DemoProvider = ({
       filters: filterHandlers.getFilterString(),
       pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
       pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
+      ...dataConfiguration.shingling,
     },
     {
       getItemsByIds: customerAPI.getItemsByIds,

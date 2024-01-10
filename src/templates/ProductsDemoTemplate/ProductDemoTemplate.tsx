@@ -84,13 +84,13 @@ const ProductDemoTemplate = ({
             <div className="w-full">{renderFilterSection()}</div>
             <hr className="w-full" />
             <div className="flex justify-between w-full">
-              {brandingConfiguration.originalSearchResultsURL && (
+              {dataConfiguration.originalSearchResultsURL && (
                 <span className="flex px-24 w-full justify-start gap-2 items-center text-lg">
                   <p className="font-medium">You searched: </p>
                   <p>{variables.query}</p>a
                   <p className="mt-0.5">
                     <Link
-                      to={brandingConfiguration.originalSearchResultsURL.replace(
+                      to={dataConfiguration.originalSearchResultsURL.replace(
                         "${query}",
                         variables.query
                       )}

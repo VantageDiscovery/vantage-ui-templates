@@ -3,7 +3,7 @@ import { DataConfiguration } from "abstracts/DemoConfigurationTypes";
 import { UseUrlParamsType } from "abstracts/ParamsType";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { GetConfigurationWithParameterValues } from "transformers/DataConfigurationTransformer";
+import { GetConfigurationWithParameterValues } from "transformers/QueryParametersTransformer";
 import { useQueryParam, StringParam } from "use-query-params";
 
 const useUrlParams = ({

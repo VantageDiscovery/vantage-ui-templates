@@ -25,7 +25,6 @@ export const TransformVantageSearchParametersViewToDTO = (
       page: searchParameters.pageNumber,
       count: searchParameters.pageSize,
     },
-    shingling: searchConfiguration.shingling,
   };
 };
 
@@ -42,6 +41,12 @@ export const TransformVantageSearchByQueryParametersViewToDTO = (
     filter: {
       boolean_filter:
         searchParameters.filters === "()" ? "" : searchParameters.filters,
+    },
+    shingling: {
+      cosine_similarity_score_weight:
+        searchParameters.cosineSimilarityScoreWeight,
+      document_match_score_weight: searchParameters.documentMatchScoreWeight,
+      query_match_score_weight: searchParameters.queryMatchScoreWeight,
     },
   };
 };

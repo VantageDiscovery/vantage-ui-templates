@@ -1,11 +1,6 @@
 import { ECustomerAPIType } from "abstracts/CustomerApiTypes";
-import {
-  ClientConfiguration,
-  EDemoTemplate,
-} from "abstracts/DemoConfigurationTypes";
-import { EFiltersType, Filter } from "abstracts/FilterTypes";
-import { Item } from "abstracts/ItemTypes";
-import axios from "axios";
+import { ClientConfiguration } from "abstracts/DemoConfigurationTypes";
+import { Filter } from "abstracts/FilterTypes";
 import { GetConfigurationWithDefaultValues } from "transformers/ConfigurationTransformer";
 
 /**
@@ -23,7 +18,7 @@ const getFilters = (): Promise<Filter[]> => {
  * @returns {Item[]} The list of items that will be transformed to match the UI.
  */
 const getItemsByIds = async (ids: string[]) => {
-  [];
+  return [];
 };
 
 const configuration: ClientConfiguration = {
@@ -33,28 +28,9 @@ const configuration: ClientConfiguration = {
   vantageSearchURL:
     "Enter an url to the Vantage API you want to fetch data from.",
   customerAPI: {
-    type: ECustomerAPIType.CDN_API,
-    itemURLPattern: "https://furniture-json.netlify.app/${id}.json",
-    filterURL: [
-      "https://657cc9321ade9138c146e61c--furniture-json.netlify.app/meta_category.json",
-      "https://657cc9321ade9138c146e61c--furniture-json.netlify.app/meta_numratings_bucket.json",
-      "https://657cc9321ade9138c146e61c--furniture-json.netlify.app/meta_rating_bucket.json",
-    ],
-    customFieldTransformer: {
-      imageSrc: {
-        fieldName: "noop_image_url",
-      },
-      description: { fieldName: "noop_description" },
-      title: { fieldName: "noop_title" },
-      externalUrl: { fieldName: "noop_url" },
-    },
-  },
-  filter: {
-    type: EFiltersType.MULTI_SELECT,
-  },
-  branding: {
-    originalSearchResultsURL:
-      "https://us.louisvuitton.com/eng-us/search/${query}",
+    type: ECustomerAPIType.CUSTOM_API,
+    getCustomerItems: getItemsByIds,
+    getFilters: getFilters,
   },
 };
 

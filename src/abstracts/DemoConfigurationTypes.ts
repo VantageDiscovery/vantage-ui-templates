@@ -6,12 +6,32 @@ import {
   VantageAPIConfiguration,
   VantageAPIConfigurationClient,
 } from "./CustomerApiTypes";
+import { ItemWithoutScore, OptionalMetaFields } from "./ItemTypes";
 
 type DeepPartial<T> = T extends object
   ? {
       [P in keyof T]?: DeepPartial<T[P]>;
     }
   : T;
+
+export type CustomFieldSpecification = {
+  fieldName: string;
+  transformer?: (element: string) => string;
+};
+
+export type CustomFieldTransformer = Partial<
+  Record<
+    keyof Omit<ItemWithoutScore, "meta"> | keyof OptionalMetaFields,
+    CustomFieldSpecification
+  >
+>;
+
+type CustomFieldTransformerClient = Partial<
+  Record<
+    keyof Omit<ItemWithoutScore, "meta"> | keyof OptionalMetaFields,
+    string | CustomFieldSpecification
+  >
+>;
 
 export enum EDemoTemplate {
   PUBLISHER,
@@ -34,6 +54,7 @@ export type ClientConfiguration = DeepPartial<
       | VantageAPIConfigurationClient
       | CustomAPIConfiguration
       | CDNAPIConfigurationClient;
+    customFieldTransformer?: CustomFieldTransformerClient;
   };
 
 export interface BrandingConfiguration {
@@ -44,7 +65,6 @@ export interface BrandingConfiguration {
   logoUrl: string;
   title?: string;
   searchPlaceholder?: string;
-  originalSearchResultsURL?: string;
   pageTitle: string;
 }
 
@@ -61,8 +81,10 @@ export interface DataConfiguration {
     | CDNAPIConfiguration;
   filter: FilterConfiguration;
   shingling: ShinglingConfiguration;
+  customFieldTransformer?: CustomFieldTransformer;
   pageNumber?: number;
   pageSize?: number;
+  originalSearchResultsURL?: string;
 }
 
 export interface FilterConfiguration {
@@ -71,7 +93,7 @@ export interface FilterConfiguration {
 }
 
 interface ShinglingConfiguration {
-  document_match_score_weight: string;
-  query_match_score_weight: string;
-  cosine_similarity_score_weight: string;
+  documentMatchScoreWeight: number;
+  queryMatchScoreWeight: number;
+  cosineSimilarityScoreWeight: number;
 }

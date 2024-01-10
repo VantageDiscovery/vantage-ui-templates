@@ -11,6 +11,7 @@ import { ItemWithoutScore } from "abstracts/ItemTypes";
 import { useMemo } from "react";
 import CdnAPIService from "services/CdnApiService";
 import { Filter } from "abstracts/FilterTypes";
+import { TransformItemDTOToView } from "transformers/VantageItemTransformers";
 
 interface CustomerAPIStrategy {
   getItemsByIds(ids: string[]): Promise<ItemWithoutScore[]>;
@@ -29,7 +30,7 @@ class VantageAPIStrategy implements CustomerAPIStrategy {
       vantageAPIConfig.accountPrefix || this.configuration.accountId,
       vantageAPIConfig.collectionPrefix ?? this.configuration.collectionIds[0],
       ids,
-      vantageAPIConfig.customFieldTransformer
+      this.configuration.customFieldTransformer
     );
   }
   getFilters() {
@@ -44,7 +45,16 @@ class CustomAPIStrategy implements CustomerAPIStrategy {
   getItemsByIds(ids: string[]) {
     const customAPIConfig = this.configuration
       .customerAPI as CustomAPIConfiguration;
-    return customAPIConfig.getCustomerItems(ids);
+    return customAPIConfig
+      .getCustomerItems(ids)
+      .then((items) =>
+        items.map((item) =>
+          TransformItemDTOToView(
+            item,
+            this.configuration.customFieldTransformer
+          )
+        )
+      );
   }
 
   getFilters() {
@@ -62,7 +72,7 @@ class CDNAPIStrategy implements CustomerAPIStrategy {
     return CdnAPIService.getItemsByIds(
       cdnAPIConfig.itemURLPattern,
       ids,
-      cdnAPIConfig.customFieldTransformer
+      this.configuration.customFieldTransformer
     );
   }
   getFilters() {

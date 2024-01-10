@@ -22,7 +22,6 @@ export interface SearchConfiguration {
   customerId: string;
   customerNamespace: string;
   apiKey: string;
-  shingling?: ShinglingParameters;
 }
 
 export interface SearchParameters {
@@ -35,15 +34,16 @@ export type SearchMoreLikeThisParameters = SearchParameters & {
   documentId: string;
 };
 
-export type SearchByQueryParameters = SearchParameters & {
-  filters: string;
-  query: string;
-};
+export type SearchByQueryParameters = SearchParameters &
+  ShinglingParameters & {
+    filters: string;
+    query: string;
+  };
 
 export type ShinglingParameters = {
-  cosine_similarity_score_weight: string;
-  query_match_score_weight: string;
-  document_match_score_weight: string;
+  cosineSimilarityScoreWeight: number;
+  queryMatchScoreWeight: number;
+  documentMatchScoreWeight: number;
 };
 
 export interface SearchParametersDTO {
@@ -58,9 +58,9 @@ export interface SearchParametersDTO {
     count: number;
   };
   shingling?: {
-    cosine_similarity_score_weight: string;
-    query_match_score_weight: string;
-    document_match_score_weight: string;
+    cosine_similarity_score_weight: number;
+    query_match_score_weight: number;
+    document_match_score_weight: number;
   };
   filter?: {
     boolean_filter: string;
