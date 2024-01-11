@@ -34,12 +34,12 @@ type CustomFieldTransformerClient = Partial<
 >;
 
 export enum EDemoTemplate {
-  PUBLISHER,
-  PRODUCT,
+  PUBLISHER = "publiser",
+  PRODUCT = "product",
 }
 
 export type Configuration = DataConfiguration & {
-  template: EDemoTemplate;
+  template: EDemoTemplate | string;
   branding: BrandingConfiguration;
 };
 

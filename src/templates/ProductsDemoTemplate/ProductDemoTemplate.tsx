@@ -83,12 +83,12 @@ const ProductDemoTemplate = ({
             <hr className="w-full" />
             <div className="w-full">{renderFilterSection()}</div>
             <hr className="w-full" />
-            <div className="flex justify-between w-full">
+            <div className="flex justify-between w-full line-clamp-1">
               {dataConfiguration.originalSearchResultsURL && (
-                <span className="flex px-24 w-full justify-start gap-2 items-center text-lg">
-                  <p className="font-medium">You searched: </p>
-                  <p>{variables.query}</p>a
-                  <p className="mt-0.5">
+                <span className="flex px-24 w-full justify-start gap-2 items-center line-clamp-1 text-lg">
+                  <p className="font-medium line-clamp-1">You searched: </p>
+                  <p className="line-clamp-1">{variables.query}</p>
+                  <p className="mt-0.5 line-clamp-1">
                     <Link
                       to={dataConfiguration.originalSearchResultsURL.replace(
                         "${query}",

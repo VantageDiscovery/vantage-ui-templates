@@ -2,13 +2,13 @@ import { Filter } from "./FilterTypes";
 import { ItemDTO, ItemWithoutScore } from "./ItemTypes";
 
 export enum ECustomerAPIType {
-  VANTAGE_API,
-  CUSTOM_API,
-  CDN_API,
+  VANTAGE_API = "ventage",
+  CUSTOM_API = "custom",
+  CDN_API = "cdn",
 }
 
 export type VantageAPIConfiguration = {
-  type: ECustomerAPIType.VANTAGE_API;
+  type: ECustomerAPIType.VANTAGE_API | "ventage";
   apiKey: string;
   apiPath: string;
   accountPrefix: string; // by default taken from account
@@ -17,12 +17,12 @@ export type VantageAPIConfiguration = {
 };
 
 export type CustomAPIConfiguration = {
-  type: ECustomerAPIType.CUSTOM_API;
+  type: ECustomerAPIType.CUSTOM_API | "custom";
   getFilters: () => Promise<Filter[]>;
   getCustomerItems: (ids: string[]) => Promise<ItemDTO[]>;
 };
 export type CDNAPIConfiguration = {
-  type: ECustomerAPIType.CDN_API;
+  type: ECustomerAPIType.CDN_API | "cdn";
   filterURL: string[];
   itemURLPattern: string;
   authHeader: string;
