@@ -15,16 +15,16 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "declaration": true,
-    "outDir": "src/types",
+    "outDir": "dist",
     "emitDeclarationOnly": true,
     "jsx": "react",
-    "types": ["cypress"],
     "noUnusedLocals": true,
-    "typeRoots": [ "node_modules/@types", "src/abstracts/index.ts"],
+    // "rootDir": "src",
+    "typeRoots": ["node_modules/@types", "src/abstracts/index.ts"],
     "paths": {
-      "vantage_demo_template_test": [ "dist/index.d.ts" ]
-    },
+      "vantage_demo_template_test": ["dist/index.d.ts"]
+    }
   },
-  "include": ["src", "tailwind.config.ts","./types/*"],
+  "include": ["src", "tailwind.config.ts", "./types/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

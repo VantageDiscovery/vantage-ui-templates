@@ -5,4 +5,6 @@ import { GetConfigurationWithDefaultValues } from "./transformers/ConfigurationT
 export function generateTampleteWithConfig(configuration: ClientConfiguration) {
   return Application(GetConfigurationWithDefaultValues(configuration));
 }
-export * from "abstracts";
+
+export * from "./abstracts";
+// export * from "abstracts";
