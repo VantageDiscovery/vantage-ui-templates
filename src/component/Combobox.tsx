@@ -7,12 +7,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import cn from "utils/cn";
 import {
   ChevronDownIcon,
   ChevronUpIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import cn from "utils/cn";
 
 interface ComboboxProperties {
   data: string[];

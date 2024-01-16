@@ -14,11 +14,17 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "declaration": true,
+    "outDir": "src/types",
+    "emitDeclarationOnly": true,
     "jsx": "react",
     "types": ["cypress"],
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "typeRoots": [ "node_modules/@types", "src/abstracts/index.ts"],
+    "paths": {
+      "vantage_demo_template_test": [ "dist/index.d.ts" ]
+    },
   },
-  "include": ["src", "tailwind.config.ts"],
+  "include": ["src", "tailwind.config.ts","./types/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

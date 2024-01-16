@@ -9,11 +9,11 @@ import React, {
   useMemo,
   useEffect,
 } from "react";
-import useUrlParams from "hooks/useUrlParams";
 import {
   CollectionSearchResult,
   DemoContextType,
 } from "abstracts/DemoContextTypes";
+import useUrlParams from "hooks/useUrlParams";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
 
