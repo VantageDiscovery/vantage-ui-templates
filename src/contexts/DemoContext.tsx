@@ -51,6 +51,7 @@ export const DemoProvider = ({
     useState<boolean>(false);
 
   const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
+    dataConfiguration.vantageSearchURL,
     dataConfiguration.collectionIds.map((collectionId: string) => ({
       apiKey: dataConfiguration.apiKey,
       customerId: dataConfiguration.accountId,
@@ -71,6 +72,7 @@ export const DemoProvider = ({
 
   const multiMLTSearchResults =
     VantageSearchQueries.useMoreLikeThisByConfiguration(
+      dataConfiguration.vantageSearchURL,
       dataConfiguration.collectionIds.map((collectionId: string) => ({
         apiKey: dataConfiguration.apiKey,
         customerId: dataConfiguration.accountId,

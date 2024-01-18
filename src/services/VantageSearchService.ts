@@ -6,23 +6,20 @@ import {
   SearchMoreLikeThisParameters,
 } from "abstracts/VantageTypes";
 import axios, { AxiosResponse } from "axios";
-import config from "config";
 import {
   TransformVantageSearchByQueryParametersViewToDTO,
   TransformVantageSearchResponseDTOToView,
   TransformVantageSearchMoreLikeThisParametersViewToDTO,
 } from "transformers/VantageProductTransformers";
 
-const MORE_LIKE_THIS_PATH = `${config.vantageSearchURL}/morelikethis`;
-const SEARCH_BY_QUERY_PATH = `${config.vantageSearchURL}/semantic`;
-
 const searchByQuery = async (
+  vantageSearchURL: string,
   searchConfiguration: SearchConfiguration,
   searchParameters: SearchByQueryParameters
 ): Promise<VantageSearchResponse> => {
   return axios
     .post(
-      `${SEARCH_BY_QUERY_PATH}/`,
+      `${vantageSearchURL}/semantic/`,
       TransformVantageSearchByQueryParametersViewToDTO(
         searchConfiguration,
         searchParameters
@@ -35,12 +32,13 @@ const searchByQuery = async (
 };
 
 const searchMoreLikeThis = async (
+  vantageSearchURL: string,
   searchConfiguration: SearchConfiguration,
   searchParameters: SearchMoreLikeThisParameters
 ): Promise<VantageSearchResponse> => {
   return axios
     .post(
-      `${MORE_LIKE_THIS_PATH}/`,
+      `${vantageSearchURL}/morelikethis/`,
       TransformVantageSearchMoreLikeThisParametersViewToDTO(
         searchConfiguration,
         searchParameters

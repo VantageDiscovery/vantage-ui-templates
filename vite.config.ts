@@ -19,7 +19,6 @@ export default defineConfig(({ mode }) => {
       dts({
         rollupTypes: true,
         include: ["src"],
-        compilerOptions: { composite: true },
       }),
     ],
     server: {

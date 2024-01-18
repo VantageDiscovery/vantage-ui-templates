@@ -45,6 +45,7 @@ const getItemsWithScores = async (
 };
 
 const useSearchByConfiguration = (
+  vantageSearchURL: string,
   searchConfigurations: SearchConfiguration[],
   searchParameters: SearchByQueryParameters,
   customerDataHandler: CustomerDataHandler
@@ -58,6 +59,7 @@ const useSearchByConfiguration = (
       queryFn: async () => {
         const response: VantageSearchResponse =
           await VantageSearchService.searchByQuery(
+            vantageSearchURL,
             searchConfiguration,
             searchParameters
           );
@@ -80,6 +82,7 @@ const useSearchByConfiguration = (
 };
 
 const useMoreLikeThisByConfiguration = (
+  vantageSearchURL: string,
   searchConfigurations: SearchConfiguration[],
   searchParameters: SearchMoreLikeThisParameters,
   customerDataHandler: CustomerDataHandler
@@ -94,6 +97,7 @@ const useMoreLikeThisByConfiguration = (
       queryFn: async () => {
         const response: VantageSearchResponse =
           await VantageSearchService.searchMoreLikeThis(
+            vantageSearchURL,
             searchConfiguration,
             searchParameters
           );
