@@ -1,5 +1,15 @@
 # react-quick-start
 
+Start using template as npm package:
+  1) run command: ``` pnpm build ```- that will create dist folder with .js modules and index.d.ts with declarations for ts types
+  2) run command:``` npm link ```- locally link our package 
+  3) in repository you want to use our package run command:``` npm link vantage_demo_template_test@0.0.0 ```
+  4) import function/types from vantage_demo_templete_test
+  5) for fast render demo use generateTempleteWithConfig(config) function
+
+Everythink exported in index.ts file will be exposed in npm package   
+
+
 few examples of config.ts, just replace accountId,collectionId,apiKey and vantageSearchURL:
 
 VANTAGE API TYPE:
