@@ -13,18 +13,16 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "declaration": true,
-    "outDir": "dist",
-    "emitDeclarationOnly": true,
+    "noEmit": true,
     "jsx": "react",
     "noUnusedLocals": true,
-    // "rootDir": "src",
-    "typeRoots": ["node_modules/@types", "src/abstracts/index.ts"],
+    "typeRoots": ["node_modules/@types"],
     "paths": {
-      "vantage_demo_template_test": ["dist/index.d.ts"]
+      "vantage_demo_template_test": ["src"]
     }
   },
-  "include": ["src", "tailwind.config.ts", "./types/*"],
+  "include": ["src", "tailwind.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

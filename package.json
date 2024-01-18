@@ -1,13 +1,12 @@
 {
   "name": "vantage_demo_template_test",
-  "version": "0.1.8",
+  "version": "0.0.0",
   "description": "",
   "main": "./dist/vantage_demo_template_test.umd.js",
   "module": "./dist/vantage_demo_template_test.es.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "link": "npm link",
-    "rollup_build": "tsc && rollup -c",
     "build": "tsc && vite build",
     "build-storybook": "build-storybook",
     "dev": "vite --port 3000",

@@ -6,16 +6,22 @@ import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import * as packageJson from "./package.json";
-import rollupconfig from "./rollup.config.mjs";
-import typescript from "@rollup/plugin-typescript";
+import dts from "vite-plugin-dts";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
-    // plugins: [react(), tsconfigPaths(), dts({ rollupTypes: true })],
-    plugins: [react(), tsconfigPaths(), rollupconfig],
+    plugins: [
+      react(),
+      tsconfigPaths(),
+      dts({
+        rollupTypes: true,
+        include: ["src"],
+        compilerOptions: { composite: true },
+      }),
+    ],
     server: {
       port: 3000,
     },

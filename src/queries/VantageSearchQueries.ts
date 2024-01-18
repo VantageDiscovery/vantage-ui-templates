@@ -3,15 +3,15 @@ import {
   CustomerDataHandler,
   Item,
   ItemWithoutScore,
-} from "abstracts/ItemTypes";
+} from "../abstracts/ItemTypes";
 import {
   SearchByQueryParameters,
   SearchMoreLikeThisParameters,
   SearchConfiguration,
   VantageSearchResponse,
   VantageSearchResult,
-} from "abstracts/VantageTypes";
-import VantageSearchService from "services/VantageSearchService";
+} from "../abstracts/VantageTypes";
+import VantageSearchService from "../services/VantageSearchService";
 
 const queryKeys = {
   seachMoreLikeThis: (
@@ -44,14 +44,6 @@ const getItemsWithScores = async (
   return customerItemsWithScores;
 };
 
-/**
- * Performs Vantage Search then it performs getItemsByIds from customerDataHandler.
- *
- * @param searchConfiguration Search configuration that is customer only related.
- * @param searchParameters A parameters send to Broker to retrieve results.
- * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
- * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
- */
 const useSearchByConfiguration = (
   searchConfigurations: SearchConfiguration[],
   searchParameters: SearchByQueryParameters,
@@ -87,14 +79,6 @@ const useSearchByConfiguration = (
   });
 };
 
-/**
- * Performs Vantage More Like This and then it performs getItemsByIds from customerDataHandler.
- *
- * @param searchConfiguration Search configuration that is customer only related.
- * @param searchParameters A parameters send to Broker to retrieve results.
- * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
- * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
- */
 const useMoreLikeThisByConfiguration = (
   searchConfigurations: SearchConfiguration[],
   searchParameters: SearchMoreLikeThisParameters,
@@ -137,6 +121,23 @@ const useMoreLikeThisByConfiguration = (
   });
 
 export const VantageSearchQueries = {
+  /**
+   * Performs Vantage Search then it performs getItemsByIds from customerDataHandler.
+   *
+   * @param searchConfiguration Search configuration that is customer only related.
+   * @param searchParameters A parameters send to Broker to retrieve results.
+   * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
+   * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
+   */
+
   useSearchByConfiguration,
+  /**
+   * Performs Vantage More Like This and then it performs getItemsByIds from customerDataHandler.
+   *
+   * @param searchConfiguration Search configuration that is customer only related.
+   * @param searchParameters A parameters send to Broker to retrieve results.
+   * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
+   * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
+   */
   useMoreLikeThisByConfiguration,
 };

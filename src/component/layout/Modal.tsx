@@ -1,3 +1,4 @@
+import { ModalProperties } from "abstracts/LayoutTypes";
 import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
@@ -6,12 +7,7 @@ const Modal = ({
   children,
   className,
   onCloseModal,
-}: {
-  isVisible: boolean;
-  children: JSX.Element;
-  className?: string;
-  onCloseModal: () => void;
-}): JSX.Element => {
+}: ModalProperties): JSX.Element => {
   const modalContentReference = useRef<HTMLElement>(null);
 
   const closeModalOnOutsideClick = (event: MouseEvent) => {

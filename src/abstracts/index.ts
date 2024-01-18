@@ -5,3 +5,4 @@ export * from "./FilterTypes";
 export * from "./ParamsType";
 export * from "./ItemTypes";
 export * from "./VantageTypes";
+export * from "./LayoutTypes";

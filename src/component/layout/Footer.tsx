@@ -1,4 +1,4 @@
-import VantageIcon from "icons/VantageIcon";
+import VantageIcon from "../../icons/VantageIcon";
 import React from "react";
 
 const Footer = () => {

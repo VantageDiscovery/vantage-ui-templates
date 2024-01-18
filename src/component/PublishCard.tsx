@@ -6,17 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Tooltip from "./Tooltip";
 import { getFontColorBasedOnBackground } from "utils/colorUtils";
-
-type CardProperties = {
-  id: string;
-  title: string;
-  subtitle?: string;
-  description: string;
-  imageUrl: string;
-  redirectUrl: string;
-  tooltipContent: string;
-  accuracy: number;
-};
+import { PublishCardProperties } from "abstracts/CardTypes";
 
 // TODO: This is duplicated from ProductCard and should be merged into a single component
 const TooltipContent = ({
@@ -45,13 +35,7 @@ const PublishCard = ({
   onMoreLikeThis,
   primaryColor,
   secondaryColor,
-}: {
-  cardProperties: CardProperties;
-  isDeveloperView: boolean;
-  onMoreLikeThis?: (documentId: string) => void;
-  primaryColor: string;
-  secondaryColor: string;
-}) => {
+}: PublishCardProperties) => {
   return (
     <article className="flex w-full h-[200px] shadow-md rounded-lg bg-white border-[1px]">
       <div className="w-1/5">

@@ -21,6 +21,28 @@ const queryClient = new QueryClient({
   },
 });
 
+export const VantageWrapper = ({
+  configuration,
+  children,
+}: {
+  configuration: Configuration;
+  children: React.JSX.Element;
+}) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <QueryParamProvider adapter={ReactRouter6Adapter}>
+          <DemoProvider configuration={configuration}>
+            <Routes>
+              <Route path="*" element={children} />
+            </Routes>
+          </DemoProvider>
+        </QueryParamProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
+
 export const Application = (configuration: Configuration) => {
   const DemoTemplateToPageTemplate: Record<EDemoTemplate, JSX.Element> = {
     [EDemoTemplate.PRODUCT]: (
@@ -32,20 +54,9 @@ export const Application = (configuration: Configuration) => {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <QueryParamProvider adapter={ReactRouter6Adapter}>
-          <DemoProvider configuration={configuration}>
-            <Routes>
-              <Route
-                path="*"
-                element={DemoTemplateToPageTemplate[configuration.template]}
-              />
-            </Routes>
-          </DemoProvider>
-        </QueryParamProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <VantageWrapper configuration={configuration}>
+      {DemoTemplateToPageTemplate[configuration.template]}
+    </VantageWrapper>
   );
 };
 

@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useMemo } from "react";
 import Combobox from "../Combobox";
 import cn from "utils/cn";
-import { UseFiltersType } from "abstracts/FilterTypes";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { ProductSearchProperies } from "abstracts";
 
 const ProductSearchSection = ({
   searchQuery,
@@ -11,14 +11,7 @@ const ProductSearchSection = ({
   useFiltersHook,
   isSingleFilter,
   searchPlaceholder = "Search for anything...",
-}: {
-  searchQuery: string;
-  onSearchPerformed: () => void;
-  setSearchQuery: (value: string) => void;
-  useFiltersHook: UseFiltersType;
-  isSingleFilter: boolean;
-  searchPlaceholder?: string;
-}) => {
+}: ProductSearchProperies) => {
   const { availableFilters, activeFilters, toggleFilters, clearActiveFilters } =
     useFiltersHook;
 

@@ -1,3 +1,4 @@
+import { ServiceResponseWrapperProperties } from "abstracts";
 import NoResultsIllustration from "icons/NoResultsIllustration";
 import SpinnerIcon from "icons/SpinnerIcon";
 import React from "react";
@@ -10,15 +11,7 @@ const ServerResponseWrapper = ({
   children,
   loadingMessage = "Loading",
   loadingSpinnerColor = "black",
-}: {
-  isLoading: boolean;
-  isError: boolean;
-  isSuccess: boolean;
-  isNoResults: boolean;
-  children: JSX.Element;
-  loadingMessage?: string;
-  loadingSpinnerColor?: string;
-}): JSX.Element => {
+}: ServiceResponseWrapperProperties): JSX.Element => {
   return (
     <>
       {isLoading && (

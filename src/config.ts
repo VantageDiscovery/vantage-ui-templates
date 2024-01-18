@@ -1,10 +1,6 @@
-import {
-  ClientConfiguration,
-  EDemoTemplate,
-} from "./abstracts/DemoConfigurationTypes";
-import { EFiltersType, Filter } from "./abstracts/FilterTypes";
+import { ClientConfiguration } from "./abstracts/DemoConfigurationTypes";
+import { Filter } from "./abstracts/FilterTypes";
 import { ItemDTO } from "./abstracts/ItemTypes";
-import axios from "axios";
 import { GetConfigurationWithDefaultValues } from "./transformers/ConfigurationTransformer";
 import { ECustomerAPIType } from "abstracts/CustomerApiTypes";
 
@@ -24,39 +20,19 @@ const getFilters = (): Promise<Filter[]> => {
  * @returns {Item[]} The list of items that will be transformed to match the UI.
  */
 const getItemsByIds = async (ids: string[]): Promise<ItemDTO[]> => {
-  return axios
-    .get(`https://demo-api.dev-a.dev.vantagediscovery.com/api/v1/items`, {
-      params: {
-        ids,
-        clientId: "smartcat",
-        clientNamespace: "bookopolis-vukan",
-      },
-    })
-    .then((response: any) => response.data);
+  return [];
 };
 
 const configuration: ClientConfiguration = {
-  template: EDemoTemplate.PRODUCT,
-  accountId: "smartcat",
-  collectionId: ["bookopolis-vukan"],
-  apiKey: "$2a$10$gEKEUssU5o1rpOcYOf/V..ruQZTEmiiNcV1ENkBQdgXQX8loQwXRe",
-  vantageSearchURL: "https://api.dev-a.dev.vantagediscovery.com/v1/search",
+  accountId: "Enter your Vantage Account ID.",
+  collectionId: "Enter a list of Vantage Collection IDs to fetch data from.",
+  apiKey: "Enter your Vantage API Key.",
+  vantageSearchURL:
+    "Enter an url to the Vantage API you want to fetch data from.",
   customerAPI: {
     type: ECustomerAPIType.CUSTOM_API,
     getCustomerItems: getItemsByIds,
     getFilters: getFilters,
-  },
-  defaultSearchQuery: "Wonderland",
-  branding: {
-    logoUrl: "bookopolis/icons/bookopolis.png",
-    title: "Empower your search!",
-    colors: {
-      primary: "#F3E1C459",
-      secondary: "#EC7F00",
-    },
-  },
-  filter: {
-    type: EFiltersType.MULTI_SELECT,
   },
 };
 
