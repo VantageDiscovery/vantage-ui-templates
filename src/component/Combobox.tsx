@@ -235,6 +235,7 @@ const Combobox = ({
             comboBoxState.isDropDownOpen ? "close" : "open"
           }-dropdown`}
           tabIndex={0}
+          type="button"
           onClick={(event) => {
             event.stopPropagation();
             if (comboBoxState.isDropDownOpen) {
