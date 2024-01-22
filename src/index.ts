@@ -18,11 +18,9 @@ import {
   ServiceResponseWrapperProperties,
   UseCustomerAPIType,
   UseFiltersType,
-  // eslint-disable-next-line unicorn/prevent-abbreviations
-  UseUrlParamsType,
+  UseUrlParametersType,
 } from "./abstracts";
-// eslint-disable-next-line unicorn/prevent-abbreviations
-import useUrlParams from "./hooks/useUrlParams";
+import useUrlParameters from "./hooks/useUrlParameters";
 import useToggle from "./hooks/useToggle";
 import SingleFilterSection from "./component/filter/SingleFilterSection";
 import MultiFilterSection from "./component/filter/MultiFilterSection";
@@ -49,6 +47,7 @@ export const generateTempleteWithConfig = (
 
 /**
  * A React component that wraps children with a modified configuration.
+ * Mandatory when using our useDemoHook or VantageSearchQueries
  * @param {Object} props - The component props.
  * @param {ClientConfiguration} props.configuration - The client configuration.
  * @param {React.JSX.Element} props.children - The child elements to be wrapped.
@@ -69,7 +68,7 @@ export const VantageWrapper = ({
 };
 
 /**
- * Custom hook for using the Customer API for modify specified data configuration to use our customer api .
+ * Custom hook for using the Customer API for modifying specified data configuration to use our customer api.
  * @param {Object} props - The hook props.
  * @param {DataConfiguration} props.dataConfiguration - The data configuration.
  * @returns {UseCustomerAPIType} - The result of the useCustomerAPI hook getItemsByIds: (id: string[]) => Promise<ItemWithoutScore[]>;
@@ -116,8 +115,8 @@ export const useUrlParamsHook = ({
   dataConfiguration: DataConfiguration;
   search?: string;
   documentId?: string;
-}): UseUrlParamsType => {
-  return useUrlParams({
+}): UseUrlParametersType => {
+  return useUrlParameters({
     dataConfiguration,
     search,
     documentId,

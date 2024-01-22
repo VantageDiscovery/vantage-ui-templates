@@ -1,7 +1,6 @@
-/* eslint-disable unicorn/prevent-abbreviations */
 import { DataConfiguration } from "./DemoConfigurationTypes";
 
-export type UseUrlParamsType = {
+export type UseUrlParametersType = {
   dataConfiguration: DataConfiguration;
   search: string;
   documentId: string;

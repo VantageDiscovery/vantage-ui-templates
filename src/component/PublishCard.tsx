@@ -33,7 +33,6 @@ const PublishCard = ({
   cardProperties,
   isDeveloperView,
   onMoreLikeThis,
-  primaryColor,
   secondaryColor,
 }: PublishCardProperties) => {
   return (

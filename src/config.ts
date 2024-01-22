@@ -19,6 +19,7 @@ const getFilters = (): Promise<Filter[]> => {
  * @param ids String array of item ids retrieved from Vantage database to get the actual Items.
  * @returns {Item[]} The list of items that will be transformed to match the UI.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const getItemsByIds = async (ids: string[]): Promise<ItemDTO[]> => {
   return [];
 };

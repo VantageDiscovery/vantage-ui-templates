@@ -13,7 +13,7 @@ import {
   CollectionSearchResult,
   DemoContextType,
 } from "abstracts/DemoContextTypes";
-import useUrlParams from "hooks/useUrlParams";
+import useUrlParams from "hooks/useUrlParameters";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
 
