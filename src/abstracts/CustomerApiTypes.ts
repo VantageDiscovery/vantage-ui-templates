@@ -7,6 +7,8 @@ export enum ECustomerAPIType {
   CDN_API = "cdn",
 }
 
+export type ECustomerString = "vantage" | "custom" | "cdn";
+
 export type VantageAPIConfiguration = {
   type: ECustomerAPIType.VANTAGE_API;
   apiKey: string;

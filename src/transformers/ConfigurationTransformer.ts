@@ -1,9 +1,10 @@
-import { ECustomerAPIType } from "abstracts/CustomerApiTypes";
+import { ECustomerAPIType, ECustomerString } from "abstracts/CustomerApiTypes";
 import {
   ClientConfiguration,
   Configuration,
   CustomFieldTransformer,
   EDemoTemplate,
+  ETemplateString,
 } from "abstracts/DemoConfigurationTypes";
 import { EFiltersType } from "abstracts/FilterTypes";
 
@@ -54,7 +55,7 @@ function assignDefined(target: object, source: object) {
   return target;
 }
 
-const useEnumsAPIType: Record<string, ECustomerAPIType> = {
+const useEnumsAPIType: Record<ECustomerString, ECustomerAPIType> = {
   ["vantage"]: ECustomerAPIType.VANTAGE_API,
   ["custom"]: ECustomerAPIType.CUSTOM_API,
   ["cdn"]: ECustomerAPIType.CDN_API,
@@ -89,7 +90,7 @@ const TransformCustomerAPICustomFieldsToSpecification = (
   };
 };
 
-const useEnumsTemplate: Record<string, EDemoTemplate> = {
+const useEnumsTemplate: Record<ETemplateString, EDemoTemplate> = {
   ["product"]: EDemoTemplate.PRODUCT,
   ["publisher"]: EDemoTemplate.PUBLISHER,
 };
@@ -111,9 +112,9 @@ export const GetConfigurationWithDefaultValues = (
     collectionIds = [collectionIds];
   }
 
-  const cofig = TransformStringFieldsToEnums(customerConfiguration);
+  const config = TransformStringFieldsToEnums(customerConfiguration);
 
-  const configuration = TransformCustomerAPICustomFieldsToSpecification(cofig);
+  const configuration = TransformCustomerAPICustomFieldsToSpecification(config);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   return assignDefined(DEFAULT_CONFIGURATION, {

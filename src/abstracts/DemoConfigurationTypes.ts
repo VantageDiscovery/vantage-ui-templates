@@ -39,6 +39,8 @@ export enum EDemoTemplate {
   PRODUCT = "product",
 }
 
+export type ETemplateString = "product" | "publisher";
+
 export type Configuration = DataConfiguration & {
   template: EDemoTemplate;
   branding: BrandingConfiguration;
@@ -51,7 +53,7 @@ export type ClientConfiguration = DeepPartial<
     Configuration,
     "accountId" | "apiKey" // mandatory fields
   > & { collectionId: string | string[] } & {
-    template?: EDemoTemplate | string;
+    template?: EDemoTemplate | ETemplateString;
   } & {
     customerAPI:
       | VantageAPIConfigurationClient
