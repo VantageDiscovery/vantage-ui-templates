@@ -1,9 +1,10 @@
-import { ECustomerAPIType } from "abstracts/CustomerApiTypes";
+import { ECustomerAPIType, ECustomerString } from "abstracts/CustomerApiTypes";
 import {
   ClientConfiguration,
   Configuration,
   CustomFieldTransformer,
   EDemoTemplate,
+  ETemplateString,
 } from "abstracts/DemoConfigurationTypes";
 import { EFiltersType } from "abstracts/FilterTypes";
 
@@ -23,7 +24,7 @@ const DEFAULT_CONFIGURATION = {
   filter: {
     type: EFiltersType.SINGLE_SELECT,
   },
-  customerApiType: {
+  customerAPI: {
     getFilters: () => Promise.resolve([]),
   },
   shingling: {
@@ -54,10 +55,19 @@ function assignDefined(target: object, source: object) {
   return target;
 }
 
+const useEnumsAPIType: Record<ECustomerString, ECustomerAPIType> = {
+  ["vantage"]: ECustomerAPIType.VANTAGE_API,
+  ["custom"]: ECustomerAPIType.CUSTOM_API,
+  ["cdn"]: ECustomerAPIType.CDN_API,
+};
+
 const TransformCustomerAPICustomFieldsToSpecification = (
   configuration: ClientConfiguration
 ): ClientConfiguration => {
-  if (configuration.customerAPI.type === ECustomerAPIType.CUSTOM_API) {
+  if (
+    useEnumsAPIType[configuration.customerAPI.type] ===
+    ECustomerAPIType.CUSTOM_API
+  ) {
     return configuration;
   }
   if (!configuration.customFieldTransformer) {
@@ -80,6 +90,20 @@ const TransformCustomerAPICustomFieldsToSpecification = (
   };
 };
 
+const useEnumsTemplate: Record<ETemplateString, EDemoTemplate> = {
+  ["product"]: EDemoTemplate.PRODUCT,
+  ["publisher"]: EDemoTemplate.PUBLISHER,
+};
+
+const TransformStringFieldsToEnums = (
+  configuration: ClientConfiguration
+): ClientConfiguration => {
+  return {
+    ...configuration,
+    template: useEnumsTemplate[configuration.template ?? "product"],
+  };
+};
+
 export const GetConfigurationWithDefaultValues = (
   customerConfiguration: ClientConfiguration
 ): Configuration => {
@@ -87,9 +111,10 @@ export const GetConfigurationWithDefaultValues = (
   if (!Array.isArray(collectionIds)) {
     collectionIds = [collectionIds];
   }
-  const configuration = TransformCustomerAPICustomFieldsToSpecification(
-    customerConfiguration
-  );
+
+  const config = TransformStringFieldsToEnums(customerConfiguration);
+
+  const configuration = TransformCustomerAPICustomFieldsToSpecification(config);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   return assignDefined(DEFAULT_CONFIGURATION, {

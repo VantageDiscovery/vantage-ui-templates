@@ -81,9 +81,15 @@ class CDNAPIStrategy implements CustomerAPIStrategy {
   }
 }
 
+const useEnums: Record<string, ECustomerAPIType> = {
+  ["vantage"]: ECustomerAPIType.VANTAGE_API,
+  ["custom"]: ECustomerAPIType.CUSTOM_API,
+  ["cdn"]: ECustomerAPIType.CDN_API,
+};
+
 const CustomerAPITypeToStrategy: (
   configuration: DataConfiguration
-) => Record<ECustomerAPIType, CustomerAPIStrategy> = (
+) => Record<ECustomerAPIType | string, CustomerAPIStrategy> = (
   config: DataConfiguration
 ) => ({
   [ECustomerAPIType.VANTAGE_API]: new VantageAPIStrategy(config),
@@ -100,8 +106,12 @@ const useCustomerAPI = ({
     return CustomerAPITypeToStrategy(dataConfiguration);
   }, [dataConfiguration]);
 
+  const strategiesType = useMemo(() => {
+    return useEnums[dataConfiguration.customerAPI.type];
+  }, [dataConfiguration]);
+
   const activeStrategy = useMemo(() => {
-    return strategies[dataConfiguration.customerAPI.type];
+    return strategies[strategiesType];
   }, [strategies]);
 
   const getItemsByIds = (ids: string[]): Promise<ItemWithoutScore[]> => {

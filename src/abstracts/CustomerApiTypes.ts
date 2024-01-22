@@ -2,10 +2,12 @@ import { Filter } from "./FilterTypes";
 import { ItemDTO, ItemWithoutScore } from "./ItemTypes";
 
 export enum ECustomerAPIType {
-  VANTAGE_API,
-  CUSTOM_API,
-  CDN_API,
+  VANTAGE_API = "vantage",
+  CUSTOM_API = "custom",
+  CDN_API = "cdn",
 }
+
+export type ECustomerString = "vantage" | "custom" | "cdn";
 
 export type VantageAPIConfiguration = {
   type: ECustomerAPIType.VANTAGE_API;
@@ -39,13 +41,25 @@ export type UseCustomerAPIType = {
 };
 
 export type VantageAPIConfigurationClient = Partial<
-  Omit<VantageAPIConfiguration, "customFieldTransformer">
+  Omit<VantageAPIConfiguration, "type">
 > &
   // Mandatory fields
-  Pick<VantageAPIConfiguration, "type" | "apiKey" | "apiPath">;
+  Pick<VantageAPIConfiguration, "apiKey" | "apiPath"> & {
+    type: "vantage" | ECustomerAPIType.VANTAGE_API;
+  };
+
+export type CustomerAPIConfigurationClient = Partial<
+  Omit<CustomAPIConfiguration, "type">
+> &
+  // Mandatory fields
+  Pick<CustomAPIConfiguration, "getCustomerItems" | "getFilters"> & {
+    type: ECustomerAPIType.CUSTOM_API | "custom";
+  };
 
 export type CDNAPIConfigurationClient = Partial<
-  Omit<CDNAPIConfiguration, "customFieldTransformer">
+  Omit<CDNAPIConfiguration, "type">
 > &
   // Mandatory fields
-  Pick<CDNAPIConfiguration, "itemURLPattern" | "filterURL">;
+  Pick<CDNAPIConfiguration, "itemURLPattern" | "filterURL"> & {
+    type: "cdn" | ECustomerAPIType.CDN_API;
+  };

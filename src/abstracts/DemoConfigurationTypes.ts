@@ -3,6 +3,7 @@ import {
   CDNAPIConfiguration,
   CDNAPIConfigurationClient,
   CustomAPIConfiguration,
+  CustomerAPIConfigurationClient,
   VantageAPIConfiguration,
   VantageAPIConfigurationClient,
 } from "./CustomerApiTypes";
@@ -34,9 +35,11 @@ type CustomFieldTransformerClient = Partial<
 >;
 
 export enum EDemoTemplate {
-  PUBLISHER,
-  PRODUCT,
+  PUBLISHER = "publisher",
+  PRODUCT = "product",
 }
+
+export type ETemplateString = "product" | "publisher";
 
 export type Configuration = DataConfiguration & {
   template: EDemoTemplate;
@@ -44,15 +47,17 @@ export type Configuration = DataConfiguration & {
 };
 
 export type ClientConfiguration = DeepPartial<
-  Omit<Configuration, "collectionIds" | "customerAPI">
+  Omit<Configuration, "collectionIds" | "customerAPI" | "template">
 > &
   Pick<
     Configuration,
     "accountId" | "apiKey" // mandatory fields
   > & { collectionId: string | string[] } & {
+    template?: EDemoTemplate | ETemplateString;
+  } & {
     customerAPI:
       | VantageAPIConfigurationClient
-      | CustomAPIConfiguration
+      | CustomerAPIConfigurationClient
       | CDNAPIConfigurationClient;
     customFieldTransformer?: CustomFieldTransformerClient;
   };

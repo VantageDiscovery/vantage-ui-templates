@@ -36,5 +36,4 @@ const configuration: ClientConfiguration = {
     getFilters: getFilters,
   },
 };
-
 export default GetConfigurationWithDefaultValues(configuration);
