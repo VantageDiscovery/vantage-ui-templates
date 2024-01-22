@@ -25,24 +25,15 @@ const getItemsByIds = async (ids: string[]): Promise<ItemDTO[]> => {
 };
 
 const configuration: ClientConfiguration = {
-  template: "product",
-  accountId: "smartcat",
-  collectionId: ["bookopolis-vukan"],
-  apiKey: "$2a$10$gEKEUssU5o1rpOcYOf/V..ruQZTEmiiNcV1ENkBQdgXQX8loQwXRe",
-  vantageSearchURL: "https://api.dev-a.dev.vantagediscovery.com/v1/search",
+  accountId: "Enter your Vantage Account ID.",
+  collectionId: "Enter a list of Vantage Collection IDs to fetch data from.",
+  apiKey: "Enter your Vantage API Key.",
+  vantageSearchURL:
+    "Enter an url to the Vantage API you want to fetch data from.",
   customerAPI: {
-    type: "custom",
+    type: ECustomerAPIType.CUSTOM_API,
     getCustomerItems: getItemsByIds,
     getFilters: getFilters,
   },
-  customFieldTransformer: {
-    imageSrc: {
-      fieldName: "noopMeta.image_url",
-    },
-    description: { fieldName: "noop_description" },
-    title: { fieldName: "noop_title" },
-    externalUrl: { fieldName: "noop_url" },
-  },
 };
-
 export default GetConfigurationWithDefaultValues(configuration);
