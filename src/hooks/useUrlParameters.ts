@@ -1,12 +1,11 @@
-/* eslint-disable unicorn/prevent-abbreviations */
+import { UseUrlParametersType } from "../abstracts/UrlParametersType";
 import { DataConfiguration } from "abstracts/DemoConfigurationTypes";
-import { UseUrlParamsType } from "abstracts/ParamsType";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { GetConfigurationWithParameterValues } from "transformers/QueryParametersTransformer";
 import { useQueryParam, StringParam } from "use-query-params";
 
-const useUrlParams = ({
+const useUrlParameters = ({
   dataConfiguration,
   search,
   documentId,
@@ -14,9 +13,9 @@ const useUrlParams = ({
   dataConfiguration: DataConfiguration;
   search?: string;
   documentId?: string;
-}): UseUrlParamsType => {
+}): UseUrlParametersType => {
   const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const searchParameters = new URLSearchParams(location.search);
 
   const [searchUrl, setSearchUrl] = useQueryParam("search", StringParam);
   const [documentIdUrl, setDocumentIdUrl] = useQueryParam(
@@ -43,11 +42,11 @@ const useUrlParams = ({
   return {
     dataConfiguration: GetConfigurationWithParameterValues(
       dataConfiguration,
-      searchParams
+      searchParameters
     ),
     search: searchUrl ?? "",
     documentId: documentIdUrl ?? "",
   };
 };
 
-export default useUrlParams;
+export default useUrlParameters;

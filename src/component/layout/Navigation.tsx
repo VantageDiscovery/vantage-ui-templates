@@ -1,15 +1,6 @@
+import { NavigationProperties } from "abstracts/LayoutTypes";
+import VantageLogoDark from "icons/VantageLogoDark";
 import React from "react";
-
-type NavigationProperties = {
-  backgroundColor: string; // theme color
-  backgroundLeftColorOnAnimation: string;
-  backgroundRightColorOnAnimation: string;
-  vantageLogoColor: string; // color to be on animation finish
-  vantageLogoColorOnAnimation?: string; // color to be on animation
-  clientLogoColor?: string; // color to be on animation finish
-  clientLogoColorOnAnimation?: string; // color to be on animation
-  clientLogoUrl: string;
-};
 
 const Navigation = ({
   backgroundColor,
@@ -55,19 +46,9 @@ const Navigation = ({
           className="flex w-full absolute h-full justify-end pr-20 items-center animate-slide-in right-0"
           style={rightLogoStyle}
         >
-          <img
-            src={
-              new URL("../../icons/vantageLogoDark.png", import.meta.url).href
-            }
-            alt="Vantage logo"
-            className={`fill-${vantageLogoColor} w-48 h-auto animate-appear-vantage-logo`}
-            style={
-              {
-                "--bg-start-color":
-                  vantageLogoColorOnAnimation || vantageLogoColor,
-                "--bg-end-color": vantageLogoColor,
-              } as React.CSSProperties
-            }
+          <VantageLogoDark
+            vantageLogoColor={vantageLogoColor}
+            vantageLogoColorOnAnimation={vantageLogoColorOnAnimation}
           />
         </div>
       </div>

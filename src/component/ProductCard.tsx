@@ -4,21 +4,8 @@ import {
   DocumentMagnifyingGlassIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
-import { Item } from "abstracts/ItemTypes";
 import { getFontColorBasedOnBackground } from "utils/colorUtils";
-
-export type ProductCardProperties = Item & {
-  primaryColor: string;
-  secondaryColor: string;
-  onMoreLikeThisClicked: () => void;
-  infoContent: string;
-  redirectUrl?: string;
-  subtitle?: string;
-  // bottomLeftLabel?: number;
-  bottomRightLabel?: string;
-  isDeveloperView?: boolean;
-  searchAccuracy?: number;
-};
+import { ProductCardProperties } from "abstracts/CardTypes";
 
 const TooltipContent = ({ text }: { text: string }): JSX.Element => (
   <div className="flex flex-col gap-2 p-2 min-w-sm">

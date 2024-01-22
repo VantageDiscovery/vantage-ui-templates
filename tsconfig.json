@@ -13,11 +13,15 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
+    "declaration": true,
     "noEmit": true,
     "jsx": "react",
-    "types": ["cypress"],
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "typeRoots": ["node_modules/@types"],
+    "paths": {
+      "vantage_demo_template_test": ["src"]
+    }
   },
   "include": ["src", "tailwind.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]

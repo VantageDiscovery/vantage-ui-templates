@@ -1,23 +1,17 @@
 import React from "react";
 import "./App.scss";
-import config from "config";
 import { DemoProvider } from "./contexts/DemoContext";
-import ProductDemoTemplate from "templates/ProductsDemoTemplate/ProductDemoTemplate";
-import PublisherDemoTemplate from "templates/PublisherDemoTemplate/PublisherDemoTemplate";
-import { EDemoTemplate } from "abstracts/DemoConfigurationTypes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryParamProvider } from "use-query-params";
 import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
-
-const DemoTemplateToPageTemplate: Record<EDemoTemplate, JSX.Element> = {
-  [EDemoTemplate.PRODUCT]: (
-    <ProductDemoTemplate brandingConfiguration={config.branding} />
-  ),
-  [EDemoTemplate.PUBLISHER]: (
-    <PublisherDemoTemplate brandingConfiguration={config.branding} />
-  ),
-};
+import config from "./config";
+import {
+  Configuration,
+  EDemoTemplate,
+} from "./abstracts/DemoConfigurationTypes";
+import ProductDemoTemplate from "./templates/ProductsDemoTemplate/ProductDemoTemplate";
+import PublisherDemoTemplate from "./templates/PublisherDemoTemplate/PublisherDemoTemplate";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,23 +21,47 @@ const queryClient = new QueryClient({
   },
 });
 
-function App() {
+export const VantageWrapper = ({
+  configuration,
+  children,
+}: {
+  configuration: Configuration;
+  children: React.JSX.Element;
+}) => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <QueryParamProvider adapter={ReactRouter6Adapter}>
-          <DemoProvider configuration={config}>
+          <DemoProvider configuration={configuration}>
             <Routes>
-              <Route
-                path="*"
-                element={DemoTemplateToPageTemplate[config.template]}
-              />
+              <Route path="*" element={children} />
             </Routes>
           </DemoProvider>
         </QueryParamProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );
+};
+
+export const Application = (configuration: Configuration) => {
+  const DemoTemplateToPageTemplate: Record<EDemoTemplate, JSX.Element> = {
+    [EDemoTemplate.PRODUCT]: (
+      <ProductDemoTemplate brandingConfiguration={configuration.branding} />
+    ),
+    [EDemoTemplate.PUBLISHER]: (
+      <PublisherDemoTemplate brandingConfiguration={configuration.branding} />
+    ),
+  };
+
+  return (
+    <VantageWrapper configuration={configuration}>
+      {DemoTemplateToPageTemplate[configuration.template]}
+    </VantageWrapper>
+  );
+};
+
+function App() {
+  return Application(config);
 }
 
 export default App;
