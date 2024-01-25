@@ -20,6 +20,7 @@ import {
   UseFiltersType,
   UseUrlParametersType,
 } from "./abstracts";
+import "./index.scss";
 import useUrlParameters from "./hooks/useUrlParameters";
 import useToggle from "./hooks/useToggle";
 import SingleFilterSection from "./component/filter/SingleFilterSection";
