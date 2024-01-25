@@ -61,7 +61,7 @@ module.exports = {
           "0%": {
             "margin-right": '50%',
             opacity: "0",
-            width: '320px',
+            width: '192px',
             fill: "var(--bg-start-color)",
           },
           "30%": {
@@ -72,14 +72,14 @@ module.exports = {
           },
           "75%": {
             "margin-right": '50%',
-            width: '320px',
+            width: '192px',
             fill: "var(--bg-start-color)",
 
           },
           "100%": {
             "margin-right": '15%',
             opacity: "1",
-            width: '192px',
+            width: '128px',
             fill: "var(--bg-end-color)",
           }
         },
