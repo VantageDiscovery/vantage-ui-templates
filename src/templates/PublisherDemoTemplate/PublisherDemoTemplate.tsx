@@ -68,13 +68,13 @@ const PublisherDemoTemplate = ({
                     {availableFilters.filter((f) => f.categorySlug == cat.categorySlug).map((filter) => (
                       <li key={filter.slug}>
                         <button
-                          className={cn("px-2 py-1 rounded-md", {
+                          className={cn("px-1 text-left rounded-md", {
                             "text-white": activeFilters?.includes(filter),
                           })}
                           style={{
                             backgroundColor: activeFilters?.includes(filter)
                               ? brandingConfiguration.colors.primary
-                              : "transparent",
+                              : "#FAFAFA",
                           }}
                           onClick={() => {
                             toggleFilters([filter]);
