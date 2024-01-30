@@ -37,14 +37,14 @@ const PublishCard = ({
 }: PublishCardProperties) => {
   return (
     <article className="flex w-full h-[200px] shadow-md rounded-lg bg-white border-[1px]">
-      <div className="w-[14%]">
+      <div className="w-1/5 min-w-[140px]">
         <a
           href={cardProperties.redirectUrl}
           target={cardProperties.redirectUrl ? "_blank" : ""}
           rel="external noreferrer"
           className="relative cursor-pointer"
         >
-          <div className="flex w-full justify-center bg-gray-50 h-full rounded-lg bg-publisher-orange-100">
+          <div className="flex w-full justify-center h-full rounded-lg bg-publisher-orange-100">
             <img
               src={cardProperties.imageUrl}
               alt="product"
