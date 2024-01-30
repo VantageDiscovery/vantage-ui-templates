@@ -2,6 +2,7 @@ import { Dispatch } from "react";
 import { Item } from "./ItemTypes";
 import { DataConfiguration } from "./DemoConfigurationTypes";
 import { UseFiltersType } from "./FilterTypes";
+import { UseVibeType } from "./VibeTypes";
 
 export type CollectionSearchResult = {
   collectionId: string;
@@ -25,7 +26,12 @@ export type DemoActions = {
   setIsDeveloperViewToggled: Dispatch<React.SetStateAction<boolean>>;
 };
 
+export type VibeActions = UseVibeType & {
+  triggerMoreLikeThese: () => void;
+};
+
 export type DemoContextType = {
+  vibeActions: UseVibeType;
   searchResults: CollectionSearchResult[];
   variables: DemoVariables;
   dataConfiguration: DataConfiguration;

@@ -20,6 +20,7 @@ interface ComboboxProperties {
   activeValue?: string;
   className?: string;
   placeholder?: string;
+  allowNoValue?: boolean;
 }
 
 interface ChipComboboxState {
@@ -106,6 +107,7 @@ const Combobox = ({
   className,
   placeholder,
   activeValue,
+  allowNoValue,
 }: ComboboxProperties) => {
   const [comboBoxState, dispatchState] = useReducer(reducer, {
     ...DEFAULT_COMBOBOX_STATE,
@@ -216,7 +218,7 @@ const Combobox = ({
                 : "text-gray-500"
             )}
           />
-          {comboBoxState.selectedValue && (
+          {comboBoxState.selectedValue && allowNoValue && (
             <button
               type="button"
               className="flex w-6 h-auto items-center"

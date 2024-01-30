@@ -8,6 +8,7 @@ import {
   VantageAPIConfigurationClient,
 } from "./CustomerApiTypes";
 import { ItemWithoutScore, OptionalMetaFields } from "./ItemTypes";
+import { VibeBoard } from "./VibeTypes";
 
 type DeepPartial<T> = T extends object
   ? {
@@ -90,6 +91,12 @@ export interface DataConfiguration {
   pageNumber?: number;
   pageSize?: number;
   originalSearchResultsURL?: string;
+  vibe?: VibeConfiguration;
+}
+
+export interface VibeConfiguration {
+  getBoards: () => Promise<VibeBoard[]>;
+  vibe_overall_weight?: number;
 }
 
 export interface FilterConfiguration {

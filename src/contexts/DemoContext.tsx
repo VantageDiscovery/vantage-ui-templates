@@ -14,6 +14,8 @@ import {
   DemoContextType,
 } from "abstracts/DemoContextTypes";
 import useUrlParams from "hooks/useUrlParameters";
+import useVibe from "hooks/useVibe";
+import { transformToAddWeightToThese } from "transformers/VantageProductTransformers";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
 
@@ -46,9 +48,15 @@ export const DemoProvider = ({
   const [moreLikeDocumentId, setMoreLikeDocumentId] = useState<string>(
     documentId ?? ""
   );
-  const [query, setQuery] = useState<string>(search);
+  const [query, setQuery] = useState<string>(
+    search.length > 0 ? search : dataConfiguration.defaultSearchQuery
+  );
   const [isDeveloperViewToggled, setIsDeveloperViewToggled] =
     useState<boolean>(false);
+
+  const vibeHandler = useVibe({
+    getBoards: dataConfiguration?.vibe?.getBoards,
+  });
 
   const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
     dataConfiguration.vantageSearchURL,
@@ -58,7 +66,7 @@ export const DemoProvider = ({
       customerNamespace: collectionId,
     })),
     {
-      query: search.length > 0 ? search : dataConfiguration.defaultSearchQuery,
+      query: query,
       accuracy: dataConfiguration.defaultAccuracy,
       filters: filterHandlers.getFilterString(),
       pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
@@ -89,11 +97,46 @@ export const DemoProvider = ({
       }
     );
 
-  const collectionSearchResults: CollectionSearchResult[] = useMemo(() => {
-    let activeSearchResult = multiQuerySearchResults;
-    if (moreLikeDocumentId) {
-      activeSearchResult = multiMLTSearchResults;
+  const multiMLTheseSearchResults =
+    VantageSearchQueries.useMoreLikeTheseByConfiguration(
+      dataConfiguration.vantageSearchURL,
+      vibeHandler.activeVibe?.length > 0,
+      dataConfiguration.collectionIds.map((collectionId: string) => ({
+        apiKey: dataConfiguration.apiKey,
+        customerId: dataConfiguration.accountId,
+        customerNamespace: collectionId,
+      })),
+      {
+        accuracy: dataConfiguration.defaultAccuracy,
+        pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
+        pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
+        filters: filterHandlers.getFilterString(),
+        vibe_overall_weight: dataConfiguration.vibe?.vibe_overall_weight,
+        these: transformToAddWeightToThese(
+          vibeHandler.activeVibe,
+          dataConfiguration.vibe?.vibe_overall_weight ?? 0,
+          moreLikeDocumentId,
+          query
+        ),
+      },
+      {
+        getItemsByIds: customerAPI.getItemsByIds,
+      }
+    );
+
+  const returnTypeOfResults = () => {
+    if (vibeHandler.activeVibe?.length > 0) {
+      return multiMLTheseSearchResults;
     }
+    if (moreLikeDocumentId) {
+      return multiMLTSearchResults;
+    }
+    return multiQuerySearchResults;
+  };
+
+  const collectionSearchResults: CollectionSearchResult[] = useMemo(() => {
+    const activeSearchResult = returnTypeOfResults();
+
     return activeSearchResult.map((searchResult, index) => {
       const { data, isError, isFetching, isSuccess } = searchResult;
       return {
@@ -105,7 +148,11 @@ export const DemoProvider = ({
         collectionId: configuration.collectionIds[index], // as per Tanstack useQueries configuration
       };
     });
-  }, [multiQuerySearchResults, multiMLTSearchResults]);
+  }, [
+    multiQuerySearchResults,
+    multiMLTSearchResults,
+    multiMLTheseSearchResults,
+  ]);
 
   const refetchSearchQueryResults = () => {
     for (const searchResults of multiQuerySearchResults) {
@@ -119,40 +166,78 @@ export const DemoProvider = ({
     }
   };
 
+  const refetchMLTheseSearchResults = () => {
+    for (const searchResults of multiMLTheseSearchResults) {
+      searchResults.refetch();
+    }
+  };
+
   useEffect(() => {
     setMoreLikeDocumentId("");
-    refetchSearchQueryResults();
+    if (
+      vibeHandler.activeVibe?.length > 0 &&
+      dataConfiguration.vibe?.vibe_overall_weight
+    ) {
+      refetchMLTheseSearchResults();
+      return;
+    }
+    query && refetchSearchQueryResults();
   }, [filterHandlers.activeFilters]);
 
   useEffect(() => {
-    search.length > 0
-      ? (setQuery(search), refetchSearchQueryResults())
-      : (documentId.length === 0 &&
-          setQuery(dataConfiguration.defaultSearchQuery),
-        refetchSearchQueryResults());
-  }, [search]);
+    if (search.length > 0) {
+      setQuery(search);
+      performSearch();
+      return;
+    }
+    if (documentId.length > 0) {
+      setMoreLikeDocumentId(documentId);
+      return;
+    }
+  }, []);
 
   useEffect(() => {
-    setMoreLikeDocumentId(documentId ?? "");
-    documentId.length > 0
-      ? (refetchMLTSearchResults(), setQuery(documentId))
-      : (search.length > 0 && setQuery(search), refetchSearchQueryResults());
-  }, [documentId]);
+    if (vibeHandler.activeVibe?.length > 0) {
+      refetchMLTheseSearchResults();
+      return;
+    }
+    moreLikeDocumentId.length > 0
+      ? refetchMLTSearchResults()
+      : refetchSearchQueryResults();
+  }, [vibeHandler.activeVibe]);
+
+  const performSearch = () => {
+    setMoreLikeDocumentId("");
+    setUrlDocumentId("");
+    setUrlSearchParameter(query);
+    vibeHandler.activeVibe.length > 0
+      ? refetchMLTheseSearchResults()
+      : refetchSearchQueryResults();
+  };
+
+  const performMoreLikeThis = (id: string) => {
+    if (vibeHandler.activeVibe.length > 0) {
+      refetchMLTheseSearchResults();
+      return;
+    }
+    id.length > 0 ? refetchMLTSearchResults() : refetchSearchQueryResults();
+  };
+
+  useEffect(() => {
+    setUrlDocumentId(moreLikeDocumentId);
+    performMoreLikeThis(moreLikeDocumentId);
+  }, [moreLikeDocumentId]);
 
   return (
     <DemoContext.Provider
       value={{
         filterActions: filterHandlers,
+        vibeActions: vibeHandler,
         searchResults: collectionSearchResults,
         demoActions: {
-          performSearch: () => {
-            setMoreLikeDocumentId("");
-            setUrlSearchParameter(query);
-          },
-          performMoreLikeThis: (id: string) => {
-            setUrlDocumentId(id);
+          performSearch: performSearch,
+          performMoreLikeThis: (id) => {
             setMoreLikeDocumentId(id);
-            setQuery(id);
           },
           setQuery,
           setIsDeveloperViewToggled,

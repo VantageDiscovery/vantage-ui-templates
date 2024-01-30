@@ -10,17 +10,23 @@ import {
   SearchConfiguration,
   VantageSearchResponse,
   VantageSearchResult,
+  SearchMoreLikeTheseParameters,
 } from "../abstracts/VantageTypes";
 import VantageSearchService from "../services/VantageSearchService";
 
 const queryKeys = {
-  seachMoreLikeThis: (
-    customerId: string,
-    customerNamespace: string,
-    documentId: string
-  ) => ["SEARCH_MORE_LIKE_THIS", customerId, customerNamespace, documentId],
+  seachMoreLikeThis: (customerId: string, customerNamespace: string) => [
+    "SEARCH_MORE_LIKE_THIS",
+    customerId,
+    customerNamespace,
+  ],
   searchByQuery: (customerId: string, customerNamespace: string) => [
     "SEARCH_BY_QUERY",
+    customerId,
+    customerNamespace,
+  ],
+  seachMoreLikeThese: (customerId: string, customerNamespace: string) => [
+    "SEARCH_MORE_LIKE_THESE",
     customerId,
     customerNamespace,
   ],
@@ -91,8 +97,7 @@ const useMoreLikeThisByConfiguration = (
     queries: searchConfigurations.map((searchConfiguration) => ({
       queryKey: queryKeys.seachMoreLikeThis(
         searchConfiguration.customerId,
-        searchConfiguration.customerNamespace,
-        searchParameters.documentId
+        searchConfiguration.customerNamespace
       ),
       queryFn: async () => {
         const response: VantageSearchResponse =
@@ -124,6 +129,49 @@ const useMoreLikeThisByConfiguration = (
     })),
   });
 
+const useMoreLikeTheseByConfiguration = (
+  vantageSearchURL: string,
+  enabled: boolean,
+  searchConfigurations: SearchConfiguration[],
+  searchParameters: SearchMoreLikeTheseParameters,
+  customerDataHandler: CustomerDataHandler
+): UseQueryResult<[number, Item[]], Error>[] =>
+  useQueries({
+    queries: searchConfigurations.map((searchConfiguration) => ({
+      queryKey: queryKeys.seachMoreLikeThese(
+        searchConfiguration.customerId,
+        searchConfiguration.customerNamespace
+      ),
+      queryFn: async () => {
+        const response: VantageSearchResponse =
+          await VantageSearchService.searchMoreLikeThese(
+            vantageSearchURL,
+            searchConfiguration,
+            searchParameters
+          );
+        const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
+          undefined,
+          response.results.map((result) => result.id)
+        );
+
+        if (response.results.length === 0) {
+          return [response.executionTime, 0];
+        }
+
+        const customerItems = await getItemsWithScores(
+          response.results,
+          response.results.length > 0
+            ? getItemsByIdsFunction
+            : () => Promise.resolve([])
+        );
+        customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
+
+        return [response.executionTime, customerItems];
+      },
+      enabled: enabled,
+    })),
+  });
+
 export const VantageSearchQueries = {
   /**
    * Performs Vantage Search then it performs getItemsByIds from customerDataHandler.
@@ -144,4 +192,5 @@ export const VantageSearchQueries = {
    * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
    */
   useMoreLikeThisByConfiguration,
+  useMoreLikeTheseByConfiguration,
 };

@@ -63,6 +63,7 @@ const ProductSearchSection = ({
                   toggleFilters([filter]);
                 }
               }}
+              allowNoValue={true}
             />
           </span>
         )}

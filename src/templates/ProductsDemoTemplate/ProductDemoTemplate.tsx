@@ -12,6 +12,9 @@ import React, { useEffect, useMemo } from "react";
 import { EFiltersType } from "abstracts/FilterTypes";
 import { Link } from "react-router-dom";
 import { LinkIcon } from "@heroicons/react/24/outline";
+import VibeModal from "component/vibe/VibeModal";
+import VibeSection from "component/vibe/VibeSection";
+import useVibe from "hooks/useVibe";
 
 const ProductDemoTemplate = ({
   brandingConfiguration,
@@ -20,6 +23,7 @@ const ProductDemoTemplate = ({
 }): JSX.Element => {
   const {
     filterActions,
+    vibeActions,
     searchResults,
     variables,
     demoActions,
@@ -46,6 +50,14 @@ const ProductDemoTemplate = ({
     if (dataConfiguration.filter.type === EFiltersType.MULTI_SELECT) {
       return <MultiFilterSection useFilters={filterActions} />;
     }
+  };
+
+  const renderVibe = () => {
+    return dataConfiguration.vibe ? (
+      <VibeSection useVibe={vibeActions} />
+    ) : (
+      <></>
+    );
   };
 
   return (
@@ -81,6 +93,7 @@ const ProductDemoTemplate = ({
               />
             </div>
             <hr className="w-full" />
+            <div className="w-full">{renderVibe()}</div>
             <div className="w-full">{renderFilterSection()}</div>
             <hr className="w-full" />
             <div className="flex justify-between w-full">
