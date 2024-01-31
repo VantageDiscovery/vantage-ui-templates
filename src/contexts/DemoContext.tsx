@@ -38,13 +38,10 @@ export const DemoProvider = ({
     getPopularFilters: configuration.filter.getPopularFilters,
   });
 
-  const [urlSearchParameter, setUrlSearchParameter] = useState<string>();
-  const [urlDocumentId, setUrlDocumentId] = useState<string>();
-  const { dataConfiguration, search, documentId } = useUrlParams({
-    dataConfiguration: configuration,
-    search: urlSearchParameter,
-    documentId: urlDocumentId,
-  });
+  const { dataConfiguration, search, documentId, setSearchUrl, setDocumentId } =
+    useUrlParams({
+      dataConfiguration: configuration,
+    });
   const [moreLikeDocumentId, setMoreLikeDocumentId] = useState<string>(
     documentId ?? ""
   );
@@ -56,6 +53,7 @@ export const DemoProvider = ({
 
   const vibeHandler = useVibe({
     getBoards: dataConfiguration?.vibe?.getBoards,
+    vibeOverallWeightDefault: dataConfiguration.vibe?.vibe_overall_weight,
   });
 
   const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
@@ -100,7 +98,6 @@ export const DemoProvider = ({
   const multiMLTheseSearchResults =
     VantageSearchQueries.useMoreLikeTheseByConfiguration(
       dataConfiguration.vantageSearchURL,
-      vibeHandler.activeVibe?.length > 0,
       dataConfiguration.collectionIds.map((collectionId: string) => ({
         apiKey: dataConfiguration.apiKey,
         customerId: dataConfiguration.accountId,
@@ -111,13 +108,13 @@ export const DemoProvider = ({
         pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
         pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
         filters: filterHandlers.getFilterString(),
-        vibe_overall_weight: dataConfiguration.vibe?.vibe_overall_weight,
-        these: transformToAddWeightToThese(
-          vibeHandler.activeVibe,
-          dataConfiguration.vibe?.vibe_overall_weight ?? 0,
-          moreLikeDocumentId,
-          query
-        ),
+        vibe_overall_weight: vibeHandler.slideVibeOverallWeight,
+        these: transformToAddWeightToThese({
+          these: vibeHandler.activeVibe,
+          vibe_overall_weight: vibeHandler.slideVibeOverallWeight,
+          document_id: moreLikeDocumentId,
+          query,
+        }),
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -173,59 +170,28 @@ export const DemoProvider = ({
   };
 
   useEffect(() => {
-    setMoreLikeDocumentId("");
-    if (
-      vibeHandler.activeVibe?.length > 0 &&
-      dataConfiguration.vibe?.vibe_overall_weight
-    ) {
-      refetchMLTheseSearchResults();
-      return;
-    }
-    query && refetchSearchQueryResults();
-  }, [filterHandlers.activeFilters]);
+    performMoreLikeThese();
+  }, [filterHandlers.activeFilters, vibeHandler.activeVibe]);
 
-  useEffect(() => {
-    if (search.length > 0) {
-      setQuery(search);
-      performSearch();
-      return;
-    }
-    if (documentId.length > 0) {
-      setMoreLikeDocumentId(documentId);
-      return;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (vibeHandler.activeVibe?.length > 0) {
+  const performMoreLikeThese = () => {
+    if (vibeHandler.activeVibe.length > 0) {
       refetchMLTheseSearchResults();
       return;
     }
     moreLikeDocumentId.length > 0
       ? refetchMLTSearchResults()
       : refetchSearchQueryResults();
-  }, [vibeHandler.activeVibe]);
+  };
 
   const performSearch = () => {
     setMoreLikeDocumentId("");
-    setUrlDocumentId("");
-    setUrlSearchParameter(query);
-    vibeHandler.activeVibe.length > 0
-      ? refetchMLTheseSearchResults()
-      : refetchSearchQueryResults();
-  };
-
-  const performMoreLikeThis = (id: string) => {
-    if (vibeHandler.activeVibe.length > 0) {
-      refetchMLTheseSearchResults();
-      return;
-    }
-    id.length > 0 ? refetchMLTSearchResults() : refetchSearchQueryResults();
+    setSearchUrl(query);
+    performMoreLikeThese();
   };
 
   useEffect(() => {
-    setUrlDocumentId(moreLikeDocumentId);
-    performMoreLikeThis(moreLikeDocumentId);
+    moreLikeDocumentId && setDocumentId(moreLikeDocumentId);
+    performMoreLikeThese();
   }, [moreLikeDocumentId]);
 
   return (
@@ -237,6 +203,9 @@ export const DemoProvider = ({
         demoActions: {
           performSearch: performSearch,
           performMoreLikeThis: (id) => {
+            if (id === moreLikeDocumentId) {
+              performMoreLikeThese();
+            }
             setMoreLikeDocumentId(id);
           },
           setQuery,

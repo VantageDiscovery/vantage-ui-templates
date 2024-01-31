@@ -1,9 +1,9 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { VibeActions } from "abstracts";
 import { BoardData, UseVibeType, VibeBoard } from "abstracts/VibeTypes";
 import Combobox from "component/Combobox";
 import Modal from "component/layout/Modal";
 import React, { useEffect, useState } from "react";
+import { Masonry } from "masonic";
 
 const toggleVibe = (
   activeVibe: BoardData[],
@@ -85,7 +85,7 @@ const VibeModal = ({
       <>
         <header className="flex w-full px-6 justify-between">
           <span className="flex justify-center w-full">
-            <h1 className="uppercase tracking-widest text-lg">
+            <h1 className="uppercase tracking-widest text-2xl text-orange-500">
               Choose your Vibe, Influence your results!
             </h1>
           </span>
@@ -99,7 +99,12 @@ const VibeModal = ({
           </button>
         </header>
 
-        <div className="px-5">
+        <div className="flex flex-row w-full px-5">
+          <img
+            src={"public/data/Pinterest-Logo.png"}
+            alt="vibe"
+            className="w-auto rounded-lg object-fill object-center"
+          />
           <Combobox
             className="w-full h-full !border-0"
             placeholder="Select board"
@@ -110,17 +115,19 @@ const VibeModal = ({
             }}
           />
         </div>
-        <div className="p-4 flex w-full h-full overflow-y">
-          <div className="grid grid-flow-row grid-cols-5 h-fit w-full ">
-            {activeBoard?.pins.map((data) => (
-              <VibeCard
-                key={data.id}
-                data={data}
-                activeVibe={isVibeActive(data)}
-                setActiveVibe={setActivateVibe}
-              />
-            ))}
-          </div>
+        <div className="flex flex-wrap px-5 h-full w-full overflow-y-auto">
+          <Masonry
+            overscanBy={10}
+            itemKey={(data) => data.props.id}
+            items={activeBoard?.pins.map((data) => {
+              return {
+                props: data,
+                activeVibe: isVibeActive(data),
+                setActiveVibe: setActivateVibe,
+              };
+            })}
+            render={VibeCard}
+          ></Masonry>
         </div>
       </>
     </Modal>
@@ -131,25 +138,27 @@ export default VibeModal;
 
 const VibeCard = ({
   data,
-  activeVibe,
-  setActiveVibe,
 }: {
-  data: BoardData;
-  activeVibe: boolean;
-  setActiveVibe: (active: BoardData) => void;
+  data: {
+    props: BoardData;
+    activeVibe: boolean;
+    setActiveVibe: (properties: BoardData) => void;
+  };
 }) => {
   return (
-    <div className="w-full h-fit p-1">
+    <div className="h-fit w-full p-1">
       <button
         className={`${
-          activeVibe ? " border-orange-600 border-2" : "border-none opacity-50"
-        }  rounded-lg `}
-        onClick={() => setActiveVibe(data)}
+          data.activeVibe
+            ? " border-orange-500 border-2"
+            : "border-none opacity-50"
+        }  rounded-lg  w-full h-full`}
+        onClick={() => data.setActiveVibe(data.props)}
       >
         <img
-          src={data.image_url}
+          src={data.props.image_url}
           alt="vibe"
-          className="block max-h-[40%] h-full w-auto rounded-lg object-fill object-center"
+          className=" h-auto w-full rounded-lg object-fill object-center"
         />
       </button>
     </div>

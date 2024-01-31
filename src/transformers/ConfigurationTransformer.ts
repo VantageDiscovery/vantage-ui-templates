@@ -32,9 +32,6 @@ const DEFAULT_CONFIGURATION = {
     queryMatchScoreWeight: 0,
     cosineSimilarityScoreWeight: 1,
   },
-  vibe: {
-    getBoards: () => Promise.resolve([]),
-  },
 };
 
 function assignDefined(target: object, source: object) {

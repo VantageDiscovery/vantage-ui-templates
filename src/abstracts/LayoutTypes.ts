@@ -1,4 +1,6 @@
+import { VibeConfiguration } from "./DemoConfigurationTypes";
 import { UseFiltersType } from "./FilterTypes";
+import { UseVibeType } from "./VibeTypes";
 
 export type NavigationProperties = {
   backgroundColor: string; // theme color
@@ -35,4 +37,6 @@ export type ProductSearchProperies = {
   useFiltersHook: UseFiltersType;
   isSingleFilter: boolean;
   searchPlaceholder?: string;
+  vibeActions?: UseVibeType;
+  vibe?: VibeConfiguration;
 };

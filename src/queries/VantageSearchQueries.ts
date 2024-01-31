@@ -131,7 +131,6 @@ const useMoreLikeThisByConfiguration = (
 
 const useMoreLikeTheseByConfiguration = (
   vantageSearchURL: string,
-  enabled: boolean,
   searchConfigurations: SearchConfiguration[],
   searchParameters: SearchMoreLikeTheseParameters,
   customerDataHandler: CustomerDataHandler
@@ -168,7 +167,6 @@ const useMoreLikeTheseByConfiguration = (
 
         return [response.executionTime, customerItems];
       },
-      enabled: enabled,
     })),
   });
 

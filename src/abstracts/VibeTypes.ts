@@ -14,4 +14,6 @@ export type UseVibeType = {
   boards: VibeBoard[];
   activeVibe: BoardData[];
   changeActiveVibe: (toggledData: BoardData[]) => void;
+  slideVibeOverallWeight?: number;
+  setSlideVibeOverallWeight: (value: number) => void;
 };

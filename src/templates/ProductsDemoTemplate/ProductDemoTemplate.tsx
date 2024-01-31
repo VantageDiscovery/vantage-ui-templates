@@ -12,9 +12,6 @@ import React, { useEffect, useMemo } from "react";
 import { EFiltersType } from "abstracts/FilterTypes";
 import { Link } from "react-router-dom";
 import { LinkIcon } from "@heroicons/react/24/outline";
-import VibeModal from "component/vibe/VibeModal";
-import VibeSection from "component/vibe/VibeSection";
-import useVibe from "hooks/useVibe";
 
 const ProductDemoTemplate = ({
   brandingConfiguration,
@@ -52,14 +49,6 @@ const ProductDemoTemplate = ({
     }
   };
 
-  const renderVibe = () => {
-    return dataConfiguration.vibe ? (
-      <VibeSection useVibe={vibeActions} />
-    ) : (
-      <></>
-    );
-  };
-
   return (
     <div className="flex flex-col w-full overflow-visible gap-0 justify-between min-h-screen">
       <Navigation
@@ -80,7 +69,7 @@ const ProductDemoTemplate = ({
                 {brandingConfiguration.title}
               </h3>
             </div>
-            <div className="flex flex-col w-3/5 gap-10">
+            <div className="flex flex-col w-4/6 gap-10">
               <ProductSearchSection
                 searchQuery={variables.query}
                 setSearchQuery={demoActions.setQuery}
@@ -90,10 +79,11 @@ const ProductDemoTemplate = ({
                 isSingleFilter={
                   dataConfiguration.filter.type === EFiltersType.SINGLE_SELECT
                 }
+                vibeActions={vibeActions}
+                vibe={dataConfiguration.vibe}
               />
             </div>
             <hr className="w-full" />
-            <div className="w-full">{renderVibe()}</div>
             <div className="w-full">{renderFilterSection()}</div>
             <hr className="w-full" />
             <div className="flex justify-between w-full">

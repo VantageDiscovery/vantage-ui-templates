@@ -90,12 +90,17 @@ export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
   };
 };
 
-export const transformToAddWeightToThese = (
-  these: BoardData[],
-  vibe_overall_weight: number,
-  document_id: string,
-  query: string
-): MoreLikeTheseParameters[] => {
+export const transformToAddWeightToThese = ({
+  these,
+  document_id,
+  query,
+  vibe_overall_weight = 0,
+}: {
+  these: BoardData[];
+  document_id: string;
+  query: string;
+  vibe_overall_weight?: number;
+}): MoreLikeTheseParameters[] => {
   const firstParameter =
     document_id.length > 0
       ? { query_document_id: document_id }
