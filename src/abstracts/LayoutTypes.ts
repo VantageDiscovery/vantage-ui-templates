@@ -38,5 +38,4 @@ export type ProductSearchProperies = {
   isSingleFilter: boolean;
   searchPlaceholder?: string;
   vibeActions?: UseVibeType;
-  vibe?: VibeConfiguration;
 };

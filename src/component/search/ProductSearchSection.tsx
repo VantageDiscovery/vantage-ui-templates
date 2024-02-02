@@ -13,7 +13,6 @@ const ProductSearchSection = ({
   isSingleFilter,
   searchPlaceholder = "Search for anything...",
   vibeActions,
-  vibe,
 }: ProductSearchProperies) => {
   const { availableFilters, activeFilters, toggleFilters, clearActiveFilters } =
     useFiltersHook;
@@ -38,7 +37,7 @@ const ProductSearchSection = ({
           event.preventDefault();
           onSearchPerformed();
         }}
-        className={`flex w-full  ${vibe && "h-10"} justify-center gap-6 `}
+        className={`flex w-2/3 h-12 justify-center gap-6 `}
       >
         <span className="flex flex-row items-center border border-black text-gray-900 text-sm rounded-lg w-full gap-2 pl-2">
           <MagnifyingGlassIcon className="w-6 h-6 text-gray-600" />

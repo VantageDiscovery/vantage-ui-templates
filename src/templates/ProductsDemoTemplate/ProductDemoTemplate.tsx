@@ -69,7 +69,7 @@ const ProductDemoTemplate = ({
                 {brandingConfiguration.title}
               </h3>
             </div>
-            <div className="flex flex-col w-4/6 gap-10">
+            <div className="flex flex-col w-5/6 gap-10 items-center">
               <ProductSearchSection
                 searchQuery={variables.query}
                 setSearchQuery={demoActions.setQuery}
@@ -80,7 +80,6 @@ const ProductDemoTemplate = ({
                   dataConfiguration.filter.type === EFiltersType.SINGLE_SELECT
                 }
                 vibeActions={vibeActions}
-                vibe={dataConfiguration.vibe}
               />
             </div>
             <hr className="w-full" />
