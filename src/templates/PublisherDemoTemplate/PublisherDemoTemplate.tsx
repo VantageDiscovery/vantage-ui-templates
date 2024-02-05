@@ -58,35 +58,44 @@ const PublisherDemoTemplate = ({
         <div className="flex justify-center animate-fade-in">
           <div className="flex flex-row w-full px-20">
             <aside className="pr-10 flex flex-col sticky top-[128px] left-0 py-4 gap-8 border-r h-fit">
-              {availableFilters.filter( (ele, ind, arr) => ind === arr.findIndex( elem => elem.categorySlug === ele.categorySlug)).map((cat) => (
-
-                <section className="">
-                  <h3 className="text-xl font-bold text-gray-600 text-weight">
-                    {cat.categoryName}
-                  </h3>
-                  <ul className="flex flex-col mt-4 gap-2">
-                    {availableFilters.filter((f) => f.categorySlug == cat.categorySlug).map((filter) => (
-                      <li key={filter.slug}>
-                        <button
-                          className={cn("px-1 text-left rounded-md", {
-                            "text-white": activeFilters?.includes(filter),
-                          })}
-                          style={{
-                            backgroundColor: activeFilters?.includes(filter)
-                              ? brandingConfiguration.colors.primary
-                              : "#FAFAFA",
-                          }}
-                          onClick={() => {
-                            toggleFilters([filter]);
-                          }}
-                        >
-                          {filter.name}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              ))}
+              {availableFilters
+                .filter(
+                  (filter, index, array) =>
+                    index ===
+                    array.findIndex(
+                      (element) => element.categorySlug === filter.categorySlug
+                    )
+                )
+                .map((cat, index) => (
+                  <section className="" key={index}>
+                    <h3 className="text-xl font-bold text-gray-600 text-weight">
+                      {cat.categoryName}
+                    </h3>
+                    <ul className="flex flex-col mt-4 gap-2">
+                      {availableFilters
+                        .filter((f) => f.categorySlug == cat.categorySlug)
+                        .map((filter) => (
+                          <li key={filter.slug}>
+                            <button
+                              className={cn("px-1 text-left rounded-md", {
+                                "text-white": activeFilters?.includes(filter),
+                              })}
+                              style={{
+                                backgroundColor: activeFilters?.includes(filter)
+                                  ? brandingConfiguration.colors.primary
+                                  : "#FAFAFA",
+                              }}
+                              onClick={() => {
+                                toggleFilters([filter]);
+                              }}
+                            >
+                              {filter.name}
+                            </button>
+                          </li>
+                        ))}
+                    </ul>
+                  </section>
+                ))}
               <div className="flex flex-col justify-center items-center gap-8 mt-10 pb-12">
                 <ToggleButton
                   text="Developer debug"
