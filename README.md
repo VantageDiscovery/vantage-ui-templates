@@ -11,197 +11,213 @@ npm install vantage-demo-template
 #### 🔨 Configuration 
 ```typescript
 {
-  // type of template , string and enum types are same 
-  // default "product"
-  template?:"product" | "publisher" | EDemoTemplate.PRODUCT | EDemoTemplate.PUBLSIHER,
+  // Type of template
+  // default: "product"
+  template?: "product" | "publisher" ,
 
-  // "Enter your Vantage Account ID.",
-  accountId:string,
-
-
-  // "Enter a list of Vantage Collection IDs to fetch data from."
-  // Can be overriden by url param
-  collectionId:string,
+  // Enter your Vantage account id
+  // Find at https://console.dev-a.dev.vantagediscovery.com/ in the up right corner under name is your account id  
+  accountId: string,
 
 
-  // "Enter your Vantage API Key."
-  apiKey:string,
+  // Enter a list of Vantage Collection IDs to fetch data from
+  // Find at visit : https://console.dev-a.dev.vantagediscovery.com/collections
+  collectionId: string,
 
 
-  // "Enter an url to the Vantage API you want to fetch data from.",
-  // default https://api.vanta.ge/v1/search
-  vantageSearchURL:string,
+  // Enter your Vantage API Key.
+  // Find at https://console.dev-a.dev.vantagediscovery.com/api
+  apiKey: string,
 
-  //customer api configuration  
+
+  // Enter an url to the Vantage API you want to fetch data from
+  // default: https://api.vanta.ge/v1/search
+  vantageSearchURL: string,
+
+  // Customer api configuration
+  // This is the API where your items are
+  // Avalable types are: "vantage" , "cdn" or "custom"
   customerAPI:
 
-    //vantage customer api type configuration
+    // Vantage customer api type configuration
     {
 
-    type: "vantage" | ECustomerAPIType.VANTAGE,
+    type: "vantage",
 
-    //key of api for path below
+    // Key of api where items are fetched by id of their actual data
     apiKey: string,
 
 
-    // Ex. "https://demo-api.dev-a.dev.vantagediscovery.com/api/v1/items",
-    apiPath:string,
+    // Ex. https://demo-api.dev-a.dev.vantagediscovery.com/api/v1/items
+    // Path to api for fetching items
+    apiPath: string,
 
     
-    // function for getting filters
-    // default () => Promise.resolve([]),
-    getFilter:() => Filter[],
+    // Function for getting filters
+    // Filters can be use for filtering items
+    // default: () => Promise.resolve([])
+    getFilter: () => Filter[],
 
     
-    // "if account id is not same for getItems",
-    accountPrefix?:string,
+    // If account id is not same for getItems
+    // Ex. accountId="example" - id we are using to get items ids
+    // accountPrefix="example-image" - id we using to get items data that can be different then accountId
+    accountPrefix?: string,
 
 
-    //"if collection id is not same for getItems" 
-    collectionPrefix?:string,
+    // If collection id is not same for getItems
+    // Ex. collectionId="example" - id of collection we are using to get items ids
+    // collectionPrefix="example-image" - id of collection we using to get items data that can be different then collectionId  
+    collectionPrefix?: string,
 
     }
 
-    // or
+    // OR
   
-    // custom customer api type configuration
+    // Custom customer api type configuration 
     {
 
-    type: "custom" | ECustomerAPIType.CUSTOM_API,
+    type: "custom",
 
     // function for getting items
-    getCustomerItems:() => itemDTO[],
+    getCustomerItems: () => itemDTO[],
 
     // function for getting filters
     // default () => Promise.resolve([]),
-    getFilter:() => Filter[]
+    getFilter: () => Filter[]
 
     } 
 
-     // or
+     // OR
 
-    // cdn customer api type cofiguration
+    // CDN customer api type cofiguration
     {
 
-    type:"cdn" |  ECustomerAPIType.CDN_API,
+    type: "cdn",
 
-    // "URLs from where to get filters",
-    filterURL:string[],
-
-    
-    // "url pattern for getting items by id"
-    // https://something/${id} , ${id} will be replaced with id of item  
-    itemURLPattern:string,
+    // URLs from where to get filters
+    filterURL: string[],
 
     
-    // "something to add to header of request",
-    authHeader?:string,
+    // URL pattern for getting items by id
+    // Ex. https://something/${id}
+    // ${id} will be replaced with id of item  
+    itemURLPattern: string,
 
+    
+    // If something need to be added to header of request
+    authHeader?: string,
     },
 
   // if some field from get items need aditional transform
+  // Ex. customFieldTransformer: { description: { fieldName: "metaDescription.description" , transformer: (desc) => desc.slice(1)}
   customFieldTransformer?: ({
 
     // fields that can be transformed id, description, imageSrc, title, embeddingText, externalUrl , meta: imageLabel, subtitle
     id?: {
 
         // field name exp:"something.id"
-        fieldName?: string;
+        fieldName?: string,
 
         // function how to transform field
-        transformer?: {} ;
-    };
-    ... 7 more ...;
-  )},
+        transformer?: {} ,
+    },
+
+  });
 
 
-  // "accuracy of search 0-1"
-  // Can be overriden by url param
-  // default 0.5
+  // Accuracy of search
+  // min value 0
+  // max value 1
+  // default: 0.5
   defaultAccuracy?: string,
 
 
-  // "What you want to be inital search"
+  // What you want to be inital search
   // deafault "Type in anything you want and explore magic..."
-  defaultSearchQuery?:string,
+  defaultSearchQuery?: string,
 
 
-  // "original search results"
-  // note need to have ${query} that will be replaced with real query
-  originalSearchResultsURL?:string,
+  // Original search results
+  // Ex. https://google.com/search?q=${query} will get you to google search results for query 
+  // Note need to have ${query} that will be replaced with real query
+  originalSearchResultsURL?: string,
 
 
-  // number of page of results
+  // Number of page of results
   // default 0
-  pageNumber?:number,
+  pageNumber?: number,
 
 
-  // number of results per page
+  // Number of results per page
   // default 20 
-  pageSize?:number,
+  pageSize?: number,
 
 
-  // branding specific configuration
-  branding?:{
+  // Branding specific configuration
+  branding?: {
 
-    // colors of brend
-    colors?:{
+    // Colors of brend
+    colors?: {
       
-      // "primary color of brend"
+      // Primary color of brend
+      // Will be used for left side of start animation, and item score background 
       // default "#BFC9CA"
-      primary?:string,
+      primary?: string,
 
-      // "secondary color of brend"
+      // Secondary color of brend
+      // Will be used as color of moreLikeThisButton and checked filters color 
       // default "#F8C471"
-      secondary?:string,
+      secondary?: string,
     },
 
     
-    // "url to logo img of brend"
+    // Url to logo of brend placed in up left corner
     // default "https://img.logoipsum.com/327.svg",
-    logoUrl?:string,
+    logoUrl?: string,
 
 
-    // "title of tab"
+    // Title of tab in browser
     // defaut "vite app"
-    pageTitle?:string,
+    pageTitle?: string,
 
 
-    // "placeholder for search", 
-    searchPlaceholder?:string,
+    // Placeholder for search when search bar is empty  
+    searchPlaceholder?: string,
 
-    // "title on page"
+    // Title on page placed in up center
     // default "Empower your search!"
-    title?:string
+    title?: string
   },
 
   // filter specific configuration 
-  filter?:{
+  filter?: {
 
-    // type of filters
+    // Type of filters
     // default EFilterType.SINGLE_SELECT
     type?: EFiltersType.SINGLE_SELECT | EFiltersType.MULTI_SELECT;
 
-    // some  popular filters
+    // Some  popular filters
+    // There is a section on the page for quick access of this filters
     getPopularFilters?: {},
   },
 
-  // shingling specific configuration
-  shingling?:{
+  // Shingling specific configuration
+  shingling?: {
 
-    // number 0-1
+    // Min value 0
+    // Max value 1 
     // default 0
-    // Can be overriden by url param
-    documentMatchScoreWeight?:number,
+    documentMatchScoreWeight?: number,
 
-    // number 0-1
+    // Min value 0
+    // Max value 1 
     // default 0
-    // Can be overriden by url param
     queryMatchScoreWeight?: number 
 
-    // number 0-1
+    // Min value 0
+    // Max value 1 
     // default 1
-    // Can be overriden by url param
     cosineSimilarityScoreWeight?: number 
   }
 
@@ -341,7 +357,7 @@ import {useCustomerAPIHook} from "vantage-demo-template"
 
 #### useUrlParamsHook
 
-Hook for override accuracy, customerId, cosine_similarity_score_weight, query_match_score_weight, document_match_score_weight values and saving state of search
+Hook for override accuracy, customerId, cosine_similarity_score_weight, query_match_score_weight, document_match_score_weight values and saving state of results
 
 ```typescript
 import {useUrlParamsHook} from "vantage-demo-template"
@@ -368,14 +384,13 @@ import {useUrlParamsHook} from "vantage-demo-template"
 
 #### useFilterHook
 
-Hook gives back filter actions
+Hook gives back avalabe filter actions
 
 ```typescript
 import {useFilterHook} from "vantage-demo-template"
 
  const {
      /*
-      Avalable action with Filters
       Get all available filters
     */
     availableFilters: Filter[];
