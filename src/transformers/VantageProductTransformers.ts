@@ -97,14 +97,13 @@ export const transformToAddWeightToThese = ({
   vibe_overall_weight = 0,
 }: {
   these: BoardData[];
-  document_id: string;
-  query: string;
+  document_id?: string;
+  query?: string;
   vibe_overall_weight?: number;
 }): MoreLikeTheseParameters[] => {
-  const firstParameter =
-    document_id.length > 0
-      ? { query_document_id: document_id }
-      : { query_text: query };
+  const firstParameter = document_id
+    ? { query_document_id: document_id }
+    : { query_text: query };
   return [
     { ...firstParameter, weight: 1 - vibe_overall_weight },
     ...these.map((data) => {

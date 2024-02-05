@@ -10,6 +10,18 @@ const VibeSection = ({ useVibe }: { useVibe: UseVibeType }) => {
     useVibe;
   const [isModalVisible, toggleModal] = useToggle();
 
+  const buttonModalSection = () => {
+    return activeVibe[0] ? (
+      <img
+        src={activeVibe[0]?.image_url}
+        alt="first-board"
+        className="relative rounded-lg h-full w-full object-cover"
+      />
+    ) : (
+      <PintrestLogo />
+    );
+  };
+
   return (
     <>
       <span className="flex flex-row-reverse w-full h-full items-center align-top">
@@ -20,15 +32,7 @@ const VibeSection = ({ useVibe }: { useVibe: UseVibeType }) => {
             data-testid="all-filters-button"
             onClick={() => toggleModal()}
           >
-            {activeVibe[0] ? (
-              <img
-                src={activeVibe[0]?.image_url}
-                alt="first-board"
-                className="relative rounded-lg h-full w-full object-cover"
-              />
-            ) : (
-              <PintrestLogo />
-            )}
+            {buttonModalSection()}
           </button>
           <div className="w-28 mt-1 mr-1 items-end">
             <Slider

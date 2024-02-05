@@ -4,11 +4,11 @@ import React, { useEffect, useState } from "react";
 import { Masonry } from "masonic";
 import PintrestLogo from "icons/PintrestLogo";
 import VibeChip from "./VibeChip";
-import CheckBoxIcon from "icons/CheckBoxIcon";
 import PintrestForm from "./PintrestForm";
 import sessionStorageService from "services/SessionStorageService";
 import ResetIcon from "icons/ResetIcon";
 import LottieImage from "animation/LottieImage";
+import VibeCard from "./VibeCard";
 
 const toggleVibe = (
   activeVibe: BoardData[],
@@ -92,8 +92,42 @@ const VibeModal = ({
     return activeBoard === board;
   };
 
-  const clearActiveVibe = () => {
-    setCurrentVibe([]);
+  const bodySection = (): React.JSX.Element => {
+    return showAnimation ? (
+      <div className="w-full h-full items-center flex">
+        <LottieImage />
+      </div>
+    ) : (
+      <>
+        <div className="flex px-5 w-full h-24 items-center overflow-x-scroll scrollbar-small">
+          {boards?.map((board) => (
+            <VibeChip
+              title={board.name}
+              key={board.name}
+              isSelected={isBoardSelected(board)}
+              onClick={() => {
+                selectActiveBoard(board);
+              }}
+              imgSrc={board.pins[0].image_url}
+            />
+          ))}
+        </div>
+
+        <div className="flex flex-wrap px-5 h-full w-full overflow-y-scroll scrollbar-small">
+          <Masonry
+            itemKey={(data) => data.props.id}
+            items={activeBoard?.pins.map((data) => {
+              return {
+                props: data,
+                activeVibe: isVibeActive(data),
+                setActiveVibe: setActivateVibe,
+              };
+            })}
+            render={VibeCard}
+          />
+        </div>
+      </>
+    );
   };
 
   return (
@@ -102,7 +136,7 @@ const VibeModal = ({
       className={`flex flex-col  ${
         username ? "w-3/5 h-5/6" : "w-1/5 h-1/2"
       } relative bg-white rounded-lg py-6 gap-5`}
-      onCloseModal={onModalClose}
+      onCloseModal={toggleModal}
     >
       {username ? (
         <>
@@ -120,7 +154,7 @@ const VibeModal = ({
                 className={`${
                   !showAnimation && "hover:bg-[#EFEFEF]"
                 } mr-5 rounded-3xl`}
-                onClick={() => clearActiveVibe()}
+                onClick={() => setCurrentVibe([])}
                 disabled={showAnimation}
               >
                 <ResetIcon />
@@ -136,41 +170,7 @@ const VibeModal = ({
               </button>
             </div>
           </header>
-          {showAnimation ? (
-            <div className="w-full h-full items-center flex">
-              <LottieImage />
-            </div>
-          ) : (
-            <>
-              <div className="flex px-5 w-full h-24 items-center overflow-x-scroll scrollbar-small">
-                {boards?.map((board) => (
-                  <VibeChip
-                    title={board.name}
-                    key={board.name}
-                    isSelected={isBoardSelected(board)}
-                    onClick={() => {
-                      selectActiveBoard(board);
-                    }}
-                    imgSrc={board.pins[0].image_url}
-                  />
-                ))}
-              </div>
-
-              <div className="flex flex-wrap px-5 h-full w-full overflow-y-scroll scrollbar-small">
-                <Masonry
-                  itemKey={(data) => data.props.id}
-                  items={activeBoard?.pins.map((data) => {
-                    return {
-                      props: data,
-                      activeVibe: isVibeActive(data),
-                      setActiveVibe: setActivateVibe,
-                    };
-                  })}
-                  render={VibeCard}
-                />
-              </div>
-            </>
-          )}
+          {bodySection()}
         </>
       ) : (
         <PintrestForm
@@ -184,42 +184,4 @@ const VibeModal = ({
     </Modal>
   );
 };
-
 export default VibeModal;
-
-const VibeCard = ({
-  data,
-}: {
-  data: {
-    props: BoardData;
-    activeVibe: boolean;
-    setActiveVibe: (properties: BoardData) => void;
-  };
-}) => {
-  return (
-    <div className="h-auto w-full p-1">
-      <button
-        className={"w-full h-full"}
-        onClick={() => data.setActiveVibe(data.props)}
-      >
-        <img
-          src={data.props.image_url}
-          alt="vibe"
-          className={`h-auto w-full rounded-3xl object-fill object-center ${
-            data.activeVibe
-              ? " outline-[2.5px] outline outline-[#E60023]"
-              : "border-none opacity-50"
-          }`}
-        />
-      </button>
-      <div className="flex flex-row">
-        <span className="text-sm font-semibold line-clamp-2 mx-1">
-          {data.props.text}
-        </span>
-        <button onClick={() => data.setActiveVibe(data.props)}>
-          <CheckBoxIcon stroke={`${data.activeVibe && "black"}`} />
-        </button>
-      </div>
-    </div>
-  );
-};

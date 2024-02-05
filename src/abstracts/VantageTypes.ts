@@ -40,7 +40,7 @@ export type SearchByQueryParameters = SearchParameters &
     query: string;
   };
 
-export type SearchMoreLikeTheseParameters = SearchParameters & {
+export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters & {
   filters: string;
   these: MoreLikeTheseParameters[];
   vibe_overall_weight?: number;

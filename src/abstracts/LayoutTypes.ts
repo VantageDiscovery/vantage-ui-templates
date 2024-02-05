@@ -1,4 +1,3 @@
-import { VibeConfiguration } from "./DemoConfigurationTypes";
 import { UseFiltersType } from "./FilterTypes";
 import { UseVibeType } from "./VibeTypes";
 

@@ -1,6 +1,5 @@
 import { DataConfiguration } from "abstracts/DemoConfigurationTypes";
 import useFilters from "hooks/useFilters";
-import { VantageSearchQueries } from "queries/VantageSearchQueries";
 import useCustomerAPI from "../hooks/useCustomerApi";
 import React, {
   createContext,
@@ -15,12 +14,9 @@ import {
 } from "abstracts/DemoContextTypes";
 import useUrlParams from "hooks/useUrlParameters";
 import useVibe from "hooks/useVibe";
-import { transformToAddWeightToThese } from "transformers/VantageProductTransformers";
+import useQueries from "hooks/useQueries";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
-
-const DEFAULT_PAGE_SIZE = 20;
-const DEFAULT_PAGE_NUMBER = 0;
 
 export const DemoProvider = ({
   children,
@@ -56,74 +52,30 @@ export const DemoProvider = ({
     vibeOverallWeightDefault: dataConfiguration.vibe?.vibe_overall_weight,
   });
 
-  const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
-    dataConfiguration.vantageSearchURL,
-    dataConfiguration.collectionIds.map((collectionId: string) => ({
-      apiKey: dataConfiguration.apiKey,
-      customerId: dataConfiguration.accountId,
-      customerNamespace: collectionId,
-    })),
-    {
-      query: query,
-      accuracy: dataConfiguration.defaultAccuracy,
-      filters: filterHandlers.getFilterString(),
-      pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
-      pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
-      ...dataConfiguration.shingling,
-    },
-    {
-      getItemsByIds: customerAPI.getItemsByIds,
-    }
-  );
+  const isMoreLikeTheseActiv = (): boolean => {
+    return vibeHandler.activeVibe.length > 0;
+  };
 
-  const multiMLTSearchResults =
-    VantageSearchQueries.useMoreLikeThisByConfiguration(
-      dataConfiguration.vantageSearchURL,
-      dataConfiguration.collectionIds.map((collectionId: string) => ({
-        apiKey: dataConfiguration.apiKey,
-        customerId: dataConfiguration.accountId,
-        customerNamespace: collectionId,
-      })),
-      {
-        documentId: moreLikeDocumentId,
-        accuracy: dataConfiguration.defaultAccuracy,
-        pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
-        pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
-      },
-      {
-        getItemsByIds: customerAPI.getItemsByIds,
-      }
-    );
-
-  const multiMLTheseSearchResults =
-    VantageSearchQueries.useMoreLikeTheseByConfiguration(
-      dataConfiguration.vantageSearchURL,
-      dataConfiguration.collectionIds.map((collectionId: string) => ({
-        apiKey: dataConfiguration.apiKey,
-        customerId: dataConfiguration.accountId,
-        customerNamespace: collectionId,
-      })),
-      {
-        accuracy: dataConfiguration.defaultAccuracy,
-        pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
-        pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
-        filters: filterHandlers.getFilterString(),
-        vibe_overall_weight: vibeHandler.slideVibeOverallWeight,
-        these: transformToAddWeightToThese({
-          these: vibeHandler.activeVibe,
-          vibe_overall_weight: vibeHandler.slideVibeOverallWeight,
-          document_id: moreLikeDocumentId,
-          query,
-        }),
-      },
-      {
-        getItemsByIds: customerAPI.getItemsByIds,
-      }
-    );
+  const {
+    multiQuerySearchResults,
+    multiMLTSearchResults,
+    multiMLTheseSearchResults,
+    multiMLTheseDocumentIdResults,
+  } = useQueries({
+    dataConfiguration,
+    query,
+    moreLikeDocumentId,
+    isMoreLikeTheseActiv: isMoreLikeTheseActiv(),
+    vibeHandler,
+    filters: filterHandlers.getFilterString(),
+    customerAPI,
+  });
 
   const returnTypeOfResults = () => {
-    if (vibeHandler.activeVibe?.length > 0) {
-      return multiMLTheseSearchResults;
+    if (isMoreLikeTheseActiv()) {
+      return moreLikeDocumentId
+        ? multiMLTheseDocumentIdResults
+        : multiMLTheseSearchResults;
     }
     if (moreLikeDocumentId) {
       return multiMLTSearchResults;
@@ -149,16 +101,11 @@ export const DemoProvider = ({
     multiQuerySearchResults,
     multiMLTSearchResults,
     multiMLTheseSearchResults,
+    multiMLTheseDocumentIdResults,
   ]);
 
   const refetchSearchQueryResults = () => {
     for (const searchResults of multiQuerySearchResults) {
-      searchResults.refetch();
-    }
-  };
-
-  const refetchMLTSearchResults = () => {
-    for (const searchResults of multiMLTSearchResults) {
       searchResults.refetch();
     }
   };
@@ -169,30 +116,57 @@ export const DemoProvider = ({
     }
   };
 
+  const refetchMLTheseDocumentIdResults = () => {
+    for (const searchResults of multiMLTheseDocumentIdResults) {
+      searchResults.refetch();
+    }
+  };
+
   useEffect(() => {
-    performMoreLikeThese();
-  }, [filterHandlers.activeFilters, vibeHandler.activeVibe]);
+    performFilterChange();
+  }, [filterHandlers.activeFilters]);
 
   const performMoreLikeThese = () => {
-    if (vibeHandler.activeVibe.length > 0) {
-      refetchMLTheseSearchResults();
-      return;
-    }
-    moreLikeDocumentId.length > 0
-      ? refetchMLTSearchResults()
-      : refetchSearchQueryResults();
+    moreLikeDocumentId
+      ? refetchMLTheseDocumentIdResults()
+      : refetchMLTheseSearchResults();
   };
 
+  const performFilterChange = () => {
+    if (isMoreLikeTheseActiv()) {
+      performMoreLikeThese();
+      return;
+    }
+    refetchSearchQueryResults();
+  };
   const performSearch = () => {
-    setMoreLikeDocumentId("");
     setSearchUrl(query);
-    performMoreLikeThese();
+    if (isMoreLikeTheseActiv()) {
+      moreLikeDocumentId
+        ? setMoreLikeDocumentId("")
+        : refetchMLTheseSearchResults();
+      return;
+    }
+    setMoreLikeDocumentId("");
+    refetchSearchQueryResults();
+  };
+
+  const performMoreLikeThis = (id: string) => {
+    if (isMoreLikeTheseActiv() && moreLikeDocumentId === id) {
+      refetchMLTheseDocumentIdResults();
+      return;
+    }
+    setDocumentId(id);
+    setMoreLikeDocumentId(id);
   };
 
   useEffect(() => {
-    moreLikeDocumentId && setDocumentId(moreLikeDocumentId);
-    performMoreLikeThese();
-  }, [moreLikeDocumentId]);
+    if (isMoreLikeTheseActiv()) {
+      performMoreLikeThese();
+      return;
+    }
+    if (!moreLikeDocumentId) refetchSearchQueryResults();
+  }, [vibeHandler.activeVibe]);
 
   return (
     <DemoContext.Provider
@@ -201,13 +175,8 @@ export const DemoProvider = ({
         vibeActions: vibeHandler,
         searchResults: collectionSearchResults,
         demoActions: {
-          performSearch: performSearch,
-          performMoreLikeThis: (id) => {
-            if (id === moreLikeDocumentId) {
-              performMoreLikeThese();
-            }
-            setMoreLikeDocumentId(id);
-          },
+          performSearch,
+          performMoreLikeThis,
           setQuery,
           setIsDeveloperViewToggled,
         },

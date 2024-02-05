@@ -15,21 +15,21 @@ import {
 import VantageSearchService from "../services/VantageSearchService";
 
 const queryKeys = {
-  seachMoreLikeThis: (customerId: string, customerNamespace: string) => [
-    "SEARCH_MORE_LIKE_THIS",
-    customerId,
-    customerNamespace,
-  ],
+  seachMoreLikeThis: (
+    customerId: string,
+    customerNamespace: string,
+    documentId: string
+  ) => ["SEARCH_MORE_LIKE_THIS", customerId, customerNamespace, documentId],
   searchByQuery: (customerId: string, customerNamespace: string) => [
     "SEARCH_BY_QUERY",
     customerId,
     customerNamespace,
   ],
-  seachMoreLikeThese: (customerId: string, customerNamespace: string) => [
-    "SEARCH_MORE_LIKE_THESE",
-    customerId,
-    customerNamespace,
-  ],
+  seachMoreLikeThese: (
+    customerId: string,
+    customerNamespace: string,
+    documentId: string
+  ) => ["SEARCH_MORE_LIKE_THESE", customerId, customerNamespace, documentId],
 };
 
 const getItemsWithScores = async (
@@ -83,12 +83,14 @@ const useSearchByConfiguration = (
 
         return [response.executionTime, customerItems];
       },
+      enabled: false,
     })),
   });
 };
 
 const useMoreLikeThisByConfiguration = (
   vantageSearchURL: string,
+  enable: boolean,
   searchConfigurations: SearchConfiguration[],
   searchParameters: SearchMoreLikeThisParameters,
   customerDataHandler: CustomerDataHandler
@@ -97,7 +99,8 @@ const useMoreLikeThisByConfiguration = (
     queries: searchConfigurations.map((searchConfiguration) => ({
       queryKey: queryKeys.seachMoreLikeThis(
         searchConfiguration.customerId,
-        searchConfiguration.customerNamespace
+        searchConfiguration.customerNamespace,
+        searchParameters.documentId
       ),
       queryFn: async () => {
         const response: VantageSearchResponse =
@@ -125,12 +128,13 @@ const useMoreLikeThisByConfiguration = (
 
         return [response.executionTime, customerItems];
       },
-      enabled: !!searchParameters.documentId,
+      enabled: enable,
     })),
   });
 
 const useMoreLikeTheseByConfiguration = (
   vantageSearchURL: string,
+  enable: boolean,
   searchConfigurations: SearchConfiguration[],
   searchParameters: SearchMoreLikeTheseParameters,
   customerDataHandler: CustomerDataHandler
@@ -139,7 +143,8 @@ const useMoreLikeTheseByConfiguration = (
     queries: searchConfigurations.map((searchConfiguration) => ({
       queryKey: queryKeys.seachMoreLikeThese(
         searchConfiguration.customerId,
-        searchConfiguration.customerNamespace
+        searchConfiguration.customerNamespace,
+        searchParameters.documentId
       ),
       queryFn: async () => {
         const response: VantageSearchResponse =
@@ -167,6 +172,7 @@ const useMoreLikeTheseByConfiguration = (
 
         return [response.executionTime, customerItems];
       },
+      enabled: enable,
     })),
   });
 
