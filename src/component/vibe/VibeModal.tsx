@@ -1,7 +1,6 @@
 import { BoardData, UseVibeType, VibeBoard } from "abstracts/VibeTypes";
 import Modal from "component/layout/Modal";
 import React, { useEffect, useState } from "react";
-import { Masonry } from "masonic";
 import PintrestLogo from "icons/PintrestLogo";
 import VibeChip from "./VibeChip";
 import PintrestForm from "./PintrestForm";
@@ -9,6 +8,7 @@ import sessionStorageService from "services/SessionStorageService";
 import ResetIcon from "icons/ResetIcon";
 import LottieImage from "animation/LottieImage";
 import VibeCard from "./VibeCard";
+import Masonry from "react-layout-masonry";
 
 const toggleVibe = (
   activeVibe: BoardData[],
@@ -114,17 +114,18 @@ const VibeModal = ({
         </div>
 
         <div className="flex flex-wrap px-5 h-full w-full overflow-y-scroll scrollbar-small">
-          <Masonry
-            itemKey={(data) => data.props.id}
-            items={activeBoard?.pins.map((data) => {
-              return {
-                props: data,
-                activeVibe: isVibeActive(data),
-                setActiveVibe: setActivateVibe,
-              };
+          <Masonry gap={16} columns={{ 640: 1, 768: 2, 1024: 3, 1280: 4 }}>
+            {activeBoard.pins.map((data) => {
+              return (
+                <VibeCard
+                  key={data.id}
+                  data={data}
+                  activeVibe={isVibeActive(data)}
+                  setActiveVibe={setActivateVibe}
+                />
+              );
             })}
-            render={VibeCard}
-          />
+          </Masonry>
         </div>
       </>
     );
@@ -145,7 +146,7 @@ const VibeModal = ({
               <PintrestLogo />
             </div>
             <span className="flex justify-center w-full">
-              <h1 className="text-2xl">
+              <h1 className="text-sm md:text-lg lg:text-xl xl:text-2xl">
                 Choose your Vibe, Influence your results!
               </h1>
             </span>

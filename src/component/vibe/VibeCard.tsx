@@ -4,35 +4,35 @@ import React from "react";
 
 const VibeCard = ({
   data,
+  activeVibe,
+  setActiveVibe,
 }: {
-  data: {
-    props: BoardData;
-    activeVibe: boolean;
-    setActiveVibe: (properties: BoardData) => void;
-  };
+  data: BoardData;
+  activeVibe: boolean;
+  setActiveVibe: (properties: BoardData) => void;
 }) => {
   return (
-    <div className="h-auto w-full p-1">
+    <div className="h-auto w-auto pb-8 flex-wrap justify-start">
       <button
-        className={"w-full h-full"}
-        onClick={() => data.setActiveVibe(data.props)}
+        className={"w-full h-full flex-wrap -mt-3 "}
+        onClick={() => setActiveVibe(data)}
       >
         <img
-          src={data.props.image_url}
+          src={data.image_url}
           alt="vibe"
           className={`h-auto w-full rounded-3xl object-fill object-center ${
-            data.activeVibe
+            activeVibe
               ? " outline-[2.5px] outline outline-[#E60023]"
               : "border-none opacity-50"
           }`}
         />
       </button>
-      <div className="flex flex-row">
+      <div className="flex flex-row ">
         <span className="text-sm font-semibold line-clamp-2 mx-1">
-          {data.props.text}
+          {data.text}
         </span>
-        <button onClick={() => data.setActiveVibe(data.props)}>
-          <CheckBoxIcon stroke={`${data.activeVibe && "black"}`} />
+        <button onClick={() => setActiveVibe(data)}>
+          <CheckBoxIcon stroke={`${activeVibe && "black"}`} />
         </button>
       </div>
     </div>
