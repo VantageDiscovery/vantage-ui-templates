@@ -330,16 +330,24 @@ import {useDemoHook} from "vantage-demo-template"
     filterActions,
 
     /* Get control of the execution of Searching Results
+     - a collection id for which results are coming
+     collectionId: string;
 
-    -collectionId: string;- a collection id for which results are coming
 
-    -items: Item[]; - a list of documents retrieved from the Vantage Database and Transformed with Transformer
+     - a list of documents retrieved from the Vantage Database and Transformed with Transformer
+     items: Item[];
 
-    -executionTime: number; - time of execution of search
+     -time of execution of search
+     executionTime: number;
 
-    -isLoading: boolean; - a state if items are loading from the Vantage Database
-    -isSuccess: boolean; - a state if items are succesfully fetched from the Vantage Database
-    -isError: boolean; */ - a state if fetching items return some error from the Vantage Detabase
+     - a state if items are loading from the Vantage Database
+     isLoading: boolean;
+
+     - a state if items are succesfully fetched from the Vantage Database
+     isSuccess: boolean;
+
+     - a state if fetching items return some error from the Vantage Detabase
+     isError: boolean; */
     searchResults,
 
     /*
@@ -401,12 +409,14 @@ import {useUrlParamsHook} from "vantage-demo-template"
     dataConfiguration
     /*
     Get search from url
+    search url param , save state of user search input
     */
-    search - search url param , save state of user search input
+    search
     /*
     Get document id from 
+    document id , save state of id selected for more like this
     */
-    documentId - document id , save state of id selected for more like this
+    documentId
   } = useUrlParamsHook(dataConfiguration,
   search,
   documentId);
@@ -424,38 +434,45 @@ import {useFilterHook} from "vantage-demo-template"
  const {
      /*
       Get all available filters
+      array of all avalable filters 
     */
-    availableFilters: Filter[]; - array of all avalable filters 
+    availableFilters: Filter[]; 
 
     /*
       Get active filters
+      array of all filters that are active
     */
-    activeFilters: Filter[]; - array of all filters that are active
+    activeFilters: Filter[];
 
      /*
      Get popular filters
+     array of filters that are popular and would be presented as tags for easy activation
     */
-    popularFilters: Filter[]; - array of filters that are popular and would be presented as tags for easy activation
+    popularFilters: Filter[];
 
     /*
       Set active filters
+      function for saving state of acive filters
     */
-    setActiveFilters: (filters: Filter[]) => void - function for saving state of acive filters
+    setActiveFilters: (filters: Filter[]) => void;
 
     /*
       Toggle filters
+      function for changing some filter to active, and vise versa
     */
-    toggleFilters: (filters: Filter[]) => void; - function for changing some filter to active, and vise versa
+    toggleFilters: (filters: Filter[]) => void;
 
     /*
      Get filters string
+     function return active filters as a string in the form: "categoriName1:filterName1 , categoriName2:filterName2"
     */
-    getFilterString: () => string; - function return active filters as a string in the form: "categoriName1:filterName1 , categoriName2:filterName2"
+    getFilterString: () => string;
 
     /*
       Clear all active filters
+      function deactivates all active filters
     */
-    clearActiveFilters: () => void; - function deactivates all active filters
+    clearActiveFilters: () => void;
   } = useFilterHook( {filterType, getAvailableFilters, getPopularFilters });
 
 ```
