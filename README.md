@@ -218,8 +218,23 @@ npm install vantage-demo-template
     // Min value 0
     // Max value 1 
     // default 1
-    cosineSimilarityScoreWeight?: number 
-  }
+    cosineSimilarityScoreWeight?: number,
+  },
+
+  // Vibe configuration if setted enables setting up vibes that affects the results 
+  vibe?:{
+
+    // Function for getting boards of vibes
+    // Pins are actual vibes, board contain array of smillar vibes
+    // Ex. const getBoards = async (): Promise<VibeBoard[]> => 
+    // return { boards: [{ name :"some name of board", 
+    // pins: [{ "id": "some id", image_url: "some img url", "text":"some text that will be used for embeddings"}]}]};};
+    getBoards: () => Promise<VibeBoard[]>,
+
+    // number 0-1
+    // default 0.25
+    // Represents how much vibe influence results
+    vibeOverallWeight?: number,
 
 ```
 ## 🚀 START USING IT
@@ -446,26 +461,40 @@ import {useToggleHook} from "vantage-demo-template"
 ```typescript
 import {VantageSearchQueries} from "vantage-demo-template"
 
-
-  /**
+ /**
    * Performs Vantage Search then it performs getItemsByIds from customerDataHandler.
    *
+   * @param vantageSearchURL: Url of vantage search,
    * @param searchConfiguration Search configuration that is customer only related.
    * @param searchParameters A parameters send to Broker to retrieve results.
    * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
    * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
    */
-  const searchResults = VantageSearchQueries.useSearchByConfiguration(vantageSearchURL, searchConfigurations, searchParameters, customerDataHandler)
-
+  useSearchByConfiguration,
   /**
    * Performs Vantage More Like This and then it performs getItemsByIds from customerDataHandler.
    *
+   * @param vantageSearchURL: Url of vantage search,
+   * @param enable: True or false are queri enabled,
    * @param searchConfiguration Search configuration that is customer only related.
    * @param searchParameters A parameters send to Broker to retrieve results.
    * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
    * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
    */
-  const searchResults = VantageSearchQueries.useMoreLikeThisByConfiguration(vantageSearchURL, searchConfigurations, searchParameters, customerDataHandler),
+  useMoreLikeThisByConfiguration,
+
+  /**
+   * Performs Vantage More Like These and then it performs getItemsByIds from customerDataHandler.
+   *
+   * @param vantageSearchURL: Url of vantage search,
+   * @param enable: True or false are queri enabled,
+   * @param searchConfiguration Search configuration that is customer only related.
+   * @param searchParameters: A parameters send to Broker to retrieve results.
+   * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
+   * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
+   */
+  useMoreLikeTheseByConfiguration,
+
 }
 
 ```
