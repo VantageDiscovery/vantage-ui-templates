@@ -8,7 +8,7 @@ import { UseCustomerAPIType } from "abstracts";
 const DEFAULT_PAGE_SIZE = 20;
 const DEFAULT_PAGE_NUMBER = 0;
 
-const useQueries = ({
+const useSearchs = ({
   dataConfiguration,
   query,
   moreLikeDocumentId,
@@ -127,4 +127,4 @@ const useQueries = ({
   };
 };
 
-export default useQueries;
+export default useSearchs;

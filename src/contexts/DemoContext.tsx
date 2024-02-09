@@ -14,7 +14,7 @@ import {
 } from "abstracts/DemoContextTypes";
 import useUrlParams from "hooks/useUrlParameters";
 import useVibe from "hooks/useVibe";
-import useQueries from "hooks/useQueries";
+import useSearchs from "hooks/useSearchs";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
 
@@ -61,7 +61,7 @@ export const DemoProvider = ({
     multiMLTSearchResults,
     multiMLTheseSearchResults,
     multiMLTheseDocumentIdResults,
-  } = useQueries({
+  } = useSearchs({
     dataConfiguration,
     query,
     moreLikeDocumentId,

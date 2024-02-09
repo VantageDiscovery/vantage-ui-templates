@@ -180,6 +180,7 @@ export const VantageSearchQueries = {
   /**
    * Performs Vantage Search then it performs getItemsByIds from customerDataHandler.
    *
+   * @param vantageSearchURL: Url of vantage search,
    * @param searchConfiguration Search configuration that is customer only related.
    * @param searchParameters A parameters send to Broker to retrieve results.
    * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
@@ -190,11 +191,24 @@ export const VantageSearchQueries = {
   /**
    * Performs Vantage More Like This and then it performs getItemsByIds from customerDataHandler.
    *
+   * @param vantageSearchURL: Url of vantage search,
+   * @param enable: True or false are queri enabled,
    * @param searchConfiguration Search configuration that is customer only related.
    * @param searchParameters A parameters send to Broker to retrieve results.
    * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
    * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
    */
   useMoreLikeThisByConfiguration,
+
+  /**
+   * Performs Vantage More Like This and then it performs getItemsByIds from customerDataHandler.
+   *
+   * @param vantageSearchURL: Url of vantage search,
+   * @param enable: True or false are queri enabled,
+   * @param searchConfiguration Search configuration that is customer only related.
+   * @param searchParameters: A parameters send to Broker to retrieve results.
+   * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
+   * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
+   */
   useMoreLikeTheseByConfiguration,
 };
