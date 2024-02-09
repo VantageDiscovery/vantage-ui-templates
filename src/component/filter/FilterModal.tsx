@@ -8,10 +8,12 @@ const FilterModal = ({
   isModalVisible,
   toggleModal,
   useFilters,
+  selectedColor,
 }: {
   isModalVisible: boolean;
   toggleModal: () => void;
   useFilters: UseFiltersType;
+  selectedColor?: string;
 }) => {
   const { activeFilters, setActiveFilters, availableFilters } = useFilters;
 
@@ -47,7 +49,7 @@ const FilterModal = ({
       <>
         <header className="flex w-full px-6 justify-between">
           <span className="flex justify-center w-full">
-            <h1 className="uppercase tracking-widest text-lg">Recipe Filter</h1>
+            <h1 className="uppercase tracking-widest text-lg">Filters</h1>
           </span>
           <button
             onClick={() => {
@@ -76,6 +78,7 @@ const FilterModal = ({
               }}
               key={`${section[0]}`}
               filterSection={section}
+              selectedColor={selectedColor}
             />
           ))}
         </div>
@@ -109,10 +112,12 @@ const ModalFiltersSection = ({
   filterSection,
   isFilterSelected,
   onFilterClick,
+  selectedColor,
 }: {
   filterSection: [string, Filter[]];
   isFilterSelected: (filter: Filter) => boolean;
   onFilterClick: (filter: Filter) => void;
+  selectedColor?: string;
 }) => {
   const [isShowMore, setIsShowMore] = useState(
     filterSection[1].length > 10 ? false : undefined
@@ -136,7 +141,7 @@ const ModalFiltersSection = ({
                 title={filter.name}
                 key={`${filter.categorySlug}-${filter.name}`}
                 isSelected={isFilterSelected(filter)}
-                selectedColor="black"
+                selectedColor={selectedColor}
                 onClick={() => {
                   onFilterClick(filter);
                 }}

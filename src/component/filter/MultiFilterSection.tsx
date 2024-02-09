@@ -5,7 +5,13 @@ import React from "react";
 import Chip from "./Chip";
 import FilterModal from "./FilterModal";
 
-const MultiFilterSection = ({ useFilters }: { useFilters: UseFiltersType }) => {
+const MultiFilterSection = ({
+  useFilters,
+  selectedColor,
+}: {
+  useFilters: UseFiltersType;
+  selectedColor?: string;
+}) => {
   const { activeFilters, toggleFilters, clearActiveFilters, popularFilters } =
     useFilters;
   const [isModalVisible, toggleModal] = useToggle();
@@ -35,7 +41,7 @@ const MultiFilterSection = ({ useFilters }: { useFilters: UseFiltersType }) => {
         <span className="flex gap-4">
           <button
             type="button"
-            className="px-6 py-2 border-[1px] rounded-2xl border-gray-400 hover:bg-gray-50"
+            className="px-6 py-2 border-[1px] rounded-2xl border-gray-400 hover:bg-gray-300"
             data-testid="all-filters-button"
             onClick={() => toggleModal()}
           >
@@ -51,6 +57,7 @@ const MultiFilterSection = ({ useFilters }: { useFilters: UseFiltersType }) => {
           isModalVisible={isModalVisible}
           toggleModal={toggleModal}
           useFilters={useFilters}
+          selectedColor={selectedColor}
         />
       </div>
       {activeFilters.length > 0 && (
@@ -71,6 +78,7 @@ const MultiFilterSection = ({ useFilters }: { useFilters: UseFiltersType }) => {
                 isCancelVisible
                 isSelected
                 onCancel={() => toggleFilters([filter])}
+                selectedColor={selectedColor}
               />
             ))}
           </span>
