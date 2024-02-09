@@ -20,6 +20,7 @@ const ProductDemoTemplate = ({
 }): JSX.Element => {
   const {
     filterActions,
+    vibeActions,
     searchResults,
     variables,
     demoActions,
@@ -68,7 +69,7 @@ const ProductDemoTemplate = ({
                 {brandingConfiguration.title}
               </h3>
             </div>
-            <div className="flex flex-col w-3/5 gap-10">
+            <div className="flex flex-col w-5/6 gap-10 items-center">
               <ProductSearchSection
                 searchQuery={variables.query}
                 setSearchQuery={demoActions.setQuery}
@@ -78,6 +79,7 @@ const ProductDemoTemplate = ({
                 isSingleFilter={
                   dataConfiguration.filter.type === EFiltersType.SINGLE_SELECT
                 }
+                vibeActions={vibeActions}
               />
             </div>
             <hr className="w-full" />

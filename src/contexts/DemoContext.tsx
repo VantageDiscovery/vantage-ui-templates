@@ -1,6 +1,5 @@
 import { DataConfiguration } from "abstracts/DemoConfigurationTypes";
 import useFilters from "hooks/useFilters";
-import { VantageSearchQueries } from "queries/VantageSearchQueries";
 import useCustomerAPI from "../hooks/useCustomerApi";
 import React, {
   createContext,
@@ -14,11 +13,10 @@ import {
   DemoContextType,
 } from "abstracts/DemoContextTypes";
 import useUrlParams from "hooks/useUrlParameters";
+import useVibe from "hooks/useVibe";
+import useSearchs from "hooks/useSearchs";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
-
-const DEFAULT_PAGE_SIZE = 20;
-const DEFAULT_PAGE_NUMBER = 0;
 
 export const DemoProvider = ({
   children,
@@ -36,64 +34,58 @@ export const DemoProvider = ({
     getPopularFilters: configuration.filter.getPopularFilters,
   });
 
-  const [urlSearchParameter, setUrlSearchParameter] = useState<string>();
-  const [urlDocumentId, setUrlDocumentId] = useState<string>();
-  const { dataConfiguration, search, documentId } = useUrlParams({
-    dataConfiguration: configuration,
-    search: urlSearchParameter,
-    documentId: urlDocumentId,
-  });
+  const { dataConfiguration, search, documentId, setSearchUrl, setDocumentId } =
+    useUrlParams({
+      dataConfiguration: configuration,
+    });
   const [moreLikeDocumentId, setMoreLikeDocumentId] = useState<string>(
     documentId ?? ""
   );
-  const [query, setQuery] = useState<string>(search);
+  const [query, setQuery] = useState<string>(
+    search.length > 0 ? search : dataConfiguration.defaultSearchQuery
+  );
   const [isDeveloperViewToggled, setIsDeveloperViewToggled] =
     useState<boolean>(false);
 
-  const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
-    dataConfiguration.vantageSearchURL,
-    dataConfiguration.collectionIds.map((collectionId: string) => ({
-      apiKey: dataConfiguration.apiKey,
-      customerId: dataConfiguration.accountId,
-      customerNamespace: collectionId,
-    })),
-    {
-      query: search.length > 0 ? search : dataConfiguration.defaultSearchQuery,
-      accuracy: dataConfiguration.defaultAccuracy,
-      filters: filterHandlers.getFilterString(),
-      pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
-      pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
-      ...dataConfiguration.shingling,
-    },
-    {
-      getItemsByIds: customerAPI.getItemsByIds,
-    }
-  );
+  const vibeHandler = useVibe({
+    getBoards: dataConfiguration?.vibe?.getBoards,
+    vibeOverallWeightDefault: dataConfiguration.vibe?.vibeOverallWeight,
+  });
 
-  const multiMLTSearchResults =
-    VantageSearchQueries.useMoreLikeThisByConfiguration(
-      dataConfiguration.vantageSearchURL,
-      dataConfiguration.collectionIds.map((collectionId: string) => ({
-        apiKey: dataConfiguration.apiKey,
-        customerId: dataConfiguration.accountId,
-        customerNamespace: collectionId,
-      })),
-      {
-        documentId: moreLikeDocumentId,
-        accuracy: dataConfiguration.defaultAccuracy,
-        pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
-        pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
-      },
-      {
-        getItemsByIds: customerAPI.getItemsByIds,
-      }
-    );
+  const isMoreLikeTheseActive = (): boolean => {
+    return vibeHandler.activeVibe.length > 0;
+  };
+
+  const {
+    multiQuerySearchResults,
+    multiMLTSearchResults,
+    multiMLTheseSearchResults,
+    multiMLTheseDocumentIdResults,
+  } = useSearchs({
+    dataConfiguration,
+    query,
+    moreLikeDocumentId,
+    isMoreLikeTheseActive: isMoreLikeTheseActive(),
+    vibeHandler,
+    filters: filterHandlers.getFilterString(),
+    customerAPI,
+  });
+
+  const returnTypeOfResults = () => {
+    if (isMoreLikeTheseActive()) {
+      return moreLikeDocumentId
+        ? multiMLTheseDocumentIdResults
+        : multiMLTheseSearchResults;
+    }
+    if (moreLikeDocumentId) {
+      return multiMLTSearchResults;
+    }
+    return multiQuerySearchResults;
+  };
 
   const collectionSearchResults: CollectionSearchResult[] = useMemo(() => {
-    let activeSearchResult = multiQuerySearchResults;
-    if (moreLikeDocumentId) {
-      activeSearchResult = multiMLTSearchResults;
-    }
+    const activeSearchResult = returnTypeOfResults();
+
     return activeSearchResult.map((searchResult, index) => {
       const { data, isError, isFetching, isSuccess } = searchResult;
       return {
@@ -105,7 +97,12 @@ export const DemoProvider = ({
         collectionId: configuration.collectionIds[index], // as per Tanstack useQueries configuration
       };
     });
-  }, [multiQuerySearchResults, multiMLTSearchResults]);
+  }, [
+    multiQuerySearchResults,
+    multiMLTSearchResults,
+    multiMLTheseSearchResults,
+    multiMLTheseDocumentIdResults,
+  ]);
 
   const refetchSearchQueryResults = () => {
     for (const searchResults of multiQuerySearchResults) {
@@ -113,47 +110,73 @@ export const DemoProvider = ({
     }
   };
 
-  const refetchMLTSearchResults = () => {
-    for (const searchResults of multiMLTSearchResults) {
+  const refetchMLTheseSearchResults = () => {
+    for (const searchResults of multiMLTheseSearchResults) {
+      searchResults.refetch();
+    }
+  };
+
+  const refetchMLTheseDocumentIdResults = () => {
+    for (const searchResults of multiMLTheseDocumentIdResults) {
       searchResults.refetch();
     }
   };
 
   useEffect(() => {
-    setMoreLikeDocumentId("");
-    refetchSearchQueryResults();
+    performFilterChange();
   }, [filterHandlers.activeFilters]);
 
-  useEffect(() => {
-    search.length > 0
-      ? (setQuery(search), refetchSearchQueryResults())
-      : (documentId.length === 0 &&
-          setQuery(dataConfiguration.defaultSearchQuery),
-        refetchSearchQueryResults());
-  }, [search]);
+  const performMoreLikeThese = () => {
+    moreLikeDocumentId
+      ? refetchMLTheseDocumentIdResults()
+      : refetchMLTheseSearchResults();
+  };
+
+  const performFilterChange = () => {
+    if (isMoreLikeTheseActive()) {
+      performMoreLikeThese();
+      return;
+    }
+    refetchSearchQueryResults();
+  };
+  const performSearch = () => {
+    setSearchUrl(query);
+    if (isMoreLikeTheseActive()) {
+      moreLikeDocumentId
+        ? setMoreLikeDocumentId("")
+        : refetchMLTheseSearchResults();
+      return;
+    }
+    setMoreLikeDocumentId("");
+    refetchSearchQueryResults();
+  };
+
+  const performMoreLikeThis = (id: string) => {
+    if (isMoreLikeTheseActive() && moreLikeDocumentId === id) {
+      refetchMLTheseDocumentIdResults();
+      return;
+    }
+    setDocumentId(id);
+    setMoreLikeDocumentId(id);
+  };
 
   useEffect(() => {
-    setMoreLikeDocumentId(documentId ?? "");
-    documentId.length > 0
-      ? (refetchMLTSearchResults(), setQuery(documentId))
-      : (search.length > 0 && setQuery(search), refetchSearchQueryResults());
-  }, [documentId]);
+    if (isMoreLikeTheseActive()) {
+      performMoreLikeThese();
+      return;
+    }
+    if (!moreLikeDocumentId) refetchSearchQueryResults();
+  }, [vibeHandler.activeVibe]);
 
   return (
     <DemoContext.Provider
       value={{
         filterActions: filterHandlers,
+        vibeActions: vibeHandler,
         searchResults: collectionSearchResults,
         demoActions: {
-          performSearch: () => {
-            setMoreLikeDocumentId("");
-            setUrlSearchParameter(query);
-          },
-          performMoreLikeThis: (id: string) => {
-            setUrlDocumentId(id);
-            setMoreLikeDocumentId(id);
-            setQuery(id);
-          },
+          performSearch,
+          performMoreLikeThis,
           setQuery,
           setIsDeveloperViewToggled,
         },

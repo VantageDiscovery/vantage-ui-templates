@@ -110,17 +110,11 @@ export const useDemoHook = (): DemoContextType => {
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export const useUrlParamsHook = ({
   dataConfiguration,
-  search,
-  documentId,
 }: {
   dataConfiguration: DataConfiguration;
-  search?: string;
-  documentId?: string;
 }): UseUrlParametersType => {
   return useUrlParameters({
     dataConfiguration,
-    search,
-    documentId,
   });
 };
 

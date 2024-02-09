@@ -40,6 +40,18 @@ export type SearchByQueryParameters = SearchParameters &
     query: string;
   };
 
+export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters & {
+  filters: string;
+  these: MoreLikeTheseParameters[];
+  vibe_overall_weight?: number;
+};
+
+export type MoreLikeTheseParameters = {
+  query_document_id?: string;
+  query_text?: string;
+  weight?: number;
+};
+
 export type ShinglingParameters = {
   cosineSimilarityScoreWeight: number;
   queryMatchScoreWeight: number;
@@ -67,4 +79,9 @@ export interface SearchParametersDTO {
   };
   document_id?: string;
   text?: string;
+  these?: {
+    query_document_id?: string;
+    query_text?: string;
+    weight?: number;
+  }[];
 }

@@ -8,7 +8,10 @@ import {
   VantageSearchResult,
   VantageSearchResponseDTO,
   VantageSearchResponse,
+  SearchMoreLikeTheseParameters,
+  MoreLikeTheseParameters,
 } from "abstracts/VantageTypes";
+import { BoardData } from "abstracts/VibeTypes";
 
 export const TransformVantageSearchParametersViewToDTO = (
   searchConfiguration: SearchConfiguration,
@@ -66,6 +69,50 @@ export const TransformVantageSearchMoreLikeThisParametersViewToDTO = (
       boolean_filter: "",
     },
   };
+};
+
+export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
+  searchConfiguration: SearchConfiguration,
+  searchParameters: SearchMoreLikeTheseParameters
+): SearchParametersDTO => {
+  return {
+    ...TransformVantageSearchParametersViewToDTO(
+      searchConfiguration,
+      searchParameters
+    ),
+    these: searchParameters.these,
+    // TODO: delete once it is removed on backend
+    document_id: "0",
+    filter: {
+      boolean_filter:
+        searchParameters.filters === "()" ? "" : searchParameters.filters,
+    },
+  };
+};
+
+export const transformToAddWeightToThese = ({
+  these,
+  document_id,
+  query,
+  vibe_overall_weight = 0,
+}: {
+  these: BoardData[];
+  document_id?: string;
+  query?: string;
+  vibe_overall_weight?: number;
+}): MoreLikeTheseParameters[] => {
+  const firstParameter = document_id
+    ? { query_document_id: document_id }
+    : { query_text: query };
+  return [
+    { ...firstParameter, weight: 1 - vibe_overall_weight },
+    ...these.map((data) => {
+      return {
+        query_text: data.text,
+        weight: (1 / these.length) * vibe_overall_weight,
+      };
+    }),
+  ];
 };
 
 export const TransformVantageSearchResultDTOToView = (
