@@ -12,7 +12,7 @@ const useQueries = ({
   dataConfiguration,
   query,
   moreLikeDocumentId,
-  isMoreLikeTheseActiv,
+  isMoreLikeTheseActive,
   vibeHandler,
   filters,
   customerAPI,
@@ -21,7 +21,7 @@ const useQueries = ({
   query: string;
   moreLikeDocumentId: string;
   filters: string;
-  isMoreLikeTheseActiv: boolean;
+  isMoreLikeTheseActive: boolean;
   vibeHandler: UseVibeType;
   customerAPI: UseCustomerAPIType;
 }): UseQueriesType => {
@@ -68,7 +68,7 @@ const useQueries = ({
   const multiMLTheseSearchResults =
     VantageSearchQueries.useMoreLikeTheseByConfiguration(
       dataConfiguration.vantageSearchURL,
-      isMoreLikeTheseActiv && moreLikeDocumentId.length === 0,
+      isMoreLikeTheseActive && moreLikeDocumentId.length === 0,
       dataConfiguration.collectionIds.map((collectionId: string) => ({
         apiKey: dataConfiguration.apiKey,
         customerId: dataConfiguration.accountId,
@@ -80,10 +80,10 @@ const useQueries = ({
         pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
         pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
         filters: filters,
-        vibe_overall_weight: vibeHandler.slideVibeOverallWeight,
+        vibe_overall_weight: vibeHandler.vibeOverallWeight,
         these: transformToAddWeightToThese({
           these: vibeHandler.activeVibe,
-          vibe_overall_weight: vibeHandler.slideVibeOverallWeight,
+          vibe_overall_weight: vibeHandler.vibeOverallWeight,
           query,
         }),
       },
@@ -94,7 +94,7 @@ const useQueries = ({
   const multiMLTheseDocumentIdResults =
     VantageSearchQueries.useMoreLikeTheseByConfiguration(
       dataConfiguration.vantageSearchURL,
-      isMoreLikeTheseActiv && moreLikeDocumentId.length > 0,
+      isMoreLikeTheseActive && moreLikeDocumentId.length > 0,
       dataConfiguration.collectionIds.map((collectionId: string) => ({
         apiKey: dataConfiguration.apiKey,
         customerId: dataConfiguration.accountId,
@@ -106,10 +106,10 @@ const useQueries = ({
         pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
         pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
         filters: filters,
-        vibe_overall_weight: vibeHandler.slideVibeOverallWeight,
+        vibe_overall_weight: vibeHandler.vibeOverallWeight,
         these: transformToAddWeightToThese({
           these: vibeHandler.activeVibe,
-          vibe_overall_weight: vibeHandler.slideVibeOverallWeight,
+          vibe_overall_weight: vibeHandler.vibeOverallWeight,
           document_id: moreLikeDocumentId,
           query,
         }),

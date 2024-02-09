@@ -35,7 +35,7 @@ const useVibe = ({
     activeVibe,
     changeActiveVibe,
     setSlideVibeOverallWeight,
-    slideVibeOverallWeight: vibeOverallWeight,
+    vibeOverallWeight,
   };
 };
 

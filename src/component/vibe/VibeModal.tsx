@@ -1,14 +1,15 @@
 import { BoardData, UseVibeType, VibeBoard } from "abstracts/VibeTypes";
 import Modal from "component/layout/Modal";
 import React, { useEffect, useState } from "react";
-import PintrestLogo from "icons/PintrestLogo";
+import PinterestLogo from "icons/PinterestLogo";
 import VibeChip from "./VibeChip";
-import PintrestForm from "./PintrestForm";
+import PinterestForm from "./PinterestForm";
 import sessionStorageService from "services/SessionStorageService";
 import ResetIcon from "icons/ResetIcon";
 import LottieImage from "animation/LottieImage";
 import VibeCard from "./VibeCard";
 import Masonry from "react-layout-masonry";
+import cn from "utils/cn";
 
 const toggleVibe = (
   activeVibe: BoardData[],
@@ -92,6 +93,10 @@ const VibeModal = ({
     return activeBoard === board;
   };
 
+  const clearCurrentVibe = () => {
+    setCurrentVibe([]);
+  };
+
   const bodySection = (): React.JSX.Element => {
     return showAnimation ? (
       <div className="w-full h-full items-center flex">
@@ -134,16 +139,17 @@ const VibeModal = ({
   return (
     <Modal
       isVisible={isModalVisible}
-      className={`flex flex-col  ${
-        username ? "w-3/5 h-5/6" : "w-1/5 h-1/2"
-      } relative bg-white rounded-lg py-6 gap-5`}
+      className={cn(
+        "flex flex-col relative bg-white py-6 gap-5",
+        username ? "w-3/5 h-5/6 rounded-lg" : "w-1/5 h-1/2 rounded-3xl"
+      )}
       onCloseModal={toggleModal}
     >
       {username ? (
         <>
           <header className="flex w-full px-6 justify-center items-center">
-            <div className="w-1/5">
-              <PintrestLogo />
+            <div className="w-1/5 min-w-[100px]">
+              <PinterestLogo />
             </div>
             <span className="flex justify-center w-full">
               <h1 className="text-sm md:text-lg lg:text-xl xl:text-2xl">
@@ -152,19 +158,17 @@ const VibeModal = ({
             </span>
             <div className="flex">
               <button
-                className={`${
-                  !showAnimation && "hover:bg-[#EFEFEF]"
-                } mr-5 rounded-3xl`}
-                onClick={() => setCurrentVibe([])}
+                className={cn("mr-5 rounded-3xl", {
+                  "hover::bg-[#EFEFEF]": !showAnimation,
+                })}
+                onClick={clearCurrentVibe}
                 disabled={showAnimation}
               >
                 <ResetIcon />
               </button>
               <button
-                onClick={() => {
-                  onModalClose();
-                }}
-                className="flex rounded-4xl w-36 h-12 text-white text-base bg-[#E60023] justify-center items-center"
+                onClick={onModalClose}
+                className="flex rounded-4xl w-36 h-12 text-white text-base bg-pinterest-primary justify-center items-center"
                 disabled={showAnimation}
               >
                 Set Vibe
@@ -174,7 +178,7 @@ const VibeModal = ({
           {bodySection()}
         </>
       ) : (
-        <PintrestForm
+        <PinterestForm
           setUsername={(value: string) => {
             sessionStorageService.setSessionUsername(value);
             setUsername(value);

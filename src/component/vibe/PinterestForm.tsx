@@ -20,7 +20,7 @@ const PintrestForm = ({
 
   return (
     <form
-      className="flex flex-col bg-white gap-2"
+      className="flex flex-col bg-white gap-3 mx-2"
       onSubmit={(event) => {
         event.preventDefault();
         onLogin();
@@ -29,10 +29,10 @@ const PintrestForm = ({
       <div className="w-full flex items-center mt-2 justify-center">
         <PintrestIcon />
       </div>
-      <span className="w-full text-3xl font-bold text-center mb-2">
+      <span className="w-full md:text-xl lg:text-2xl xl:text-3xl sm:text-lg font-bold text-center mb-2">
         Log in to see more
       </span>
-      <div className="flex flex-col mx-10 gap-2">
+      <div className="flex flex-col mx-10 gap-3">
         <span className="ml-2 text-gray-500">Email</span>
         <input
           type="text"
@@ -49,7 +49,7 @@ const PintrestForm = ({
           <input
             type={`${showPassword ? "text" : "password"}`}
             placeholder="Password"
-            className="outline outline-gray-400 outline-1 rounded-2xl w-full h-12 pl-4"
+            className="outline outline-gray-400 outline-1 rounded-2xl w-full h-full pl-4"
             required={true}
           />
           <button
@@ -63,7 +63,7 @@ const PintrestForm = ({
         <p className="ml-2 font-bold text-start">Forgot password ?</p>
         <button
           type="submit"
-          className="rounded-2xl mt-2 text-white font-bold text-lg bg-[#E60023] h-12"
+          className="rounded-4xl text-white font-bold text-lg bg-pinterest-primary h-12"
         >
           Log In
         </button>

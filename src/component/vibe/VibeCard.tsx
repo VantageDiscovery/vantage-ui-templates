@@ -1,6 +1,7 @@
 import { BoardData } from "abstracts/VibeTypes";
 import CheckBoxIcon from "icons/CheckBoxIcon";
 import React from "react";
+import cn from "utils/cn";
 
 const VibeCard = ({
   data,
@@ -20,11 +21,12 @@ const VibeCard = ({
         <img
           src={data.image_url}
           alt="vibe"
-          className={`h-auto w-full rounded-3xl object-fill object-center ${
+          className={cn(
+            "h-auto w-full rounded-3xl object-fill object-center",
             activeVibe
-              ? " outline-[2.5px] outline outline-[#E60023]"
+              ? "outline-[2.5px] outline outline-pinterest-primary"
               : "border-none opacity-50"
-          }`}
+          )}
         />
       </button>
       <div className="flex flex-row ">

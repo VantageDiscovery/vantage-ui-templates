@@ -96,7 +96,7 @@ export interface DataConfiguration {
 
 export interface VibeConfiguration {
   getBoards: () => Promise<VibeBoard[]>;
-  vibe_overall_weight?: number;
+  vibeOverallWeight?: number;
 }
 
 export interface FilterConfiguration {

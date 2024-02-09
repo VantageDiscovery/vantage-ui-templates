@@ -3,11 +3,10 @@ import React from "react";
 import VibeModal from "./VibeModal";
 import Slider from "@mui/material/Slider";
 import { UseVibeType } from "abstracts/VibeTypes";
-import PintrestLogo from "icons/PintrestLogo";
+import PinterestLogo from "icons/PinterestLogo";
 
 const VibeSection = ({ useVibe }: { useVibe: UseVibeType }) => {
-  const { activeVibe, slideVibeOverallWeight, setSlideVibeOverallWeight } =
-    useVibe;
+  const { activeVibe, vibeOverallWeight, setSlideVibeOverallWeight } = useVibe;
   const [isModalVisible, toggleModal] = useToggle();
 
   const buttonModalSection = () => {
@@ -18,7 +17,7 @@ const VibeSection = ({ useVibe }: { useVibe: UseVibeType }) => {
         className="relative rounded-lg h-full w-full object-cover"
       />
     ) : (
-      <PintrestLogo />
+      <PinterestLogo />
     );
   };
 
@@ -30,17 +29,17 @@ const VibeSection = ({ useVibe }: { useVibe: UseVibeType }) => {
             type="button"
             className=" border-[1px] h-12 w-28 rounded-lg border-gray-400 hover:bg-gray-50"
             data-testid="all-filters-button"
-            onClick={() => toggleModal()}
+            onClick={toggleModal}
           >
             {buttonModalSection()}
           </button>
           <div className="w-28 mt-1 mr-1 items-end">
             <Slider
-              color={"error"}
+              color="error"
               size="small"
               step={0.01}
               max={1}
-              value={slideVibeOverallWeight}
+              value={vibeOverallWeight}
               onChange={(event, value) => {
                 setSlideVibeOverallWeight(value as number);
               }}

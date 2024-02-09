@@ -1,6 +1,6 @@
 import React from "react";
 
-const PintrestLogo = (): React.JSX.Element => {
+const PinterestLogo = (): React.JSX.Element => {
   return (
     <svg
       version="1.1"
@@ -116,4 +116,4 @@ const PintrestLogo = (): React.JSX.Element => {
   );
 };
 
-export default PintrestLogo;
+export default PinterestLogo;

@@ -14,8 +14,11 @@ module.exports = {
         // Custom screen sizes here
       },
       colors: {
-        primary: "#FF0000",
         // Custom theme colors here
+        primary: "#FF0000",
+        pinterest: {
+          primary : "#E60023"
+        }
       },
       fontFamily: {
         sans: ["Graphik", "sans-serif"],

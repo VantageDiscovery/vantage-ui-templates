@@ -28,10 +28,10 @@ const VibeChip = ({
   title,
   isSelected,
   isCancelVisible,
-  textColor = "white",
   onClick,
   onCancel,
   imgSrc,
+  textColor = "white",
 }: ChipProperties) => {
   const [color] = useState(getRandomColor());
   return (
@@ -41,7 +41,7 @@ const VibeChip = ({
         "mx-2 outline outline-2 outline-black": isSelected,
       })}
       style={{ backgroundColor: color, color: textColor }}
-      onClick={() => onClick && onClick()}
+      onClick={() => onClick?.()}
     >
       <span className="flex w-full justify-between items-center gap-3">
         <img
@@ -58,7 +58,7 @@ const VibeChip = ({
           <span
             onClick={(event) => {
               event.preventDefault();
-              onCancel && onCancel();
+              onCancel?.();
             }}
             className="hover:pointer-cursor"
             data-testid={`chip-close-${title}`}
