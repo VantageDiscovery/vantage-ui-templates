@@ -25,7 +25,7 @@ const Chip = ({
     <button
       type="button"
       className={cn("px-3 py-2 border-[1px] rounded-xl", {
-        "hover:bg-gray-50 border-gray-800": !isSelected,
+        "hover:bg-gray-300 border-gray-800": !isSelected,
       })}
       style={
         isSelected ? { backgroundColor: selectedColor, color: textColor } : {}

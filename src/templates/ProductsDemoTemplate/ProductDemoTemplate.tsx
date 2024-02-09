@@ -45,7 +45,12 @@ const ProductDemoTemplate = ({
     }
 
     if (dataConfiguration.filter.type === EFiltersType.MULTI_SELECT) {
-      return <MultiFilterSection useFilters={filterActions} />;
+      return (
+        <MultiFilterSection
+          useFilters={filterActions}
+          selectedColor={brandingConfiguration.colors.primary}
+        />
+      );
     }
   };
 
