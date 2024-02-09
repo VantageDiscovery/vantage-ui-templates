@@ -22,7 +22,7 @@ npm install vantage-demo-template
 
   // Enter a list of Vantage Collection IDs to fetch data from
   // Find at visit : https://console.dev-a.dev.vantagediscovery.com/collections
-  collectionId: string,
+  collectionId: string | string[],
 
 
   // Enter your Vantage API Key.
@@ -35,11 +35,12 @@ npm install vantage-demo-template
   vantageSearchURL: string,
 
   // Customer api configuration
-  // This is the API where your items are
+  // The API where your data details are exposed (Vantage Search returns ID and Score only)
   // Avalable types are: "vantage" , "cdn" or "custom"
   customerAPI:
 
     // Vantage customer api type configuration
+    // Special case when you shared your data with us and we stored it on our Demo API's
     {
 
     type: "vantage",
@@ -48,7 +49,7 @@ npm install vantage-demo-template
     apiKey: string,
 
 
-    // Ex. https://demo-api.dev-a.dev.vantagediscovery.com/api/v1/items
+    // Ex. https://demo-api.demo-b.vantagediscovery.com/api/v1/items
     // Path to api for fetching items
     apiPath: string,
 
@@ -79,10 +80,10 @@ npm install vantage-demo-template
 
     type: "custom",
 
-    // function for getting items
+    // Override this function with your implementation how to map document ID's from Vantage Database to your objects. Use axios or anything you need!
     getCustomerItems: () => itemDTO[],
 
-    // function for getting filters
+    // Override this function with your implementation how to map filters to your objects. Use axios or anything you need! 
     // default () => Promise.resolve([]),
     getFilter: () => Filter[]
 
@@ -90,7 +91,7 @@ npm install vantage-demo-template
 
      // OR
 
-    // CDN customer api type cofiguration
+    //  Fetch data easily from CDN
     {
 
     type: "cdn",
@@ -109,9 +110,12 @@ npm install vantage-demo-template
     authHeader?: string,
     },
 
-  // if some field from get items need aditional transform
-  // Ex. customFieldTransformer: { description: { fieldName: "metaDescription.description" , transformer: (desc) => desc.slice(1)}
-  customFieldTransformer?: ({
+    // if some field from get items need aditional transform
+    // Ex. objectA:{id:"some id",metaDescription:{ description: ["some text","some text we dont need"] }},
+    // objectA is example how object could get back from database
+    // customFieldTransformer: { description: { fieldName: "metaDescription.description" , transformer: (desc) => desc.slice(1)}
+    // Result of transform : ObjectA:{id:"some id", descrioption:"some text"}
+    customFieldTransformer?: ({
 
     // fields that can be transformed id, description, imageSrc, title, embeddingText, externalUrl , meta: imageLabel, subtitle
     id?: {
@@ -127,6 +131,7 @@ npm install vantage-demo-template
 
 
   // Accuracy of search
+  // Higher accuracy leads to precise results and longer time execution, and vice versa
   // min value 0
   // max value 1
   // default: 0.5
@@ -134,11 +139,13 @@ npm install vantage-demo-template
 
 
   // What you want to be inital search
-  // deafault "Type in anything you want and explore magic..."
+  // default "Type in anything you want and explore magic..."
   defaultSearchQuery?: string,
 
 
   // Original search results
+  // Url pattern to some site to get their search with our search text
+  // If setted create link icon that lead to url 
   // Ex. https://google.com/search?q=${query} will get you to google search results for query 
   // Note need to have ${query} that will be replaced with real query
   originalSearchResultsURL?: string,
@@ -241,18 +248,18 @@ npm install vantage-demo-template
 
 #### Generate template with just configuration 
 
-```typesrcipt
+```typescript
 
 import React from "react";
 import configuraton from "./configuration";
-import { generateTempleteWithConfig } from "vantage-demo-template";
+import { generateTemplateWithConfig } from "vantage-demo-template";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={generateTempleteWithConfig(configuration)} />
+        <Route path="/" element={generateTemplateWithConfig(configuration)} />
       </Routes>
     </BrowserRouter>
   );
@@ -264,7 +271,8 @@ export default App;
 #### VantageWrapper
 
 Mandatory wrapper for using vantage hooks and queries
-```typesrcipt
+Use our logic with your styling and UI!
+```typescript
 
 import React from "react";
 import configuraton from "./configuration";
@@ -284,6 +292,8 @@ function App() {
 export default App;
 ```
 ### 🪝 Hooks
+
+Hooks to incorporate our logic into your UI!
 
 #### useDemoHook
 
@@ -309,7 +319,9 @@ import {useDemoHook} from "vantage-demo-template"
     Toggle filters
     -toggleFilters: (filters: Filter[]) => void;
 
+    
     Get filters string
+    Return active filters as a string in the form: "categoriName1:filterName1 , categoriName2:filterName2"
     -getFilterString: () => string;
 
     Clear all active filters
@@ -317,21 +329,25 @@ import {useDemoHook} from "vantage-demo-template"
     */
     filterActions,
 
-    /* Get search results
-    -collectionId: string;
-    -items: Item[];
-    -executionTime: number;
-    -isLoading: boolean;
-    -isSuccess: boolean;
-    -isError: boolean; */
+    /* Get control of the execution of Searching Results
+
+    -collectionId: string;- a collection id for which results are coming
+
+    -items: Item[]; - a list of documents retrieved from the Vantage Database and Transformed with Transformer
+
+    -executionTime: number; - time of execution of search
+
+    -isLoading: boolean; - a state if items are loading from the Vantage Database
+    -isSuccess: boolean; - a state if items are succesfully fetched from the Vantage Database
+    -isError: boolean; */ - a state if fetching items return some error from the Vantage Detabase
     searchResults,
 
     /*
     Variables
 
-    query: string;
-    isDeveloperViewToggled: boolean;
-    moreLikeDocumentId: string;
+    query: string; - used to save state of users search input
+    isDeveloperViewToggled: boolean; - used to check whether Developer button is toggled (in order to see a different UI)
+    moreLikeDocumentId: string; - used to save state of id of item used in more like this search
     */
     variables,
 
@@ -372,7 +388,8 @@ import {useCustomerAPIHook} from "vantage-demo-template"
 
 #### useUrlParamsHook
 
-Hook for override accuracy, customerId, cosine_similarity_score_weight, query_match_score_weight, document_match_score_weight values and saving state of results
+Hook will first attempt to retrieve parameters from the URL query parameters and override values setted in configuration.
+Values that can be overriden by url params: accuracy, customerId, cosine_similarity_score_weight, query_match_score_weight, document_match_score_weight
 
 ```typescript
 import {useUrlParamsHook} from "vantage-demo-template"
@@ -381,15 +398,15 @@ import {useUrlParamsHook} from "vantage-demo-template"
     /*
     Get data configuration back with overriden values
     */
-    dataConfiguration,
+    dataConfiguration
     /*
     Get search from url
     */
-    search,
+    search - search url param , save state of user search input
     /*
     Get document id from 
     */
-    documentId,
+    documentId - document id , save state of id selected for more like this
   } = useUrlParamsHook(dataConfiguration,
   search,
   documentId);
@@ -408,37 +425,37 @@ import {useFilterHook} from "vantage-demo-template"
      /*
       Get all available filters
     */
-    availableFilters: Filter[];
+    availableFilters: Filter[]; - array of all avalable filters 
 
     /*
       Get active filters
     */
-    activeFilters: Filter[];
+    activeFilters: Filter[]; - array of all filters that are active
 
      /*
      Get popular filters
     */
-    popularFilters: Filter[];
+    popularFilters: Filter[]; - array of filters that are popular and would be presented as tags for easy activation
 
     /*
       Set active filters
     */
-    setActiveFilters: (filters: Filter[]) => void;
+    setActiveFilters: (filters: Filter[]) => void - function for saving state of acive filters
 
     /*
       Toggle filters
     */
-    toggleFilters: (filters: Filter[]) => void;
+    toggleFilters: (filters: Filter[]) => void; - function for changing some filter to active, and vise versa
 
     /*
      Get filters string
     */
-    getFilterString: () => string;
+    getFilterString: () => string; - function return active filters as a string in the form: "categoriName1:filterName1 , categoriName2:filterName2"
 
     /*
       Clear all active filters
     */
-    clearActiveFilters: () => void;
+    clearActiveFilters: () => void; - function deactivates all active filters
   } = useFilterHook( {filterType, getAvailableFilters, getPopularFilters });
 
 ```
@@ -560,11 +577,10 @@ const getFilters = (): Promise<Filter[]> => {
 
 const configuration: ClientConfiguration = {
   template: EDemoTemplate.PUBLISHER, // default product
-  accountId: "Enter your Vantage Account ID.",
-  collectionId: "Enter a list of Vantage Collection IDs to fetch data from.",
-  apiKey: "Enter your Vantage API Key.",
-  vantageSearchURL:
-    "Enter an url to the Vantage API you want to fetch data from.", // default https://api.vanta.ge/v1/search
+  * accountId: "ENTER YOUR VANTAGE ACCOUNT ID.",
+  * collectionId: "ENTER A LIST OF VANTAGE COLLECTION IDS TO FETCH DATA FROM.",
+  * apiKey: "ENTER YOUR VANTAGE API KEY.",
+  * vantageSearchURL: "ENTER AN URL TO THE VANTAGE API YOU WANT TO FETCH DATA FROM.", // default https://api.vanta.ge/v1/search
   customerAPI: {
     type: ECustomerAPIType.VANTAGE_API,
     apiKey: "",//key of api for path below
@@ -644,11 +660,10 @@ const getItemsByIds = async (ids: string[]): Promise<ItemWithoutScore[]> => {
 
 const configuration: ClientConfiguration = {
   template: EDemoTemplate.PUBLISHER,
-  accountId: "Enter your Vantage Account ID.",
-  collectionId: "Enter a list of Vantage Collection IDs to fetch data from.",
-  apiKey: "Enter your Vantage API Key.",
-  vantageSearchURL:
-    "Enter an url to the Vantage API you want to fetch data from.", // default https://api.vanta.ge/v1/search
+  * accountId: "ENTER YOUR VANTAGE ACCOUNT ID.",
+  * collectionId: "ENTER A LIST OF VANTAGE COLLECTION IDS TO FETCH DATA FROM.",
+  * apiKey: "ENTER YOUR VANTAGE API KEY.",
+  * vantageSearchURL: "ENTER AN URL TO THE VANTAGE API YOU WANT TO FETCH DATA FROM.", // default https://api.vanta.ge/v1/search
   customerAPI: {
     type: ECustomerAPIType.CUSTOM_API,
     getCustomerItems: getItemsByIds,
@@ -682,11 +697,10 @@ import { GetConfigurationWithDefaultValues } from "transformers/ConfigurationTra
 
 const configuration: ClientConfiguration = {
   template: EDemoTemplate.PUBLISHER, // default product
-  accountId: "Enter your Vantage Account ID.",
-  collectionId: "Enter a list of Vantage Collection IDs to fetch data from.",
-  apiKey: "Enter your Vantage API Key.",
-  vantageSearchURL:
-    "Enter an url to the Vantage API you want to fetch data from.", // default https://api.vanta.ge/v1/search
+  * accountId: "ENTER YOUR VANTAGE ACCOUNT ID.",
+  * collectionId: "ENTER A LIST OF VANTAGE COLLECTION IDS TO FETCH DATA FROM.",
+  * apiKey: "ENTER YOUR VANTAGE API KEY.",
+  * vantageSearchURL: "ENTER AN URL TO THE VANTAGE API YOU WANT TO FETCH DATA FROM.", // default https://api.vanta.ge/v1/search
   customerAPI: {
     type: ECustomerAPIType.CDN_API,
     itemURLPattern: "https://furniture-json.netlify.app/${id}.json",
