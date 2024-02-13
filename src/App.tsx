@@ -12,6 +12,7 @@ import {
 } from "./abstracts/DemoConfigurationTypes";
 import ProductDemoTemplate from "./templates/ProductsDemoTemplate/ProductDemoTemplate";
 import PublisherDemoTemplate from "./templates/PublisherDemoTemplate/PublisherDemoTemplate";
+import PublisherMoreLikeThisProductTemplete from "templates/PublisherMoreLikeThisProductTemplete/PublisherMoreLikeThisProductTemplete";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,6 +51,11 @@ export const Application = (configuration: Configuration) => {
     ),
     [EDemoTemplate.PUBLISHER]: (
       <PublisherDemoTemplate brandingConfiguration={configuration.branding} />
+    ),
+    [EDemoTemplate.PUBLISHER_MLT_PRODUCT]: (
+      <PublisherMoreLikeThisProductTemplete
+        brandingConfiguration={configuration.branding}
+      />
     ),
   };
 
