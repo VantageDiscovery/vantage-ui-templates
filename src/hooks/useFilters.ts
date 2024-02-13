@@ -1,3 +1,4 @@
+import { TransformFiltersStringToFilterObjects } from "transformers/QueryParametersTransformer";
 import { EFiltersType, Filter, UseFiltersType } from "../abstracts/FilterTypes";
 import { useEffect, useState } from "react";
 
@@ -60,8 +61,10 @@ const useFilters = ({
   filterType,
   getAvailableFilters,
   getPopularFilters,
+  initialActiveFilters,
 }: {
   filterType: EFiltersType;
+  initialActiveFilters: string;
   getAvailableFilters: () => Promise<Filter[]>;
   getPopularFilters?: (filters: Filter[]) => Filter[];
 }): UseFiltersType => {
@@ -69,8 +72,11 @@ const useFilters = ({
   const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
 
   useEffect(() => {
-    getAvailableFilters().then((filters) => {
+    getAvailableFilters().then((filters: Filter[]) => {
       setAvailableFilters(filters);
+      setActiveFilters(
+        TransformFiltersStringToFilterObjects(initialActiveFilters, filters)
+      );
     });
   }, []);
 
@@ -92,6 +98,7 @@ const useFilters = ({
         // eslint-disable-next-line no-useless-escape
         `${currentFilter.categorySlug}:\"${currentFilter.slug}\"`
       );
+
       return reducer;
     }, {} as Record<string, string[]>);
 

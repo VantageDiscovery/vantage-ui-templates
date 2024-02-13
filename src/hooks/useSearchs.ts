@@ -5,9 +5,6 @@ import { UseVibeType } from "abstracts/VibeTypes";
 import { transformToAddWeightToThese } from "transformers/VantageProductTransformers";
 import { UseCustomerAPIType } from "abstracts";
 
-const DEFAULT_PAGE_SIZE = 20;
-const DEFAULT_PAGE_NUMBER = 0;
-
 const useSearchs = ({
   dataConfiguration,
   query,
@@ -36,9 +33,10 @@ const useSearchs = ({
       query: query,
       accuracy: dataConfiguration.defaultAccuracy,
       filters: filters,
-      pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
-      pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
+      pageNumber: dataConfiguration.pageNumber,
+      pageSize: dataConfiguration.pageSize,
       ...dataConfiguration.shingling,
+      ...dataConfiguration?.fieldValueWeighting,
     },
     {
       getItemsByIds: customerAPI.getItemsByIds,
@@ -57,8 +55,8 @@ const useSearchs = ({
       {
         documentId: moreLikeDocumentId,
         accuracy: dataConfiguration.defaultAccuracy,
-        pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
-        pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
+        pageNumber: dataConfiguration.pageNumber,
+        pageSize: dataConfiguration.pageSize,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -77,8 +75,8 @@ const useSearchs = ({
       {
         documentId: moreLikeDocumentId,
         accuracy: dataConfiguration.defaultAccuracy,
-        pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
-        pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
+        pageNumber: dataConfiguration.pageNumber,
+        pageSize: dataConfiguration.pageSize,
         filters: filters,
         vibe_overall_weight: vibeHandler.vibeOverallWeight,
         these: transformToAddWeightToThese({
@@ -103,8 +101,8 @@ const useSearchs = ({
       {
         accuracy: dataConfiguration.defaultAccuracy,
         documentId: moreLikeDocumentId,
-        pageNumber: dataConfiguration.pageNumber || DEFAULT_PAGE_NUMBER,
-        pageSize: dataConfiguration.pageSize || DEFAULT_PAGE_SIZE,
+        pageNumber: dataConfiguration.pageNumber,
+        pageSize: dataConfiguration.pageSize,
         filters: filters,
         vibe_overall_weight: vibeHandler.vibeOverallWeight,
         these: transformToAddWeightToThese({

@@ -35,7 +35,8 @@ export type SearchMoreLikeThisParameters = SearchParameters & {
 };
 
 export type SearchByQueryParameters = SearchParameters &
-  ShinglingParameters & {
+  ShinglingParameters &
+  FieldValueWeightingParameters & {
     filters: string;
     query: string;
   };
@@ -56,6 +57,11 @@ export type ShinglingParameters = {
   cosineSimilarityScoreWeight: number;
   queryMatchScoreWeight: number;
   documentMatchScoreWeight: number;
+};
+
+type FieldValueWeightingParameters = {
+  queryKeyWordWeightingMode: string;
+  queryKeyWordMaxOverallWeight: number;
 };
 
 export interface SearchParametersDTO {
@@ -79,6 +85,10 @@ export interface SearchParametersDTO {
   };
   document_id?: string;
   text?: string;
+  field_value_weighting?: {
+    query_key_word_weighting_mode: string;
+    query_key_word_max_overall_weight: number;
+  };
   these?: {
     query_document_id?: string;
     query_text?: string;

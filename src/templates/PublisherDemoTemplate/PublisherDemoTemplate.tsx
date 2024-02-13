@@ -8,6 +8,7 @@ import Navigation from "component/layout/Navigation";
 import useDemo from "contexts/DemoContext";
 import React, { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
+import sessionStorageService from "services/SessionStorageService";
 import cn from "utils/cn";
 
 const PublisherDemoTemplate = ({
@@ -35,6 +36,12 @@ const PublisherDemoTemplate = ({
     if (brandingConfiguration.pageTitle) {
       document.title = brandingConfiguration.pageTitle;
     }
+
+    const timer = setTimeout(
+      () => sessionStorageService.setSessionAnimation("true"),
+      3000
+    );
+    return () => clearTimeout(timer);
   }, []);
 
   const searchResult = useMemo(() => searchResults[0], [searchResults]);
@@ -55,7 +62,11 @@ const PublisherDemoTemplate = ({
         backgroundRightColorOnAnimation={brandingConfiguration.colors.primary}
       />
       <div className="grow w-full">
-        <div className="flex justify-center animate-fade-in">
+        <div
+          className={cn("flex justify-center", {
+            "animate-fade-in": !sessionStorageService.getSessionAnimation(),
+          })}
+        >
           <div className="flex flex-row w-full px-20">
             <aside className="pr-10 flex flex-col sticky top-[128px] left-0 py-4 gap-8 border-r h-fit">
               {availableFilters
@@ -102,6 +113,7 @@ const PublisherDemoTemplate = ({
                   checkedColor={brandingConfiguration.colors.primary}
                   isEnabled={variables.isDeveloperViewToggled}
                   setIsEnabled={demoActions.setIsDeveloperViewToggled}
+                  dataConfiguration={dataConfiguration}
                 />
                 <span className="border-t-[1px] border-t-gray-400">
                   <p className="text-xs text-center mt-2 text-gray-500">

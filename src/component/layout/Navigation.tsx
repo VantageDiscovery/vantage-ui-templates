@@ -1,6 +1,8 @@
 import { NavigationProperties } from "abstracts/LayoutTypes";
 import VantageLogoDark from "icons/VantageLogoDark";
 import React from "react";
+import sessionStorageService from "services/SessionStorageService";
+import cn from "utils/cn";
 
 const Navigation = ({
   backgroundColor,
@@ -21,19 +23,32 @@ const Navigation = ({
     "--bg-color": backgroundRightColorOnAnimation,
     clipPath: "polygon(48.5% 0, 51.5% 100%, 100% 100%, 100% 0)",
   } as React.CSSProperties;
+
   return (
     <nav className="sticky top-0 z-10">
       <div
-        className={`max-w-screen-xxl w-full bg-${backgroundColor} flex flex-wrap items-center justify-items-stretch h-32 animate-reduce-height`}
+        className={cn(
+          `max-w-screen-xxl w-full bg-${backgroundColor} flex flex-wrap items-center justify-items-stretch h-32 `,
+          {
+            "animate-reduce-height":
+              !sessionStorageService.getSessionAnimation(),
+          }
+        )}
       >
         <div
-          className="flex w-full absolute h-full justify-start pl-20 items-center animate-slide-in"
+          className={cn(
+            "flex w-full absolute h-full justify-start pl-20 items-center",
+            { "animate-slide-in": !sessionStorageService.getSessionAnimation() }
+          )}
           style={leftLogoStyle}
         >
           <img
             src={clientLogoUrl}
             alt="Client logo"
-            className="w-32 h-fit animate-appear-left-logo"
+            className={cn("w-32 h-fit", {
+              "animate-appear-left-logo":
+                !sessionStorageService.getSessionAnimation(),
+            })}
             style={
               {
                 "--bg-start-color": clientLogoColorOnAnimation,
@@ -43,7 +58,10 @@ const Navigation = ({
           />
         </div>
         <div
-          className="flex w-full absolute h-full justify-end pr-20 items-center animate-slide-in right-0"
+          className={cn(
+            "flex w-full absolute h-full justify-end pr-20 items-center right-0",
+            { "animate-slide-in": !sessionStorageService.getSessionAnimation() }
+          )}
           style={rightLogoStyle}
         >
           <VantageLogoDark

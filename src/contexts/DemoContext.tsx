@@ -28,16 +28,25 @@ export const DemoProvider = ({
   const customerAPI = useCustomerAPI({
     dataConfiguration: configuration,
   });
+
+  const {
+    dataConfiguration,
+    search,
+    documentId,
+    setSearchUrl,
+    setDocumentId,
+    filters,
+    setFiltersUrl,
+  } = useUrlParams({
+    dataConfiguration: configuration,
+  });
+
   const filterHandlers = useFilters({
     filterType: configuration.filter.type,
     getAvailableFilters: customerAPI.getFilters,
     getPopularFilters: configuration.filter.getPopularFilters,
+    initialActiveFilters: filters,
   });
-
-  const { dataConfiguration, search, documentId, setSearchUrl, setDocumentId } =
-    useUrlParams({
-      dataConfiguration: configuration,
-    });
   const [moreLikeDocumentId, setMoreLikeDocumentId] = useState<string>(
     documentId ?? ""
   );
@@ -124,6 +133,11 @@ export const DemoProvider = ({
 
   useEffect(() => {
     performFilterChange();
+    setFiltersUrl(
+      filterHandlers.activeFilters.length > 0
+        ? filterHandlers.getFilterString()
+        : undefined
+    );
   }, [filterHandlers.activeFilters]);
 
   const performMoreLikeThese = () => {
