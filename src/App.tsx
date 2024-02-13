@@ -52,7 +52,7 @@ export const Application = (configuration: Configuration) => {
     [EDemoTemplate.PUBLISHER]: (
       <PublisherDemoTemplate brandingConfiguration={configuration.branding} />
     ),
-    [EDemoTemplate.PUBLISHER_MLT_PRODUCT]: (
+    [EDemoTemplate.PUBLISHER_WITH_MLT_ON_GRID]: (
       <PublisherMoreLikeThisProductTemplete
         brandingConfiguration={configuration.branding}
       />

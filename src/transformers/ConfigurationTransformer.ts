@@ -93,7 +93,7 @@ const TransformCustomerAPICustomFieldsToSpecification = (
 const useEnumsTemplate: Record<ETemplateString, EDemoTemplate> = {
   ["product"]: EDemoTemplate.PRODUCT,
   ["publisher"]: EDemoTemplate.PUBLISHER,
-  ["publisherMltProduct"]: EDemoTemplate.PUBLISHER_MLT_PRODUCT,
+  ["publisherWithMltOnGrid"]: EDemoTemplate.PUBLISHER_WITH_MLT_ON_GRID,
 };
 
 const TransformStringFieldsToEnums = (

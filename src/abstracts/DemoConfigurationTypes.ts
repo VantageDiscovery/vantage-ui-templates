@@ -38,10 +38,13 @@ type CustomFieldTransformerClient = Partial<
 export enum EDemoTemplate {
   PUBLISHER = "publisher",
   PRODUCT = "product",
-  PUBLISHER_MLT_PRODUCT = "publisherMltProduct",
+  PUBLISHER_WITH_MLT_ON_GRID = "publisherWithMltOnGrid",
 }
 
-export type ETemplateString = "product" | "publisher" | "publisherMltProduct";
+export type ETemplateString =
+  | "product"
+  | "publisher"
+  | "publisherWithMltOnGrid";
 
 export type Configuration = DataConfiguration & {
   template: EDemoTemplate;
