@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 import sessionStorageService from "services/SessionStorageService";
 import cn from "utils/cn";
 
+const ANIMATION_DURATION = 3000;
+
 const PublisherDemoTemplate = ({
   brandingConfiguration,
 }: {
@@ -39,7 +41,7 @@ const PublisherDemoTemplate = ({
 
     const timer = setTimeout(
       () => sessionStorageService.setSessionAnimation("true"),
-      3000
+      ANIMATION_DURATION
     );
     return () => clearTimeout(timer);
   }, []);
@@ -66,6 +68,11 @@ const PublisherDemoTemplate = ({
           className={cn("flex justify-center", {
             "animate-fade-in": !sessionStorageService.getSessionAnimation(),
           })}
+          style={
+            {
+              "--animation-duration": ANIMATION_DURATION + "ms",
+            } as React.CSSProperties
+          }
         >
           <div className="flex flex-row w-full px-20">
             <aside className="pr-10 flex flex-col sticky top-[128px] left-0 py-4 gap-8 border-r h-fit">

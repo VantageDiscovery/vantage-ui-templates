@@ -15,6 +15,8 @@ import { LinkIcon } from "@heroicons/react/24/outline";
 import sessionStorageService from "services/SessionStorageService";
 import cn from "utils/cn";
 
+const ANIMATION_DURATION = 3000;
+
 const ProductDemoTemplate = ({
   brandingConfiguration,
 }: {
@@ -36,7 +38,7 @@ const ProductDemoTemplate = ({
 
     const timer = setTimeout(
       () => sessionStorageService.setSessionAnimation("true"),
-      3000
+      ANIMATION_DURATION
     );
     return () => clearTimeout(timer);
   }, []);
@@ -79,6 +81,11 @@ const ProductDemoTemplate = ({
           className={cn("flex justify-center", {
             "animate-fade-in": !sessionStorageService.getSessionAnimation(),
           })}
+          style={
+            {
+              "--animation-duration": ANIMATION_DURATION + "ms",
+            } as React.CSSProperties
+          }
         >
           <div className="flex flex-col items-center w-full gap-8">
             <div className="flex flex-col w-3/5 gap-10">

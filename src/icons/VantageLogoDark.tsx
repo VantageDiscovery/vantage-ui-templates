@@ -2,6 +2,8 @@ import React from "react";
 import sessionStorageService from "services/SessionStorageService";
 import cn from "utils/cn";
 
+const ANIMATION_DURATION = 2000;
+
 const vantageLogoDark = ({
   vantageLogoColor,
   vantageLogoColorOnAnimation,
@@ -25,6 +27,7 @@ const vantageLogoDark = ({
         {
           "--bg-start-color": vantageLogoColorOnAnimation || vantageLogoColor,
           "--bg-end-color": vantageLogoColor,
+          "--animation-duration": ANIMATION_DURATION + "ms",
         } as React.CSSProperties
       }
     >

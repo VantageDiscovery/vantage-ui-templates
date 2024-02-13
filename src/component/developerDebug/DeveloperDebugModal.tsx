@@ -42,7 +42,7 @@ const DeveloperDebugModal = ({
           <p>{dataConfiguration.customerAPI.type}</p>
         </span>
         <span className="flex gap-2 items-baseline">
-          <p className="text-lg font-semibold whitespace-nowrap">accuracy:</p>
+          <p className="text-lg font-semibold whitespace-nowrap">Accuracy:</p>
           <p>{dataConfiguration.defaultAccuracy}</p>
         </span>
         <span className="flex gap-2 items-baseline">

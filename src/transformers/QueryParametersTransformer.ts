@@ -49,7 +49,12 @@ export const TransformFiltersStringToFilterObjects = (
       .map((filter) => filter.replaceAll(/[\s"()]/g, ""))
   );
 
-  return avalableFilters.filter((element) => {
+  const initialFilters = avalableFilters.filter((element) => {
     return arrayFilters.has(element.categorySlug + ":" + element.slug);
   });
+
+  if (filters && initialFilters.length === 0)
+    console.error("Sorry, no avalable filter found for your filter in url");
+
+  return initialFilters;
 };

@@ -4,6 +4,8 @@ import React from "react";
 import sessionStorageService from "services/SessionStorageService";
 import cn from "utils/cn";
 
+const ANIMATION_DURATION = 2000;
+
 const Navigation = ({
   backgroundColor,
   vantageLogoColor,
@@ -24,6 +26,10 @@ const Navigation = ({
     clipPath: "polygon(48.5% 0, 51.5% 100%, 100% 100%, 100% 0)",
   } as React.CSSProperties;
 
+  const animationDuration = {
+    "--animation-duration": ANIMATION_DURATION + "ms",
+  } as React.CSSProperties;
+
   return (
     <nav className="sticky top-0 z-10">
       <div
@@ -34,13 +40,14 @@ const Navigation = ({
               !sessionStorageService.getSessionAnimation(),
           }
         )}
+        style={animationDuration}
       >
         <div
           className={cn(
             "flex w-full absolute h-full justify-start pl-20 items-center",
             { "animate-slide-in": !sessionStorageService.getSessionAnimation() }
           )}
-          style={leftLogoStyle}
+          style={{ ...leftLogoStyle, ...animationDuration }}
         >
           <img
             src={clientLogoUrl}
@@ -53,6 +60,7 @@ const Navigation = ({
               {
                 "--bg-start-color": clientLogoColorOnAnimation,
                 "--bg-end-color": clientLogoColor,
+                "--animation-duration": ANIMATION_DURATION + "ms",
               } as React.CSSProperties
             }
           />
@@ -62,7 +70,7 @@ const Navigation = ({
             "flex w-full absolute h-full justify-end pr-20 items-center right-0",
             { "animate-slide-in": !sessionStorageService.getSessionAnimation() }
           )}
-          style={rightLogoStyle}
+          style={{ ...rightLogoStyle, ...animationDuration }}
         >
           <VantageLogoDark
             vantageLogoColor={vantageLogoColor}
