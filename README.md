@@ -1,11 +1,11 @@
-# Vantage demo template
+# Vantage ui templates
 
 Library for easy demo creation.
 
 
 #### <span style="vertical-align: middle">:floppy_disk:</span> _Install:_
 ```typescript
-npm install vantage-demo-template
+npm install vantage-ui-templates
 ```
 
 #### 🔨 Configuration 
@@ -252,7 +252,7 @@ npm install vantage-demo-template
 
 import React from "react";
 import configuraton from "./configuration";
-import { generateTemplateWithConfig } from "vantage-demo-template";
+import { generateTemplateWithConfig } from "vantage-ui-templates";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
@@ -276,7 +276,7 @@ Use our logic with your styling and UI!
 
 import React from "react";
 import configuraton from "./configuration";
-import {  VantageWrapper } from "vantage-demo-template";
+import {  VantageWrapper } from "vantage-ui-templates";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
@@ -298,7 +298,7 @@ Hooks to incorporate our logic into your UI!
 #### useDemoHook
 
 ```typescript
-import {useDemoHook} from "vantage-demo-template"
+import {useDemoHook} from "vantage-ui-templates"
 
  const {
     /*
@@ -382,7 +382,7 @@ import {useDemoHook} from "vantage-demo-template"
 Hook binding getItemsByIds, getFilters for specific CustomerApi type
 
 ```typescript
-import {useCustomerAPIHook} from "vantage-demo-template"
+import {useCustomerAPIHook} from "vantage-ui-templates"
 
  const {
     /*
@@ -400,7 +400,7 @@ Hook will first attempt to retrieve parameters from the URL query parameters and
 Values that can be overriden by url params: accuracy, customerId, cosine_similarity_score_weight, query_match_score_weight, document_match_score_weight
 
 ```typescript
-import {useUrlParamsHook} from "vantage-demo-template"
+import {useUrlParamsHook} from "vantage-ui-templates"
 
  const {
     /*
@@ -429,7 +429,7 @@ import {useUrlParamsHook} from "vantage-demo-template"
 Hook gives back avalabe filter actions
 
 ```typescript
-import {useFilterHook} from "vantage-demo-template"
+import {useFilterHook} from "vantage-ui-templates"
 
  const {
      /*
@@ -482,7 +482,7 @@ import {useFilterHook} from "vantage-demo-template"
 Hook for toggle buttons
 
 ```typescript
-import {useToggleHook} from "vantage-demo-template"
+import {useToggleHook} from "vantage-ui-templates"
 
  const {
      [boolean, () => void]
@@ -493,7 +493,7 @@ import {useToggleHook} from "vantage-demo-template"
 ## 🔍 VantageSearchQueries
 
 ```typescript
-import {VantageSearchQueries} from "vantage-demo-template"
+import {VantageSearchQueries} from "vantage-ui-templates"
 
  /**
    * Performs Vantage Search then it performs getItemsByIds from customerDataHandler.
