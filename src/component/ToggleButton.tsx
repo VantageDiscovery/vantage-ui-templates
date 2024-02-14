@@ -1,6 +1,6 @@
 import useToggle from "hooks/useToggle";
 import React from "react";
-import DeveloperDebugModal from "./developerDebug/DeveloperDebugModal";
+import DeveloperDebugModal from "./developerDebugModal/DeveloperDebugModal";
 import { DataConfiguration } from "abstracts";
 
 type ToggleButtonProperties = {
