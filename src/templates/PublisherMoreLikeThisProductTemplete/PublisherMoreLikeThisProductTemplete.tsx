@@ -173,6 +173,7 @@ const PublisherMoreLikeThisProductTemplete = ({
                   checkedColor={brandingConfiguration.colors.primary}
                   isEnabled={variables.isDeveloperViewToggled}
                   setIsEnabled={demoActions.setIsDeveloperViewToggled}
+                  dataConfiguration={dataConfiguration}
                 />
                 <span className="border-t-[1px] border-t-gray-400">
                   <p className="text-xs text-center mt-2 text-gray-500">

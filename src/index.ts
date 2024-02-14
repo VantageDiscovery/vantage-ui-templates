@@ -40,7 +40,7 @@ import {
  * @returns {React.JSX.Element} - The generated demo.
  */
 
-export const generateTempleteWithConfig = (
+export const generateTemplateWithConfig = (
   configuration: ClientConfiguration
 ): React.JSX.Element => {
   return Application(GetConfigurationWithDefaultValues(configuration));
