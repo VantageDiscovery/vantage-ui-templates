@@ -19,6 +19,7 @@ export default defineConfig(({ mode }) => {
       tsconfigPaths(),
       dts({
         rollupTypes: true,
+
       }),
       libCss(),
     ],
@@ -28,12 +29,12 @@ export default defineConfig(({ mode }) => {
     build: {
       lib: {
         entry: resolve("src", "index.ts"),
-        name: "vantage_demo_template_test",
+        name: "vantage-ui-templates",
         formats: ["es", "umd"],
-        fileName: (format) => `vantage_demo_template_test.${format}.js`,
+        fileName: (format) => `vantageUiTemplates.${format}.js`,
       },
       rollupOptions: {
-        external: [...Object.keys(packageJson.peerDependencies)],
+        external: [...Object.keys(packageJson.peerDependencies)],    
       },
     },
     test: {
