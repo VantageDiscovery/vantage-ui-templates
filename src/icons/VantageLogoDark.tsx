@@ -1,4 +1,8 @@
 import React from "react";
+import sessionStorageService from "services/SessionStorageService";
+import cn from "utils/cn";
+
+const ANIMATION_DURATION = 2000;
 
 const vantageLogoDark = ({
   vantageLogoColor,
@@ -15,11 +19,15 @@ const vantageLogoDark = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      className={`fill-${vantageLogoColor} w-48 h-auto animate-appear-vantage-logo`}
+      className={cn(`fill-${vantageLogoColor} w-48 h-auto`, {
+        "animate-appear-vantage-logo":
+          !sessionStorageService.getSessionAnimation(),
+      })}
       style={
         {
           "--bg-start-color": vantageLogoColorOnAnimation || vantageLogoColor,
           "--bg-end-color": vantageLogoColor,
+          "--animation-duration": ANIMATION_DURATION + "ms",
         } as React.CSSProperties
       }
     >

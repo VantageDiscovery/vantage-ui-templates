@@ -32,6 +32,12 @@ const DEFAULT_CONFIGURATION = {
     queryMatchScoreWeight: 0,
     cosineSimilarityScoreWeight: 1,
   },
+  fieldValueWeighting: {
+    queryKeyWordWeightingMode: "uniform",
+    queryKeyWordMaxOverallWeight: 1.1,
+  },
+  pageNumber: 0,
+  pageSize: 20,
 };
 
 function assignDefined(target: object, source: object) {

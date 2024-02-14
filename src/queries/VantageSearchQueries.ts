@@ -20,11 +20,11 @@ const queryKeys = {
     customerNamespace: string,
     documentId: string
   ) => ["SEARCH_MORE_LIKE_THIS", customerId, customerNamespace, documentId],
-  searchByQuery: (customerId: string, customerNamespace: string) => [
-    "SEARCH_BY_QUERY",
-    customerId,
-    customerNamespace,
-  ],
+  searchByQuery: (
+    customerId: string,
+    customerNamespace: string,
+    filters: string
+  ) => ["SEARCH_BY_QUERY", customerId, customerNamespace, filters],
   seachMoreLikeThese: (
     customerId: string,
     customerNamespace: string,
@@ -60,7 +60,8 @@ const useSearchByConfiguration = (
     queries: searchConfigurations.map((searchConfiguration) => ({
       queryKey: queryKeys.searchByQuery(
         searchConfiguration.customerId,
-        searchConfiguration.customerNamespace
+        searchConfiguration.customerNamespace,
+        searchParameters.filters
       ),
       queryFn: async () => {
         const response: VantageSearchResponse =

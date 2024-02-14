@@ -1,6 +1,6 @@
 export enum EFiltersType {
-  SINGLE_SELECT,
-  MULTI_SELECT,
+  SINGLE_SELECT = "single select",
+  MULTI_SELECT = "multi select",
 }
 export interface Filter {
   name: string;

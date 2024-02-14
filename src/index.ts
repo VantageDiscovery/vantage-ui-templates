@@ -131,12 +131,19 @@ export const useFilterHook = ({
   filterType,
   getAvailableFilters,
   getPopularFilters,
+  initialActiveFilters,
 }: {
   filterType: EFiltersType;
   getAvailableFilters: () => Promise<Filter[]>;
+  initialActiveFilters: string;
   getPopularFilters?: (filters: Filter[]) => Filter[];
 }): UseFiltersType => {
-  return useFilters({ filterType, getAvailableFilters, getPopularFilters });
+  return useFilters({
+    filterType,
+    getAvailableFilters,
+    getPopularFilters,
+    initialActiveFilters,
+  });
 };
 
 /**

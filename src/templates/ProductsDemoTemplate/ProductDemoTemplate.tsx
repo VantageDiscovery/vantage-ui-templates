@@ -12,6 +12,10 @@ import React, { useEffect, useMemo } from "react";
 import { EFiltersType } from "abstracts/FilterTypes";
 import { Link } from "react-router-dom";
 import { LinkIcon } from "@heroicons/react/24/outline";
+import sessionStorageService from "services/SessionStorageService";
+import cn from "utils/cn";
+
+const ANIMATION_DURATION = 3000;
 
 const ProductDemoTemplate = ({
   brandingConfiguration,
@@ -31,6 +35,12 @@ const ProductDemoTemplate = ({
     if (brandingConfiguration.pageTitle) {
       document.title = brandingConfiguration.pageTitle;
     }
+
+    const timer = setTimeout(
+      () => sessionStorageService.setSessionAnimation("true"),
+      ANIMATION_DURATION
+    );
+    return () => clearTimeout(timer);
   }, []);
 
   const searchResult = useMemo(() => searchResults[0], [searchResults]);
@@ -67,7 +77,16 @@ const ProductDemoTemplate = ({
         backgroundRightColorOnAnimation={brandingConfiguration.colors.primary}
       />
       <div className="grow w-full h-full">
-        <div className="flex justify-center animate-fade-in">
+        <div
+          className={cn("flex justify-center", {
+            "animate-fade-in": !sessionStorageService.getSessionAnimation(),
+          })}
+          style={
+            {
+              "--animation-duration": ANIMATION_DURATION + "ms",
+            } as React.CSSProperties
+          }
+        >
           <div className="flex flex-col items-center w-full gap-8">
             <div className="flex flex-col w-3/5 gap-10">
               <h3 className="font-bold text-4xl text-center">
@@ -130,6 +149,7 @@ const ProductDemoTemplate = ({
                 checkedColor={brandingConfiguration.colors.primary}
                 isEnabled={variables.isDeveloperViewToggled}
                 setIsEnabled={demoActions.setIsDeveloperViewToggled}
+                dataConfiguration={dataConfiguration}
               />
               {variables.isDeveloperViewToggled &&
                 filterActions.activeFilters.length > 0 && (

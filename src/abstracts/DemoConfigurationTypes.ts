@@ -67,6 +67,17 @@ export type ClientConfiguration = DeepPartial<
     customFieldTransformer?: CustomFieldTransformerClient;
   };
 
+type ShinglingConfiguration = {
+  documentMatchScoreWeight: number;
+  queryMatchScoreWeight: number;
+  cosineSimilarityScoreWeight: number;
+};
+
+type FieldValueWeightingConfiguration = {
+  queryKeyWordWeightingMode: string;
+  queryKeyWordMaxOverallWeight: number;
+};
+
 export interface BrandingConfiguration {
   colors: {
     primary: string;
@@ -92,8 +103,9 @@ export interface DataConfiguration {
   filter: FilterConfiguration;
   shingling: ShinglingConfiguration;
   customFieldTransformer?: CustomFieldTransformer;
-  pageNumber?: number;
-  pageSize?: number;
+  fieldValueWeighting: FieldValueWeightingConfiguration;
+  pageNumber: number;
+  pageSize: number;
   originalSearchResultsURL?: string;
   vibe?: VibeConfiguration;
 }
@@ -106,10 +118,4 @@ export interface VibeConfiguration {
 export interface FilterConfiguration {
   type: EFiltersType;
   getPopularFilters?: (filters: Filter[]) => Filter[];
-}
-
-interface ShinglingConfiguration {
-  documentMatchScoreWeight: number;
-  queryMatchScoreWeight: number;
-  cosineSimilarityScoreWeight: number;
 }

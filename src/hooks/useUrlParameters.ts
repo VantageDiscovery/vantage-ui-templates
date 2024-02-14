@@ -17,14 +17,21 @@ const useUrlParameters = ({
     "document_id",
     StringParam
   );
+  const [filterUrl, setFiltersUrl] = useQueryParam("filters", StringParam);
 
   const setSearch = (text: string) => {
     setSearchUrl(text, "pushIn");
     setDocumentIdUrl(undefined, "replaceIn");
   };
-  const setDocument = (text: string) => {
-    setDocumentIdUrl(text, "pushIn");
+  const setDocument = (id: string) => {
+    setDocumentIdUrl(id, "pushIn");
     setSearchUrl(undefined, "replaceIn");
+    setFiltersUrl(undefined, "replaceIn");
+  };
+
+  const setFilters = (filters?: string) => {
+    setFiltersUrl(filters ?? undefined, filters ? "pushIn" : "replaceIn");
+    setDocumentIdUrl(undefined, "replaceIn");
   };
 
   return {
@@ -34,8 +41,10 @@ const useUrlParameters = ({
     ),
     search: searchUrl ?? "",
     documentId: documentIdUrl ?? "",
+    filters: filterUrl ?? "",
     setSearchUrl: setSearch,
     setDocumentId: setDocument,
+    setFiltersUrl: setFilters,
   };
 };
 
