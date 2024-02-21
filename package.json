@@ -1,6 +1,6 @@
 {
   "name": "vantage-ui-templates",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "./dist/vantageUiTemplates.umd.js",
   "module": "./dist/vantageUiTemplates.es.js",
