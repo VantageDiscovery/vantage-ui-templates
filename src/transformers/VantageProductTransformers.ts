@@ -12,6 +12,7 @@ import {
   MoreLikeTheseParameters,
 } from "abstracts/VantageTypes";
 import { BoardData } from "abstracts/VibeTypes";
+import { SelectedMoreLikeTheseCard } from "abstracts/useMoreLikeTheseType";
 
 export const TransformVantageSearchParametersViewToDTO = (
   searchConfiguration: SearchConfiguration,
@@ -95,7 +96,7 @@ export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
   };
 };
 
-export const transformToAddWeightToThese = ({
+export const transformToAddWeightToTheseOnVibe = ({
   these,
   document_id,
   query,
@@ -115,6 +116,26 @@ export const transformToAddWeightToThese = ({
       return {
         query_text: data.text,
         weight: (1 / these.length) * vibe_overall_weight,
+      };
+    }),
+  ];
+};
+export const transformToAddWeightToThese = ({
+  these,
+}: {
+  these: SelectedMoreLikeTheseCard[];
+}): MoreLikeTheseParameters[] => {
+  const addWeigh = (liked?: boolean) => {
+    if (liked) {
+      return 1 / these.length;
+    }
+    return -1 / these.length;
+  };
+  return [
+    ...these.map((data) => {
+      return {
+        query_document_id: data.item.id,
+        weight: addWeigh(data.liked),
       };
     }),
   ];

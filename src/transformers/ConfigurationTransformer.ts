@@ -38,6 +38,7 @@ const DEFAULT_CONFIGURATION = {
   },
   pageNumber: 0,
   pageSize: 20,
+  enableMoreLikeThis: false,
 };
 
 function assignDefined(target: object, source: object) {

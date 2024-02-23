@@ -3,6 +3,7 @@ import { Item } from "./ItemTypes";
 import { DataConfiguration } from "./DemoConfigurationTypes";
 import { UseFiltersType } from "./FilterTypes";
 import { UseVibeType } from "./VibeTypes";
+import { useMoreLikeTheseType } from "./useMoreLikeTheseType";
 
 export type CollectionSearchResult = {
   collectionId: string;
@@ -17,6 +18,7 @@ export type DemoVariables = {
   query: string;
   isDeveloperViewToggled: boolean;
   moreLikeDocumentId: string;
+  enableMoreLikeThis: boolean;
 };
 
 export type DemoActions = {
@@ -26,10 +28,6 @@ export type DemoActions = {
   setIsDeveloperViewToggled: Dispatch<React.SetStateAction<boolean>>;
 };
 
-export type VibeActions = UseVibeType & {
-  triggerMoreLikeThese: () => void;
-};
-
 export type DemoContextType = {
   vibeActions: UseVibeType;
   searchResults: CollectionSearchResult[];
@@ -37,4 +35,5 @@ export type DemoContextType = {
   dataConfiguration: DataConfiguration;
   filterActions: UseFiltersType;
   demoActions: DemoActions;
+  moreLikeTheseActions: useMoreLikeTheseType;
 };

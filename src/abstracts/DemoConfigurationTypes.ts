@@ -106,6 +106,7 @@ export interface DataConfiguration {
   fieldValueWeighting: FieldValueWeightingConfiguration;
   pageNumber: number;
   pageSize: number;
+  enableMoreLikeThis: boolean;
   originalSearchResultsURL?: string;
   vibe?: VibeConfiguration;
 }

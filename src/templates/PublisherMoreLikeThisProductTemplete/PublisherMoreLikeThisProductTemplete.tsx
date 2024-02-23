@@ -54,13 +54,9 @@ const PublisherMoreLikeThisProductTemplete = ({
             return (
               <ProductCard
                 key={book.id}
-                {...book}
-                searchAccuracy={book.score || 0}
-                imageSrc={book.imageSrc}
-                redirectUrl={book.externalUrl}
+                item={book}
                 subtitle={book.meta?.subtitle}
                 infoContent={book.embeddingText}
-                title={book.title}
                 primaryColor={brandingConfiguration.colors.primary}
                 secondaryColor={brandingConfiguration.colors.secondary}
                 isDeveloperView={variables.isDeveloperViewToggled}
@@ -69,8 +65,6 @@ const PublisherMoreLikeThisProductTemplete = ({
                   demoActions.performMoreLikeThis(book.id);
                   setMoreLikeThisBook(book);
                 }}
-                embeddingText={book.embeddingText}
-                score={book.score || 0}
               />
             );
           })}

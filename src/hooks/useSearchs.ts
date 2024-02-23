@@ -2,8 +2,12 @@ import { UseQueriesType } from "abstracts/useQueriesType";
 import { DataConfiguration } from "abstracts/DemoConfigurationTypes";
 import { VantageSearchQueries } from "queries/VantageSearchQueries";
 import { UseVibeType } from "abstracts/VibeTypes";
-import { transformToAddWeightToThese } from "transformers/VantageProductTransformers";
+import {
+  transformToAddWeightToThese,
+  transformToAddWeightToTheseOnVibe,
+} from "transformers/VantageProductTransformers";
 import { UseCustomerAPIType } from "abstracts";
+import { useMoreLikeTheseType } from "abstracts/useMoreLikeTheseType";
 
 const useSearchs = ({
   dataConfiguration,
@@ -13,6 +17,7 @@ const useSearchs = ({
   vibeHandler,
   filters,
   customerAPI,
+  moreLikeTheseHandler,
 }: {
   dataConfiguration: DataConfiguration;
   query: string;
@@ -21,6 +26,7 @@ const useSearchs = ({
   isMoreLikeTheseActive: boolean;
   vibeHandler: UseVibeType;
   customerAPI: UseCustomerAPIType;
+  moreLikeTheseHandler: useMoreLikeTheseType;
 }): UseQueriesType => {
   const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
     dataConfiguration.vantageSearchURL,
@@ -63,7 +69,7 @@ const useSearchs = ({
       }
     );
 
-  const multiMLTheseSearchResults =
+  const multiVibeSearchResults =
     VantageSearchQueries.useMoreLikeTheseByConfiguration(
       dataConfiguration.vantageSearchURL,
       isMoreLikeTheseActive && moreLikeDocumentId.length === 0,
@@ -79,7 +85,7 @@ const useSearchs = ({
         pageSize: dataConfiguration.pageSize,
         filters: filters,
         vibe_overall_weight: vibeHandler.vibeOverallWeight,
-        these: transformToAddWeightToThese({
+        these: transformToAddWeightToTheseOnVibe({
           these: vibeHandler.activeVibe,
           vibe_overall_weight: vibeHandler.vibeOverallWeight,
           query,
@@ -89,7 +95,7 @@ const useSearchs = ({
         getItemsByIds: customerAPI.getItemsByIds,
       }
     );
-  const multiMLTheseDocumentIdResults =
+  const multiVibeDocumentIdResults =
     VantageSearchQueries.useMoreLikeTheseByConfiguration(
       dataConfiguration.vantageSearchURL,
       isMoreLikeTheseActive && moreLikeDocumentId.length > 0,
@@ -105,7 +111,7 @@ const useSearchs = ({
         pageSize: dataConfiguration.pageSize,
         filters: filters,
         vibe_overall_weight: vibeHandler.vibeOverallWeight,
-        these: transformToAddWeightToThese({
+        these: transformToAddWeightToTheseOnVibe({
           these: vibeHandler.activeVibe,
           vibe_overall_weight: vibeHandler.vibeOverallWeight,
           document_id: moreLikeDocumentId,
@@ -117,11 +123,37 @@ const useSearchs = ({
       }
     );
 
+  const multiMoreLikeTheseResults =
+    VantageSearchQueries.useMoreLikeTheseByConfiguration(
+      dataConfiguration.vantageSearchURL,
+      moreLikeTheseHandler.isActive,
+      dataConfiguration.collectionIds.map((collectionId: string) => ({
+        apiKey: dataConfiguration.apiKey,
+        customerId: dataConfiguration.accountId,
+        customerNamespace: collectionId,
+      })),
+      {
+        documentId: moreLikeDocumentId,
+        accuracy: dataConfiguration.defaultAccuracy,
+        pageNumber: dataConfiguration.pageNumber,
+        pageSize: dataConfiguration.pageSize,
+        filters: filters,
+        vibe_overall_weight: vibeHandler.vibeOverallWeight,
+        these: transformToAddWeightToThese({
+          these: moreLikeTheseHandler.activeMLThese,
+        }),
+      },
+      {
+        getItemsByIds: customerAPI.getItemsByIds,
+      }
+    );
+
   return {
     multiQuerySearchResults,
     multiMLTSearchResults,
-    multiMLTheseSearchResults,
-    multiMLTheseDocumentIdResults,
+    multiVibeSearchResults,
+    multiVibeDocumentIdResults,
+    multiMoreLikeTheseResults,
   };
 };
 
