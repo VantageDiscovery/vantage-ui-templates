@@ -1,7 +1,6 @@
 import { BrandingConfiguration } from "abstracts/DemoConfigurationTypes";
 import ProductCard from "component/ProductCard";
 import ServerResponseWrapper from "component/ServerResponseWrapper";
-import ToggleButton from "component/ToggleButton";
 import MultiFilterSection from "component/filter/MultiFilterSection";
 import SingleFilterSection from "component/filter/SingleFilterSection";
 import Footer from "component/layout/Footer";
@@ -10,10 +9,10 @@ import ProductSearchSection from "component/search/ProductSearchSection";
 import useDemo from "contexts/DemoContext";
 import React, { useEffect, useMemo } from "react";
 import { EFiltersType } from "abstracts/FilterTypes";
-import { Link } from "react-router-dom";
-import { LinkIcon } from "@heroicons/react/24/outline";
 import sessionStorageService from "services/SessionStorageService";
 import cn from "utils/cn";
+import SelectedMoreLikeTheseSection from "component/SelectedMoreLikeTheseSection";
+import { ProductResultsHeader } from "component/ProductResultsHeader";
 
 const ANIMATION_DURATION = 3000;
 
@@ -29,6 +28,7 @@ const ProductDemoTemplate = ({
     variables,
     demoActions,
     dataConfiguration,
+    moreLikeTheseActions,
   } = useDemo();
 
   useEffect(() => {
@@ -64,6 +64,29 @@ const ProductDemoTemplate = ({
     }
   };
 
+  const renderResultsHeader = () => {
+    return moreLikeTheseActions.isActive ? (
+      <SelectedMoreLikeTheseSection
+        moreLikeTheseActions={moreLikeTheseActions}
+        isDeveloperViewToggled={variables.isDeveloperViewToggled}
+        setIsDeveloperViewToggled={demoActions.setIsDeveloperViewToggled}
+        filterActions={filterActions}
+        primaryColor={brandingConfiguration.colors.primary}
+        secondaryColor={brandingConfiguration.colors.secondary}
+        dataConfiguration={dataConfiguration}
+      />
+    ) : (
+      <ProductResultsHeader
+        variables={variables}
+        setIsDeveloperViewToggled={demoActions.setIsDeveloperViewToggled}
+        filterActions={filterActions}
+        primaryColor={brandingConfiguration.colors.primary}
+        dataConfiguration={dataConfiguration}
+        searchResult={searchResult}
+      />
+    );
+  };
+
   return (
     <div className="flex flex-col w-full overflow-visible gap-0 justify-between min-h-screen">
       <Navigation
@@ -93,71 +116,30 @@ const ProductDemoTemplate = ({
                 {brandingConfiguration.title}
               </h3>
             </div>
-            <div className="flex flex-col w-5/6 gap-10 items-center">
-              <ProductSearchSection
-                searchQuery={variables.query}
-                setSearchQuery={demoActions.setQuery}
-                onSearchPerformed={demoActions.performSearch}
-                searchPlaceholder={brandingConfiguration.searchPlaceholder}
-                useFiltersHook={filterActions}
-                isSingleFilter={
-                  dataConfiguration.filter.type === EFiltersType.SINGLE_SELECT
-                }
-                vibeActions={vibeActions}
-              />
-            </div>
+            {!moreLikeTheseActions.isActive && (
+              <div className="flex flex-col w-5/6 gap-10 items-center">
+                <ProductSearchSection
+                  searchQuery={variables.query}
+                  setSearchQuery={demoActions.setQuery}
+                  onSearchPerformed={demoActions.performSearch}
+                  searchPlaceholder={brandingConfiguration.searchPlaceholder}
+                  useFiltersHook={filterActions}
+                  isSingleFilter={
+                    dataConfiguration.filter.type === EFiltersType.SINGLE_SELECT
+                  }
+                  vibeActions={vibeActions}
+                  moreLikeTheseActions={
+                    variables.enableMoreLikeThis
+                      ? moreLikeTheseActions
+                      : undefined
+                  }
+                />
+              </div>
+            )}
             <hr className="w-full" />
             <div className="w-full">{renderFilterSection()}</div>
             <hr className="w-full" />
-            <div className="flex justify-between w-full">
-              {dataConfiguration.originalSearchResultsURL && (
-                <span className="flex px-24 w-full justify-start gap-2 items-center line-clamp-1 text-lg">
-                  <p className="font-medium line-clamp-1">You searched: </p>
-                  <p className="line-clamp-1">{variables.query}</p>
-                  <p className="mt-0.5 line-clamp-1">
-                    <Link
-                      to={dataConfiguration.originalSearchResultsURL.replace(
-                        "${query}",
-                        variables.query
-                      )}
-                      target="_new"
-                    >
-                      <LinkIcon className="h-4 w-4" aria-hidden="true" />
-                    </Link>
-                  </p>
-                </span>
-              )}
-              {!!searchResult.executionTime && (
-                <span className="flex justify-end text-xl mr-24 w-full">
-                  You have <b className="px-1">{searchResult.items.length}</b>
-                  search results
-                  {searchResult.executionTime && (
-                    <>
-                      &nbsp;in
-                      <b className="px-1">
-                        {(+searchResult.executionTime / 1000).toFixed(2)}
-                        seconds
-                      </b>
-                    </>
-                  )}
-                </span>
-              )}
-            </div>
-            <div className="px-24 w-full flex flex-row space-x-5 items-center">
-              <ToggleButton
-                text="Developer debug"
-                checkedColor={brandingConfiguration.colors.primary}
-                isEnabled={variables.isDeveloperViewToggled}
-                setIsEnabled={demoActions.setIsDeveloperViewToggled}
-                dataConfiguration={dataConfiguration}
-              />
-              {variables.isDeveloperViewToggled &&
-                filterActions.activeFilters.length > 0 && (
-                  <div className="text-xl leading-none">
-                    {filterActions.getFilterString()}
-                  </div>
-                )}
-            </div>
+            <div className="w-full"> {renderResultsHeader()}</div>
             <ServerResponseWrapper
               isLoading={searchResult.isLoading}
               isError={searchResult.isError}
@@ -170,12 +152,10 @@ const ProductDemoTemplate = ({
                 {searchResult.items.map((item, index) => (
                   <ProductCard
                     key={index}
-                    {...item}
+                    item={item}
                     subtitle={item.meta?.subtitle}
                     infoContent={item.embeddingText}
-                    searchAccuracy={item.score}
                     bottomRightLabel={item.meta?.imageLabel}
-                    redirectUrl={item.externalUrl}
                     primaryColor={brandingConfiguration.colors.primary}
                     secondaryColor={brandingConfiguration.colors.secondary}
                     onMoreLikeThisClicked={() => {
@@ -185,6 +165,11 @@ const ProductDemoTemplate = ({
                       demoActions.performMoreLikeThis(item.id);
                     }}
                     isDeveloperView={variables.isDeveloperViewToggled}
+                    moreLikeTheseActions={
+                      variables.enableMoreLikeThis
+                        ? moreLikeTheseActions
+                        : undefined
+                    }
                   />
                 ))}
               </div>

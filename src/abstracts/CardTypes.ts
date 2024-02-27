@@ -1,16 +1,16 @@
 import { Item } from "./ItemTypes";
+import { useMoreLikeTheseType } from "./useMoreLikeTheseType";
 
-export type ProductCardProperties = Item & {
+export type ProductCardProperties = {
+  item: Item;
   primaryColor: string;
   secondaryColor: string;
   onMoreLikeThisClicked: () => void;
   infoContent: string;
-  redirectUrl?: string;
   subtitle?: string;
-  // bottomLeftLabel?: number;
+  moreLikeTheseActions?: useMoreLikeTheseType;
   bottomRightLabel?: string;
   isDeveloperView?: boolean;
-  searchAccuracy?: number;
 };
 
 export type CardProperties = {

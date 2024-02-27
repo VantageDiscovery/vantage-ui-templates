@@ -15,6 +15,7 @@ import {
 import useUrlParams from "hooks/useUrlParameters";
 import useVibe from "hooks/useVibe";
 import useSearchs from "hooks/useSearchs";
+import useMoreLikeThese from "hooks/useMoreLikeThese";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
 
@@ -61,30 +62,37 @@ export const DemoProvider = ({
     vibeOverallWeightDefault: dataConfiguration.vibe?.vibeOverallWeight,
   });
 
-  const isMoreLikeTheseActive = (): boolean => {
-    return vibeHandler.activeVibe.length > 0;
+  const isVibeActive = (): boolean => {
+    return vibeHandler.activeVibe.length > 0 && !moreLikeTheseHandler.isActive;
   };
+
+  const moreLikeTheseHandler = useMoreLikeThese();
 
   const {
     multiQuerySearchResults,
     multiMLTSearchResults,
-    multiMLTheseSearchResults,
-    multiMLTheseDocumentIdResults,
+    multiVibeSearchResults,
+    multiVibeDocumentIdResults,
+    multiMoreLikeTheseResults,
   } = useSearchs({
     dataConfiguration,
     query,
     moreLikeDocumentId,
-    isMoreLikeTheseActive: isMoreLikeTheseActive(),
+    isMoreLikeTheseActive: isVibeActive(),
     vibeHandler,
     filters: filterHandlers.getFilterString(),
     customerAPI,
+    moreLikeTheseHandler,
   });
 
   const returnTypeOfResults = () => {
-    if (isMoreLikeTheseActive()) {
+    if (moreLikeTheseHandler.isActive) {
+      return multiMoreLikeTheseResults;
+    }
+    if (isVibeActive()) {
       return moreLikeDocumentId
-        ? multiMLTheseDocumentIdResults
-        : multiMLTheseSearchResults;
+        ? multiVibeDocumentIdResults
+        : multiVibeSearchResults;
     }
     if (moreLikeDocumentId) {
       return multiMLTSearchResults;
@@ -109,8 +117,9 @@ export const DemoProvider = ({
   }, [
     multiQuerySearchResults,
     multiMLTSearchResults,
-    multiMLTheseSearchResults,
-    multiMLTheseDocumentIdResults,
+    multiVibeSearchResults,
+    multiVibeDocumentIdResults,
+    multiMoreLikeTheseResults,
   ]);
 
   const refetchSearchQueryResults = () => {
@@ -119,17 +128,27 @@ export const DemoProvider = ({
     }
   };
 
-  const refetchMLTheseSearchResults = () => {
-    for (const searchResults of multiMLTheseSearchResults) {
+  const refetchVibeSearchResults = () => {
+    for (const searchResults of multiVibeSearchResults) {
       searchResults.refetch();
     }
   };
 
-  const refetchMLTheseDocumentIdResults = () => {
-    for (const searchResults of multiMLTheseDocumentIdResults) {
+  const refetchVibeDocumentIdResults = () => {
+    for (const searchResults of multiVibeDocumentIdResults) {
       searchResults.refetch();
     }
   };
+
+  const refetchMLTResults = () => {
+    for (const searchResults of multiMoreLikeTheseResults) {
+      searchResults.refetch();
+    }
+  };
+
+  useEffect(() => {
+    moreLikeTheseHandler.isActive && refetchMLTResults();
+  }, [moreLikeTheseHandler.activeMLThese]);
 
   useEffect(() => {
     performFilterChange();
@@ -142,12 +161,16 @@ export const DemoProvider = ({
 
   const performMoreLikeThese = () => {
     moreLikeDocumentId
-      ? refetchMLTheseDocumentIdResults()
-      : refetchMLTheseSearchResults();
+      ? refetchVibeDocumentIdResults()
+      : refetchVibeSearchResults();
   };
 
   const performFilterChange = () => {
-    if (isMoreLikeTheseActive()) {
+    if (moreLikeTheseHandler.isActive) {
+      refetchMLTResults();
+      return;
+    }
+    if (isVibeActive()) {
       performMoreLikeThese();
       return;
     }
@@ -155,10 +178,10 @@ export const DemoProvider = ({
   };
   const performSearch = () => {
     setSearchUrl(query);
-    if (isMoreLikeTheseActive()) {
+    if (isVibeActive()) {
       moreLikeDocumentId
         ? setMoreLikeDocumentId("")
-        : refetchMLTheseSearchResults();
+        : refetchVibeSearchResults();
       return;
     }
     setMoreLikeDocumentId("");
@@ -166,8 +189,8 @@ export const DemoProvider = ({
   };
 
   const performMoreLikeThis = (id: string) => {
-    if (isMoreLikeTheseActive() && moreLikeDocumentId === id) {
-      refetchMLTheseDocumentIdResults();
+    if (isVibeActive() && moreLikeDocumentId === id) {
+      refetchVibeDocumentIdResults();
       return;
     }
     setDocumentId(id);
@@ -175,7 +198,7 @@ export const DemoProvider = ({
   };
 
   useEffect(() => {
-    if (isMoreLikeTheseActive()) {
+    if (isVibeActive()) {
       performMoreLikeThese();
       return;
     }
@@ -185,6 +208,7 @@ export const DemoProvider = ({
   return (
     <DemoContext.Provider
       value={{
+        moreLikeTheseActions: moreLikeTheseHandler,
         filterActions: filterHandlers,
         vibeActions: vibeHandler,
         searchResults: collectionSearchResults,
@@ -198,6 +222,7 @@ export const DemoProvider = ({
           query,
           isDeveloperViewToggled,
           moreLikeDocumentId,
+          enableMoreLikeThis: dataConfiguration.enableMoreLikeThis,
         },
         dataConfiguration: configuration,
       }}
