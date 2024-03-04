@@ -61,10 +61,7 @@ const PintrestForm = ({
           </button>
         </div>
         <p className="ml-2 font-bold text-start">Forgot password ?</p>
-        <button
-          type="submit"
-          className="rounded-4xl text-white font-bold text-lg bg-pinterest-primary h-12"
-        >
+        <button className="rounded-4xl text-white font-bold text-lg !bg-pinterest-primary h-12">
           Log In
         </button>
       </div>
