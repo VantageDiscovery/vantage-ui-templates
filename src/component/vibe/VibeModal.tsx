@@ -2,7 +2,6 @@ import { BoardData, UseVibeType, VibeBoard } from "abstracts/VibeTypes";
 import Modal from "component/layout/Modal";
 import React, { useEffect, useState } from "react";
 import PinterestLogo from "icons/PinterestLogo";
-import VibeChip from "./VibeChip";
 import PinterestForm from "./PinterestForm";
 import sessionStorageService from "services/SessionStorageService";
 import ResetIcon from "icons/ResetIcon";
@@ -10,6 +9,7 @@ import LottieImage from "animation/LottieImage";
 import VibeCard from "./VibeCard";
 import Masonry from "react-layout-masonry";
 import cn from "utils/cn";
+import ColorChip from "component/ColorChip";
 
 const toggleVibe = (
   activeVibe: BoardData[],
@@ -105,8 +105,8 @@ const VibeModal = ({
     ) : (
       <>
         <div className="flex px-5 w-full h-24 items-center overflow-x-scroll scrollbar-small">
-          {boards?.map((board) => (
-            <VibeChip
+          {boards?.map((board, index) => (
+            <ColorChip
               title={board.name}
               key={board.name}
               isSelected={isBoardSelected(board)}
@@ -114,6 +114,7 @@ const VibeModal = ({
                 selectActiveBoard(board);
               }}
               imgSrc={board.pins[0].image_url}
+              index={index}
             />
           ))}
         </div>

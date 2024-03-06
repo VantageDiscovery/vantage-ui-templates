@@ -17,7 +17,7 @@ export type ModalProperties = {
   isVisible: boolean;
   children: JSX.Element;
   className?: string;
-  onCloseModal: () => void;
+  onCloseModal?: () => void;
 };
 
 export type ServiceResponseWrapperProperties = {

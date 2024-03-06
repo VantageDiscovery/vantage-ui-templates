@@ -36,4 +36,5 @@ export type DemoContextType = {
   filterActions: UseFiltersType;
   demoActions: DemoActions;
   moreLikeTheseActions: useMoreLikeTheseType;
+  checkForError: () => void;
 };

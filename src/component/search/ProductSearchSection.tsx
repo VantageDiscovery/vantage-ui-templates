@@ -40,7 +40,7 @@ const ProductSearchSection = ({
             key={data.item.id}
             alt={data.item.id}
             src={data.item.imageSrc}
-            className="object-contain h-12 w-auto"
+            className="object-fill h-12 w-full"
           />
         );
       })

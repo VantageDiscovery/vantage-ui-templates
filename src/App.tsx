@@ -13,6 +13,7 @@ import {
 import ProductDemoTemplate from "./templates/ProductsDemoTemplate/ProductDemoTemplate";
 import PublisherDemoTemplate from "./templates/PublisherDemoTemplate/PublisherDemoTemplate";
 import PublisherMoreLikeThisProductTemplete from "templates/PublisherMoreLikeThisProductTemplete/PublisherMoreLikeThisProductTemplete";
+import PinsTemplate from "templates/PinsTemplate/PinsTemplate";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -56,6 +57,9 @@ export const Application = (configuration: Configuration) => {
       <PublisherMoreLikeThisProductTemplete
         brandingConfiguration={configuration.branding}
       />
+    ),
+    [EDemoTemplate.PINS]: (
+      <PinsTemplate brandingConfiguration={configuration.branding} />
     ),
   };
 

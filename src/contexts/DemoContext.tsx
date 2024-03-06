@@ -42,6 +42,21 @@ export const DemoProvider = ({
     dataConfiguration: configuration,
   });
 
+  const checkForError = () => {
+    if (!dataConfiguration.apiKey)
+      throw new Error(
+        "Api key is required in url, check the link that sent you."
+      );
+    if (!dataConfiguration.accountId)
+      throw new Error(
+        "Account id is required in url, check the link that sent you."
+      );
+    if (!dataConfiguration.collectionIds)
+      throw new Error(
+        "Collection id is required in url, check the link that sent you."
+      );
+  };
+
   const filterHandlers = useFilters({
     filterType: configuration.filter.type,
     getAvailableFilters: customerAPI.getFilters,
@@ -225,6 +240,7 @@ export const DemoProvider = ({
           enableMoreLikeThis: dataConfiguration.enableMoreLikeThis,
         },
         dataConfiguration: configuration,
+        checkForError,
       }}
     >
       {children}

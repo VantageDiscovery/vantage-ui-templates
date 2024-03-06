@@ -19,5 +19,20 @@ code {
 @layer utilities {
   .scrollbar-small::-webkit-scrollbar {
     width: 1px;
-  }
+    height: 0px;
+  };
+}
+@layer utilities {
+  .scrollbar-small::-webkit-scrollbar {
+    width: 1px;
+    height: 0px;
+  };
+  .scrollbar-md::-webkit-scrollbar  {
+    height: 6px; 
+  }::-webkit-scrollbar-track-piece {
+    background-color: white;
+  } ::-webkit-scrollbar-thumb{ 
+    background-color: gray; 
+    border-radius: 10px;
+ }
 }

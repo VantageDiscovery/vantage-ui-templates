@@ -27,6 +27,7 @@ const ProductCard = ({
   infoContent,
   onMoreLikeThisClicked,
   moreLikeTheseActions,
+  staticHeight = true,
 }: ProductCardProperties) => {
   const [isModalVisible, toggleModal] = useToggle();
 
@@ -41,7 +42,10 @@ const ProductCard = ({
   return (
     <article
       data-testid={`product-card-${item.id}`}
-      className="relative flex flex-col gap-1 h-fit w-[330px] 3xl:w-[370px] box-border-2 shadow-md rounded-xl"
+      className={cn(
+        "relative flex flex-col gap-1 h-fit box-border-2 shadow-md rounded-xl",
+        { "w-[330px] 3xl:w-[370px]": staticHeight }
+      )}
     >
       <a
         href={item.externalUrl}
@@ -54,7 +58,9 @@ const ProductCard = ({
             src={item.imageSrc}
             alt="product"
             data-testid="product-image"
-            className="relative rounded-lg h-[320px] w-full object-cover"
+            className={cn("relative rounded-lg w-full object-cover", {
+              "h-[320px]": staticHeight,
+            })}
           />
           {isDeveloperView && (
             <span
@@ -80,7 +86,7 @@ const ProductCard = ({
           <p className="text-gray-400 text-sm">{subtitle}</p>
         </span>
       )}
-      <div className="flex flex-col gap-4 px-4 pb-4 pt-2">
+      <div className="flex flex-col gap-1 px-4 pb-4 pt-2">
         <section className="flex justify-between items-center">
           <span className="h-6 line-clamp-1 font-bold text-base">
             {item.title}

@@ -113,6 +113,12 @@ const useFilters = ({
     setActiveFilters([]);
   };
 
+  const getFilterFromCategory = (categoryName: string): Filter[] => {
+    return availableFilters.filter(
+      (filter) => filter.categoryName === categoryName
+    );
+  };
+
   return {
     availableFilters,
     popularFilters:
@@ -124,6 +130,7 @@ const useFilters = ({
     toggleFilters,
     getFilterString,
     clearActiveFilters,
+    getFilterFromCategory,
   };
 };
 

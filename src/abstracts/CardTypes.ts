@@ -11,6 +11,8 @@ export type ProductCardProperties = {
   moreLikeTheseActions?: useMoreLikeTheseType;
   bottomRightLabel?: string;
   isDeveloperView?: boolean;
+  searchAccuracy?: number;
+  staticHeight?: boolean;
 };
 
 export type CardProperties = {

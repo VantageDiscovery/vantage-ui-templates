@@ -39,12 +39,14 @@ export enum EDemoTemplate {
   PUBLISHER = "publisher",
   PRODUCT = "product",
   PUBLISHER_WITH_MLT_ON_GRID = "publisherWithMltOnGrid",
+  PINS = "pins",
 }
 
 export type ETemplateString =
   | "product"
   | "publisher"
-  | "publisherWithMltOnGrid";
+  | "publisherWithMltOnGrid"
+  | "pins";
 
 export type Configuration = DataConfiguration & {
   template: EDemoTemplate;
@@ -53,19 +55,17 @@ export type Configuration = DataConfiguration & {
 
 export type ClientConfiguration = DeepPartial<
   Omit<Configuration, "collectionIds" | "customerAPI" | "template">
-> &
-  Pick<
-    Configuration,
-    "accountId" | "apiKey" // mandatory fields
-  > & { collectionId: string | string[] } & {
-    template?: EDemoTemplate | ETemplateString;
-  } & {
-    customerAPI:
-      | VantageAPIConfigurationClient
-      | CustomerAPIConfigurationClient
-      | CDNAPIConfigurationClient;
-    customFieldTransformer?: CustomFieldTransformerClient;
-  };
+> & { collectionId?: string | string[] } & {
+  template?: EDemoTemplate | ETemplateString;
+  accountId?: string;
+  apiKey?: string;
+} & {
+  customerAPI:
+    | VantageAPIConfigurationClient
+    | CustomerAPIConfigurationClient
+    | CDNAPIConfigurationClient;
+  customFieldTransformer?: CustomFieldTransformerClient;
+};
 
 type ShinglingConfiguration = {
   documentMatchScoreWeight: number;

@@ -23,6 +23,12 @@ dependencies:
   classnames:
     specifier: ^2.3.2
     version: 2.3.2
+  colors-generator:
+    specifier: ^0.3.4
+    version: 0.3.4
+  colors-helper-tools:
+    specifier: ^1.5.7
+    version: 1.5.7
   prop-types:
     specifier: ^15.8.1
     version: 15.8.1
@@ -2248,6 +2254,15 @@ packages:
   /colorette@2.0.20:
     resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
     dev: true
+
+  /colors-generator@0.3.4:
+    resolution: {integrity: sha512-xsUyH0ABEuyF4c/wFlVOwGdcyy2AxMXR5PNMjrxxRFpdl7lJGAgqF1dnQ6VtUnS5Rpmrcmmg/uSJJLNZWePIAw==}
+    dev: false
+
+  /colors-helper-tools@1.5.7:
+    resolution: {integrity: sha512-qUaR0nhWrsKSQC63X81TiJ4j1XOTLA+dq8iogItw3eyXVXT2F0/nLZ6Pf+pjrfHpe6pbG8JTxlSBqkPORYkmZQ==}
+    engines: {node: '>=14'}
+    dev: false
 
   /colors@1.2.5:
     resolution: {integrity: sha512-erNRLao/Y3Fv54qUa0LBB+//Uf3YwMUmdJinN20yMXm9zdKKqH9wt7R9IIVZ+K7ShzfpLV/Zg8+VyrBJYB4lpg==}

@@ -101,6 +101,7 @@ const useEnumsTemplate: Record<ETemplateString, EDemoTemplate> = {
   ["product"]: EDemoTemplate.PRODUCT,
   ["publisher"]: EDemoTemplate.PUBLISHER,
   ["publisherWithMltOnGrid"]: EDemoTemplate.PUBLISHER_WITH_MLT_ON_GRID,
+  ["pins"]: EDemoTemplate.PINS,
 };
 
 const TransformStringFieldsToEnums = (
@@ -117,7 +118,7 @@ export const GetConfigurationWithDefaultValues = (
 ): Configuration => {
   let collectionIds = customerConfiguration.collectionId;
   if (!Array.isArray(collectionIds)) {
-    collectionIds = [collectionIds];
+    collectionIds = [collectionIds ?? ""];
   }
 
   const config = TransformStringFieldsToEnums(customerConfiguration);

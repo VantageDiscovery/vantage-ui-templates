@@ -16,7 +16,7 @@ const Modal = ({
       modalContentReference.current &&
       !modalContentReference.current.contains(event.target as Node)
     ) {
-      onCloseModal();
+      onCloseModal?.();
     }
   };
 

@@ -61,7 +61,7 @@ const ModalMoreOptions = ({
       <div className="flex flex-col items-center justify-between my-10 h-full ">
         <div className="flex flex-col flex-1 justify-center items-center gap-2">
           <span className="text-2xl mb-4">Similar to These?</span>
-          <span className="flex mx-5 gap-5 justify-between">
+          <span className="flex gap-5 justify-center">
             <div className="flex flex-col items-center gap-4">
               <button
                 disabled={likeDisabled}

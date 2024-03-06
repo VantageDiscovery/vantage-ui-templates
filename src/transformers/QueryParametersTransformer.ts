@@ -11,6 +11,9 @@ export const GetConfigurationWithParameterValues = (
       searchParameters.get("collectionId") ??
         dataConfiguration.collectionIds.toString(),
     ],
+    apiKey: searchParameters.get("api_key") ?? dataConfiguration.apiKey,
+    accountId:
+      searchParameters.get("account_id") ?? dataConfiguration.accountId,
     defaultAccuracy:
       searchParameters.get("accuracy") ?? dataConfiguration.defaultAccuracy,
     shingling: {

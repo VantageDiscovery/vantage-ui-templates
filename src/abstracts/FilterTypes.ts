@@ -13,6 +13,7 @@ export type UseFiltersType = {
   availableFilters: Filter[];
   activeFilters: Filter[];
   popularFilters: Filter[];
+  getFilterFromCategory: (categoryName: string) => Filter[];
   setActiveFilters: (filters: Filter[]) => void;
   toggleFilters: (filters: Filter[]) => void;
   getFilterString: () => string;
