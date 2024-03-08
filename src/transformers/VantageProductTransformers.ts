@@ -53,8 +53,8 @@ export const TransformVantageSearchByQueryParametersViewToDTO = (
       query_match_score_weight: searchParameters.queryMatchScoreWeight,
     },
     field_value_weighting: {
-      query_key_word_weighting_mode: searchParameters.queryKeyWordWeightingMode,
-      query_key_word_max_overall_weight:
+      queryKeyWordWeightingMode: searchParameters.queryKeyWordWeightingMode,
+      queryKeyWordMaxOverallWeight:
         searchParameters.queryKeyWordMaxOverallWeight,
     },
     ...(searchParameters.experimental && {
@@ -116,8 +116,11 @@ export const transformToAddWeightToTheseOnVibe = ({
   return [
     { ...firstParameter, weight: 1 - vibe_overall_weight },
     ...these.map((data) => {
+      const parameter = data.text
+        ? { query_text: data.text }
+        : { query_image: data.image_url };
       return {
-        query_text: data.text,
+        ...parameter,
         weight: (1 / these.length) * vibe_overall_weight,
       };
     }),

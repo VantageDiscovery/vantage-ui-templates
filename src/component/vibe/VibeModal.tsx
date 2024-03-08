@@ -105,7 +105,7 @@ const VibeModal = ({
     ) : (
       <>
         <div className="flex px-5 w-full h-24 items-center overflow-x-scroll scrollbar-small">
-          {boards?.map((board) => (
+          {boards?.map((board, index) => (
             <VibeChip
               title={board.name}
               key={board.name}
@@ -113,6 +113,7 @@ const VibeModal = ({
               onClick={() => {
                 selectActiveBoard(board);
               }}
+              index={index}
               imgSrc={board.pins[0].image_url}
             />
           ))}

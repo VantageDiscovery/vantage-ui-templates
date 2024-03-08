@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useMemo } from "react";
+import React, { ChangeEvent, useMemo, useState } from "react";
 import Combobox from "../Combobox";
 import cn from "utils/cn";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
@@ -7,6 +7,7 @@ import VibeSection from "component/vibe/VibeSection";
 import DislikeIcon from "icons/DislikeIcon";
 import EmptyImageIcon from "icons/EmptyImageIcon";
 import LikeIcon from "icons/LikeIcon";
+import Dropdown from "component/Dropdown";
 
 const ProductSearchSection = ({
   searchQuery,
@@ -17,10 +18,17 @@ const ProductSearchSection = ({
   searchPlaceholder = "Search for anything...",
   vibeActions,
   moreLikeTheseActions,
+  typeAheadHandler,
 }: ProductSearchProperies) => {
-  const { availableFilters, activeFilters, toggleFilters, clearActiveFilters } =
-    useFiltersHook;
+  const {
+    availableFilters,
+    activeFilters,
+    toggleFilters,
+    clearActiveFilters,
+    setActiveFilters,
+  } = useFiltersHook;
 
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false);
   const renderVibe = () => {
     return vibeActions?.boards?.length ? (
       <div className="w-1/6">
@@ -70,6 +78,50 @@ const ProductSearchSection = ({
     );
   };
 
+  const renderSearchBar = (): React.JSX.Element => {
+    if (typeAheadHandler)
+      return (
+        <span className="w-full h-12 flex items-center">
+          <Dropdown
+            data={typeAheadHandler?.recomendedQueries}
+            isDropDownOpen={isDropDownOpen}
+            setIsDropDownOpen={setIsDropDownOpen}
+            onSelectedActionQuery={(query: string) => {
+              setSearchQuery(query);
+              setIsDropDownOpen(false);
+            }}
+            isSingleFilter={isSingleFilter}
+            searchPlaceholder={searchPlaceholder}
+            searchQuery={searchQuery}
+            isSelectedFilter={(filter) => activeFilters.includes(filter)}
+            onSelectedActionFilter={(filter) => {
+              setActiveFilters([filter]);
+              setIsDropDownOpen(false);
+            }}
+            recomendedFilters={typeAheadHandler.recomendedFilters}
+          />
+        </span>
+      );
+    return (
+      <>
+        <MagnifyingGlassIcon className="w-6 h-6 flex text-gray-600" />
+        <input
+          placeholder={searchPlaceholder}
+          type="text"
+          data-testid="search-input"
+          className={cn(
+            "h-full py-3 w-full !focus:ring-0 outline-0",
+            isSingleFilter ? " border-r-[1px] border-r-gray-400" : "rounded-lg"
+          )}
+          value={searchQuery}
+          onChange={(event: ChangeEvent<HTMLInputElement>) => {
+            setSearchQuery(event.target.value);
+          }}
+        />
+      </>
+    );
+  };
+
   const activeFilter = useMemo(() => activeFilters[0], [activeFilters]);
 
   return (
@@ -81,27 +133,12 @@ const ProductSearchSection = ({
             event.preventDefault();
             onSearchPerformed();
           }}
-          className="flex w-4/5 h-12 justify-center gap-6"
+          className="relative flex w-4/5 h-12 justify-center gap-6"
         >
-          <span className="flex flex-row items-center border border-black text-gray-900 text-sm rounded-lg w-full gap-2 pl-2">
-            <MagnifyingGlassIcon className="w-6 h-6 text-gray-600" />
-            <input
-              placeholder={searchPlaceholder}
-              type="text"
-              data-testid="search-input"
-              className={cn(
-                "h-full py-3 !focus:ring-0 outline-0",
-                isSingleFilter
-                  ? "w-3/5 border-r-[1px] border-r-gray-400"
-                  : "w-full rounded-lg"
-              )}
-              value={searchQuery}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                setSearchQuery(event.target.value);
-              }}
-            />
+          <span className="relative flex flex-row items-center border border-black text-gray-900 text-sm rounded-lg w-full h-full">
+            {renderSearchBar()}
             {isSingleFilter && (
-              <span className="w-2/5 h-full mr-2">
+              <span className="w-1/3 h-full mr-2">
                 <Combobox
                   className="w-full h-full !border-0"
                   placeholder="Select optional category"
@@ -134,7 +171,7 @@ const ProductSearchSection = ({
           </button>
         </form>
       </div>
-      <div className="flex w-1/6 ml-8 h-full items-center gap-4">
+      <div className="flex w-1/6 ml-8 h-12 items-center gap-4">
         {renderMoreLikeTheseSelectedSection()}
       </div>
     </div>

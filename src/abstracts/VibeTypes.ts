@@ -5,9 +5,9 @@ export type VibeBoard = {
 
 export type BoardData = {
   id: string;
-  image_url: string;
-  text: string;
-  embedding: number[];
+  image_url?: string;
+  text?: string;
+  embedding?: number[];
 };
 
 export type UseVibeType = {

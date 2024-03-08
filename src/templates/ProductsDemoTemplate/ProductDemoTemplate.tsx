@@ -29,6 +29,7 @@ const ProductDemoTemplate = ({
     demoActions,
     dataConfiguration,
     moreLikeTheseActions,
+    typeAheadHandler,
   } = useDemo();
 
   useEffect(() => {
@@ -47,19 +48,25 @@ const ProductDemoTemplate = ({
 
   const renderFilterSection = () => {
     if (!dataConfiguration.filter) {
-      return <></>;
+      return;
     }
 
     if (dataConfiguration.filter.type === EFiltersType.SINGLE_SELECT) {
-      return <SingleFilterSection useFilters={filterActions} />;
+      return (
+        <div className="w-full">
+          <SingleFilterSection useFilters={filterActions} />;
+        </div>
+      );
     }
 
     if (dataConfiguration.filter.type === EFiltersType.MULTI_SELECT) {
       return (
-        <MultiFilterSection
-          useFilters={filterActions}
-          selectedColor={brandingConfiguration.colors.primary}
-        />
+        <div className="w-full">
+          <MultiFilterSection
+            useFilters={filterActions}
+            selectedColor={brandingConfiguration.colors.primary}
+          />
+        </div>
       );
     }
   };
@@ -129,16 +136,15 @@ const ProductDemoTemplate = ({
                   }
                   vibeActions={vibeActions}
                   moreLikeTheseActions={
-                    variables.enableMoreLikeThis
+                    variables.enableMoreLikeThese
                       ? moreLikeTheseActions
                       : undefined
                   }
+                  typeAheadHandler={typeAheadHandler}
                 />
               </div>
             )}
-            <hr className="w-full" />
-            <div className="w-full">{renderFilterSection()}</div>
-            <hr className="w-full" />
+            {renderFilterSection()}
             <div className="w-full"> {renderResultsHeader()}</div>
             <ServerResponseWrapper
               isLoading={searchResult.isLoading}
@@ -166,7 +172,7 @@ const ProductDemoTemplate = ({
                     }}
                     isDeveloperView={variables.isDeveloperViewToggled}
                     moreLikeTheseActions={
-                      variables.enableMoreLikeThis
+                      variables.enableMoreLikeThese
                         ? moreLikeTheseActions
                         : undefined
                     }

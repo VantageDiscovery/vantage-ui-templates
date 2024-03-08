@@ -51,6 +51,7 @@ export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters & {
 export type MoreLikeTheseParameters = {
   query_document_id?: string;
   query_text?: string;
+  query_image?: string;
   weight?: number;
 };
 
@@ -96,8 +97,8 @@ export interface SearchParametersDTO {
   document_id?: string;
   text?: string;
   field_value_weighting?: {
-    query_key_word_weighting_mode: string;
-    query_key_word_max_overall_weight: number;
+    queryKeyWordWeightingMode: string;
+    queryKeyWordMaxOverallWeight: number;
   };
   these?: {
     query_document_id?: string;
