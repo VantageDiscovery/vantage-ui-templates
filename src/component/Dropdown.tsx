@@ -29,6 +29,7 @@ const Dropdown = ({
   searchQuery,
   isSelectedFilter,
   recomendedFilters,
+  onSelectedActionFilter,
 }: DropdownProperties) => {
   const reference = useRef<HTMLDivElement>(null);
 
