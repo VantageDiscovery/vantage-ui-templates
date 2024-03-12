@@ -104,7 +104,7 @@ const ProductSearchSection = ({
       );
     return (
       <>
-        <MagnifyingGlassIcon className="w-6 h-6 flex text-gray-600" />
+        <MagnifyingGlassIcon className="w-6 h-6 m-1 text-gray-600" />
         <input
           placeholder={searchPlaceholder}
           type="text"
@@ -135,7 +135,7 @@ const ProductSearchSection = ({
           }}
           className="relative flex w-4/5 h-12 justify-center gap-6"
         >
-          <span className="relative flex flex-row items-center border border-black text-gray-900 text-sm rounded-lg w-full h-full">
+          <span className="relative flex flex-row items-center border border-black text-gray-900 text-sm rounded-lg gap-2 w-full h-full">
             {renderSearchBar()}
             {isSingleFilter && (
               <span className="w-1/3 h-full mr-2">

@@ -53,8 +53,8 @@ export const TransformVantageSearchByQueryParametersViewToDTO = (
       query_match_score_weight: searchParameters.queryMatchScoreWeight,
     },
     field_value_weighting: {
-      queryKeyWordWeightingMode: searchParameters.queryKeyWordWeightingMode,
-      queryKeyWordMaxOverallWeight:
+      query_key_word_weighting_mode: searchParameters.queryKeyWordWeightingMode,
+      query_key_word_max_overall_weight:
         searchParameters.queryKeyWordMaxOverallWeight,
     },
     ...(searchParameters.experimental && {

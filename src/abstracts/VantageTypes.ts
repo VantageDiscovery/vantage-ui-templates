@@ -97,8 +97,8 @@ export interface SearchParametersDTO {
   document_id?: string;
   text?: string;
   field_value_weighting?: {
-    queryKeyWordWeightingMode: string;
-    queryKeyWordMaxOverallWeight: number;
+    query_key_word_weighting_mode: string;
+    query_key_word_max_overall_weight: number;
   };
   these?: {
     query_document_id?: string;
