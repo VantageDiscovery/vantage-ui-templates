@@ -114,11 +114,7 @@ const VibeModal = ({
                 selectActiveBoard(board);
               }}
               index={index}
-<<<<<<< HEAD
               imgSrc={board.pins[0].image_base64 ?? board.pins[0].image_url}
-=======
-              imgSrc={board.pins[0].image_url}
->>>>>>> db8bdd40 (dropdown_with_type_ahead)
             />
           ))}
         </div>
