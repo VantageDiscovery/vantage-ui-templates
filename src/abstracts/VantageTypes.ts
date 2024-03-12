@@ -39,6 +39,7 @@ export type SearchByQueryParameters = SearchParameters &
   FieldValueWeightingParameters & {
     filters: string;
     query: string;
+    experimental?: ExprimenatalParameters;
   };
 
 export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters & {
@@ -59,6 +60,11 @@ export type ShinglingParameters = {
   documentMatchScoreWeight: number;
 };
 
+export type ExprimenatalParameters = {
+  cluster?: boolean;
+  cache?: boolean;
+};
+
 type FieldValueWeightingParameters = {
   queryKeyWordWeightingMode: string;
   queryKeyWordMaxOverallWeight: number;
@@ -74,6 +80,10 @@ export interface SearchParametersDTO {
   pagination: {
     page: number;
     count: number;
+  };
+  experimental?: {
+    cluster?: boolean;
+    cache?: boolean;
   };
   shingling?: {
     cosine_similarity_score_weight: number;

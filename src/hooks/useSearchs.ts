@@ -41,6 +41,7 @@ const useSearchs = ({
       filters: filters,
       pageNumber: dataConfiguration.pageNumber,
       pageSize: dataConfiguration.pageSize,
+      experimental: dataConfiguration?.experimental,
       ...dataConfiguration.shingling,
       ...dataConfiguration?.fieldValueWeighting,
     },
