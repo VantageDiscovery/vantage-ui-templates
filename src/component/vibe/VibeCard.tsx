@@ -19,7 +19,7 @@ const VibeCard = ({
         onClick={() => setActiveVibe(data)}
       >
         <img
-          src={data.image_url}
+          src={data.image_base64 ?? data.image_url}
           alt="vibe"
           className={cn(
             "h-auto w-full rounded-3xl object-fill object-center",

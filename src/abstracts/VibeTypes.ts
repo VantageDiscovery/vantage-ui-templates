@@ -8,6 +8,7 @@ export type BoardData = {
   image_url?: string;
   text?: string;
   embedding?: number[];
+  image_base64?: string;
 };
 
 export type UseVibeType = {
