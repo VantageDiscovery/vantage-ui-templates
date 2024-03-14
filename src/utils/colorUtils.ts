@@ -19,5 +19,5 @@ const colorPalet = [
 ];
 
 export const getRandomColor = (index: number): string => {
-  return colorPalet[index % 6];
+  return colorPalet[index % colorPalet.length];
 };

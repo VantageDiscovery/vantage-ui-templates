@@ -12,7 +12,7 @@ const VibeSection = ({ useVibe }: { useVibe: UseVibeType }) => {
   const buttonModalSection = () => {
     return activeVibe[0] ? (
       <img
-        src={activeVibe[0]?.image_url}
+        src={activeVibe[0]?.image_base64 ?? activeVibe[0]?.image_url}
         alt="first-board"
         className="relative rounded-lg h-full w-full object-cover"
       />
@@ -33,7 +33,7 @@ const VibeSection = ({ useVibe }: { useVibe: UseVibeType }) => {
           >
             {buttonModalSection()}
           </button>
-          <div className="w-28 mt-1 mr-1 items-end">
+          <div className="w-[100px] mt-1 mr-1 ml-1.5 items-end">
             <Slider
               color="error"
               size="small"

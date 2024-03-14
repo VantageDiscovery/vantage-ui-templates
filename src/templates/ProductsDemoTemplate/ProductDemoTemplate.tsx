@@ -95,7 +95,7 @@ const ProductDemoTemplate = ({
   };
 
   return (
-    <div className="flex flex-col w-full overflow-visible gap-0 justify-between min-h-screen">
+    <div className="flex flex-col w-full overflow-visible justify-between min-h-screen">
       <Navigation
         clientLogoUrl={brandingConfiguration.logoUrl}
         backgroundColor="white"
