@@ -30,6 +30,7 @@ const Dropdown = ({
   isSelectedFilter,
   recomendedFilters,
   onSelectedActionFilter,
+  onSearchPerformed,
 }: DropdownProperties) => {
   const reference = useRef<HTMLDivElement>(null);
 
