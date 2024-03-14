@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-useless-undefined */
 import { Filter } from "abstracts";
 import { TypeAheadProperties, TypeAheadType } from "abstracts/typeAheadType";
 import { useEffect, useState } from "react";
@@ -9,24 +10,26 @@ const useTypeAhead = ({
   const [recomendedQueries, setRecomendedQueries] = useState<string[]>();
   const [recomendedFilters, setRecomendedFilters] = useState<Filter[]>();
   useEffect(() => {
-    typeAhead
-      ?.typeAheadFilters?.(query)
-      .then((filter) =>
-        setRecomendedFilters(
-          filter.slice(0, typeAhead.typeAheadFiltersNumber ?? 3)
-        )
-      );
-  }, [query]);
+    if (query.length === 0) {
+      return;
+    }
+    const delayDebounce = setTimeout(() => {
+      typeAhead
+        ?.typeAheadFilters?.(query)
+        .then((filter) =>
+          setRecomendedFilters(
+            filter.slice(0, typeAhead.typeAheadFiltersNumber ?? 3)
+          )
+        );
+      typeAhead?.typeAheadQueries?.(query).then((elements) => {
+        setRecomendedQueries(
+          elements.slice(0, typeAhead.typeAheadQueriesNumber ?? 5)
+        );
+      });
+    }, 200);
 
-  useEffect(() => {
-    typeAhead?.typeAheadQueries?.(query).then((elements) => {
-      setRecomendedQueries(
-        elements.slice(0, typeAhead.typeAheadQueriesNumber ?? 5)
-      );
-    });
+    return () => clearTimeout(delayDebounce);
   }, [query]);
-
-  if (!typeAhead) return;
 
   return {
     recomendedQueries,

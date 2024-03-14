@@ -15,6 +15,7 @@ type DropdownProperties = {
   onSelectedActionFilter: (filter: Filter) => void;
   isDropDownOpen: boolean;
   setIsDropDownOpen: (open: boolean) => void;
+  onSearchPerformed: () => void;
   className?: string;
 };
 
@@ -29,6 +30,7 @@ const Dropdown = ({
   isSelectedFilter,
   recomendedFilters,
   onSelectedActionFilter,
+  onSearchPerformed,
 }: DropdownProperties) => {
   const reference = useRef<HTMLDivElement>(null);
 
@@ -55,8 +57,7 @@ const Dropdown = ({
   const renderRecomendedFilters = () => {
     return (
       recomendedFilters && (
-        <div className="flex items-center gap-4 text-center justify-start w-full p-1">
-          <p> Recommended filters:</p>
+        <div className="flex flex-wrap items-center gap-2 text-center justify-start w-full h-full p-1 ">
           {recomendedFilters.map((filter, index) => {
             return (
               <Chip
@@ -74,7 +75,7 @@ const Dropdown = ({
 
   return (
     <div className="relative w-full h-full" ref={reference}>
-      <span className="w-full h-full flex p-1 items-center">
+      <span className="w-full h-full flex p-1 gap-3 items-center">
         <MagnifyingGlassIcon className="w-6 h-6 flex text-gray-600" />
         <input
           placeholder={searchPlaceholder}
@@ -88,19 +89,18 @@ const Dropdown = ({
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
             onSelectedActionQuery(event.target.value);
             setIsDropDownOpen(true);
+            event.stopPropagation();
           }}
-          onFocus={() => setIsDropDownOpen(false)}
           onKeyDown={(event) => {
             if (!data) return;
             if (event.key === "Enter") {
               keyboardSelectedIndex &&
                 onSelectedActionQuery(data[keyboardSelectedIndex - 1]);
-
               event.stopPropagation();
             }
             if (event.key === "ArrowDown") {
               setKeyboardSelectedIndex(
-                Math.min((keyboardSelectedIndex ?? -1) + 1, Number(5))
+                Math.min((keyboardSelectedIndex ?? -1) + 1, Number(data.length))
               );
             }
             if (event.key === "ArrowUp")
@@ -111,9 +111,9 @@ const Dropdown = ({
           }}
         />
       </span>
-      {isDropDownOpen && (
+      {isDropDownOpen && searchQuery.length > 0 && (
         <div
-          className="absolute  rounded shadow bg-white overflow-x-hidden visible w-full border border-gray-200 z-10 flex-col flex"
+          className="absolute rounded shadow bg-white overflow-x-hidden visible w-full border border-gray-200 z-10 flex-col flex"
           role="menu"
           tabIndex={0}
         >
@@ -126,8 +126,10 @@ const Dropdown = ({
               key={unit + index}
               role="listbox"
               tabIndex={0}
-              onClick={() => {
+              onClick={(event) => {
                 onSelectedActionQuery(unit);
+                onSearchPerformed();
+                event.stopPropagation();
               }}
               onKeyDown={(event) => {
                 if (event.key === "Enter") {

@@ -99,6 +99,7 @@ const ProductSearchSection = ({
               setIsDropDownOpen(false);
             }}
             recomendedFilters={typeAheadHandler.recomendedFilters}
+            onSearchPerformed={onSearchPerformed}
           />
         </span>
       );
