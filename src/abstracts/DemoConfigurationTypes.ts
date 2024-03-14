@@ -107,15 +107,23 @@ export interface DataConfiguration {
   fieldValueWeighting: FieldValueWeightingConfiguration;
   pageNumber: number;
   pageSize: number;
-  enableMoreLikeThis: boolean;
+  enableMoreLikeThese: boolean;
   originalSearchResultsURL?: string;
   vibe?: VibeConfiguration;
   experimental?: ExprimenatalParameters;
+  typeAhead?: TypeAheadConfiguration;
 }
 
 export interface VibeConfiguration {
   getBoards: () => Promise<VibeBoard[]>;
   vibeOverallWeight?: number;
+}
+
+export interface TypeAheadConfiguration {
+  typeAheadQueriesNumber?: number;
+  typeAheadFiltersNumber?: number;
+  typeAheadQueries?: (query: string) => Promise<string[]>;
+  typeAheadFilters?: (query: string) => Promise<Filter[]>;
 }
 
 export interface FilterConfiguration {

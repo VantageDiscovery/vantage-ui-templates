@@ -8,3 +8,16 @@ export const getFontColorBasedOnBackground = (hex: string): string => {
   const contrastRatio = (hexR + hexG + hexB) / (255 * 3);
   return contrastRatio >= 0.5 ? "black" : "white";
 };
+
+const colorPalet = [
+  "#FFE4C1",
+  "#FFFD92",
+  "#CFFFCA",
+  "#DAFFF6",
+  "#D7EDFF",
+  "#DAD4FF",
+];
+
+export const getRandomColor = (index: number): string => {
+  return colorPalet[index % colorPalet.length];
+};

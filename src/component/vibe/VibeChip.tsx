@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import cn from "utils/cn";
+import { getRandomColor } from "utils/colorUtils";
 
 type ChipProperties = {
   title: string;
@@ -8,20 +9,9 @@ type ChipProperties = {
   isCancelVisible?: boolean;
   textColor?: string;
   imgSrc?: string;
+  index?: number;
   onClick?: () => void;
   onCancel?: () => void;
-};
-
-const getRandomColor = (): string => {
-  return (
-    "#" +
-    Math.floor(Math.random() * 9) +
-    Math.floor(Math.random() * 9) +
-    Math.floor(Math.random() * 9) +
-    Math.floor(Math.random() * 9) +
-    Math.floor(Math.random() * 9) +
-    Math.floor(Math.random() * 9)
-  );
 };
 
 const VibeChip = ({
@@ -31,14 +21,15 @@ const VibeChip = ({
   onClick,
   onCancel,
   imgSrc,
-  textColor = "white",
+  textColor = "black",
+  index = 0,
 }: ChipProperties) => {
-  const [color] = useState(getRandomColor());
+  const [color] = useState(getRandomColor(index));
   return (
     <button
       type="button"
       className={cn("px-1 border-[1px] h-12 rounded-4xl", {
-        "mx-2 outline outline-2 outline-black": isSelected,
+        "mx-2 ring-1 ring-black": isSelected,
       })}
       style={{ backgroundColor: color, color: textColor }}
       onClick={() => onClick?.()}

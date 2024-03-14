@@ -1,5 +1,6 @@
 import { UseFiltersType } from "./FilterTypes";
 import { UseVibeType } from "./VibeTypes";
+import { TypeAheadType } from "./typeAheadType";
 import { useMoreLikeTheseType } from "./useMoreLikeTheseType";
 
 export type NavigationProperties = {
@@ -39,4 +40,5 @@ export type ProductSearchProperies = {
   searchPlaceholder?: string;
   vibeActions?: UseVibeType;
   moreLikeTheseActions?: useMoreLikeTheseType;
+  typeAheadHandler?: TypeAheadType;
 };

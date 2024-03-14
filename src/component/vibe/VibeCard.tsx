@@ -13,13 +13,13 @@ const VibeCard = ({
   setActiveVibe: (properties: BoardData) => void;
 }) => {
   return (
-    <div className="h-auto w-auto pb-8 flex-wrap justify-start">
+    <div className="h-auto w-full flex-wrap items-end justify-end">
       <button
-        className={"w-full h-full flex-wrap -mt-3 "}
+        className={"w-full h-full flex-wrap "}
         onClick={() => setActiveVibe(data)}
       >
         <img
-          src={data.image_url}
+          src={data.image_base64 ?? data.image_url}
           alt="vibe"
           className={cn(
             "h-auto w-full rounded-3xl object-fill object-center",
@@ -29,14 +29,16 @@ const VibeCard = ({
           )}
         />
       </button>
-      <div className="flex flex-row ">
-        <span className="text-sm font-semibold line-clamp-2 mx-1">
-          {data.text}
-        </span>
-        <button onClick={() => setActiveVibe(data)}>
-          <CheckBoxIcon stroke={`${activeVibe && "black"}`} />
-        </button>
-      </div>
+      {data.text && (
+        <div className="flex flex-row ">
+          <span className="text-sm font-semibold line-clamp-2 mx-1">
+            {data.text}
+          </span>
+          <button onClick={() => setActiveVibe(data)}>
+            <CheckBoxIcon stroke={`${activeVibe && "black"}`} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

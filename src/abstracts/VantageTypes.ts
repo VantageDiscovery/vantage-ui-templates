@@ -51,6 +51,7 @@ export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters & {
 export type MoreLikeTheseParameters = {
   query_document_id?: string;
   query_text?: string;
+  query_image?: string;
   weight?: number;
 };
 

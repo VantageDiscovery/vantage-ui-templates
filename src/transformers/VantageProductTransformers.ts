@@ -116,8 +116,11 @@ export const transformToAddWeightToTheseOnVibe = ({
   return [
     { ...firstParameter, weight: 1 - vibe_overall_weight },
     ...these.map((data) => {
+      const parameter = data.text
+        ? { query_text: data.text }
+        : { query_image: data.image_base64 ?? data.image_url };
       return {
-        query_text: data.text,
+        ...parameter,
         weight: (1 / these.length) * vibe_overall_weight,
       };
     }),

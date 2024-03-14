@@ -16,6 +16,7 @@ import useUrlParams from "hooks/useUrlParameters";
 import useVibe from "hooks/useVibe";
 import useSearchs from "hooks/useSearchs";
 import useMoreLikeThese from "hooks/useMoreLikeThese";
+import useTypeAhead from "hooks/useTypeAhead";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
 
@@ -66,6 +67,10 @@ export const DemoProvider = ({
     return vibeHandler.activeVibe.length > 0 && !moreLikeTheseHandler.isActive;
   };
 
+  const typeAheadHandler = useTypeAhead({
+    query,
+    typeAhead: dataConfiguration.typeAhead,
+  });
   const moreLikeTheseHandler = useMoreLikeThese();
 
   const {
@@ -222,9 +227,10 @@ export const DemoProvider = ({
           query,
           isDeveloperViewToggled,
           moreLikeDocumentId,
-          enableMoreLikeThis: dataConfiguration.enableMoreLikeThis,
+          enableMoreLikeThese: dataConfiguration.enableMoreLikeThese,
         },
         dataConfiguration: configuration,
+        typeAheadHandler,
       }}
     >
       {children}

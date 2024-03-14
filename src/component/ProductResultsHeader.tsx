@@ -60,7 +60,7 @@ export const ProductResultsHeader = ({
           </span>
         )}
       </div>
-      <div className="px-24 w-full flex flex-row space-x-5 items-center">
+      <div className="px-24 w-full flex flex-row space-x-5 py-5 items-center">
         <ToggleButton
           text="Developer debug"
           checkedColor={primaryColor}

@@ -4,6 +4,7 @@ import { DataConfiguration } from "./DemoConfigurationTypes";
 import { UseFiltersType } from "./FilterTypes";
 import { UseVibeType } from "./VibeTypes";
 import { useMoreLikeTheseType } from "./useMoreLikeTheseType";
+import { TypeAheadType } from "./typeAheadType";
 
 export type CollectionSearchResult = {
   collectionId: string;
@@ -18,7 +19,7 @@ export type DemoVariables = {
   query: string;
   isDeveloperViewToggled: boolean;
   moreLikeDocumentId: string;
-  enableMoreLikeThis: boolean;
+  enableMoreLikeThese: boolean;
 };
 
 export type DemoActions = {
@@ -36,4 +37,5 @@ export type DemoContextType = {
   filterActions: UseFiltersType;
   demoActions: DemoActions;
   moreLikeTheseActions: useMoreLikeTheseType;
+  typeAheadHandler: TypeAheadType | undefined;
 };
