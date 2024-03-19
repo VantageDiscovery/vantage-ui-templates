@@ -29,8 +29,6 @@ const Dropdown = ({
   searchQuery,
   isSelectedFilter,
   recomendedFilters,
-  onSelectedActionFilter,
-  onSearchPerformed,
 }: DropdownProperties) => {
   const reference = useRef<HTMLDivElement>(null);
 
@@ -128,7 +126,6 @@ const Dropdown = ({
               tabIndex={0}
               onClick={(event) => {
                 onSelectedActionQuery(unit);
-                onSearchPerformed();
                 event.stopPropagation();
               }}
               onKeyDown={(event) => {
