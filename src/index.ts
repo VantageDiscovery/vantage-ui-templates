@@ -1,8 +1,14 @@
 import useCustomerAPI from "./hooks/useCustomerApi";
-import { Application, VantageWrapper as Wrapper } from "./App";
+import {
+  Application,
+  VantageWrapperQueries,
+  VantageWrapper as Wrapper,
+  VantageWrapperNextJs as WrapperNextJs,
+} from "./App";
 import ProductCard from "./component/ProductCard";
 import {
   ClientConfiguration,
+  Configuration,
   DataConfiguration,
 } from "./abstracts/DemoConfigurationTypes";
 import { GetConfigurationWithDefaultValues } from "./transformers/ConfigurationTransformer";
@@ -18,7 +24,14 @@ import {
   ServiceResponseWrapperProperties,
   UseCustomerAPIType,
   UseFiltersType,
+  UseQueriesType,
   UseUrlParametersType,
+  UseVibeType,
+  VibeBoard,
+  ProductCardProperties,
+  PublishCardProperties,
+  useMoreLikeTheseType,
+  BoardData,
 } from "./abstracts";
 import "./index.scss";
 import useUrlParameters from "./hooks/useUrlParameters";
@@ -29,10 +42,13 @@ import Navigation from "./component/layout/Navigation";
 import ServerResponseWrapper from "./component/ServerResponseWrapper";
 import Footer from "./component/layout/Footer";
 import ProductSearchSection from "./component/search/ProductSearchSection";
-import {
-  ProductCardProperties,
-  PublishCardProperties,
-} from "./abstracts/CardTypes";
+import useSearchs from "hooks/useSearchs";
+import useVibe from "hooks/useVibe";
+import { TypeAheadProperties, TypeAheadType } from "abstracts/typeAheadType";
+import useTypeAhead from "hooks/useTypeAhead";
+import useMoreLikeThese from "hooks/useMoreLikeThese";
+import VibeCard from "component/vibe/VibeCard";
+import VibeModal from "component/vibe/VibeModal";
 
 /**
  * Generate a demo based on a given client configuration.
@@ -63,6 +79,19 @@ export const VantageWrapper = ({
   children: React.JSX.Element;
 }): React.JSX.Element => {
   return Wrapper({
+    configuration: GetConfigurationWithDefaultValues(configuration),
+    children: children,
+  });
+};
+
+export const VantageWrapperNextJs = ({
+  configuration,
+  children,
+}: {
+  configuration: ClientConfiguration;
+  children: React.JSX.Element;
+}): React.JSX.Element => {
+  return WrapperNextJs({
     configuration: GetConfigurationWithDefaultValues(configuration),
     children: children,
   });
@@ -338,6 +367,99 @@ export const VantageMultiFilterSection = ({
 }): React.JSX.Element => {
   return MultiFilterSection({ useFilters });
 };
+
+export const useVantageSearch = ({
+  dataConfiguration,
+  query,
+  moreLikeDocumentId,
+  isMoreLikeTheseActive,
+  vibeHandler,
+  filters,
+  customerAPI,
+  moreLikeTheseHandler,
+}: {
+  dataConfiguration: DataConfiguration;
+  query: string;
+  moreLikeDocumentId: string;
+  filters: string;
+  isMoreLikeTheseActive: boolean;
+  vibeHandler: UseVibeType;
+  customerAPI: UseCustomerAPIType;
+  moreLikeTheseHandler: useMoreLikeTheseType;
+}): UseQueriesType => {
+  return useSearchs({
+    customerAPI,
+    dataConfiguration,
+    filters,
+    isMoreLikeTheseActive,
+    moreLikeDocumentId,
+    moreLikeTheseHandler,
+    query,
+    vibeHandler,
+  });
+};
+
+export const VantageWrapperQuerieProvider = ({
+  children,
+}: {
+  children: React.JSX.Element;
+}): React.JSX.Element => {
+  return VantageWrapperQueries({ children });
+};
+
+export const useVibeHook = ({
+  getBoards,
+  vibeOverallWeightDefault,
+}: {
+  getBoards?: () => Promise<VibeBoard[]>;
+  vibeOverallWeightDefault?: number;
+}): UseVibeType => {
+  return useVibe({ getBoards, vibeOverallWeightDefault });
+};
+
+export const useTypeAheadHook = ({
+  query,
+  typeAhead,
+}: TypeAheadProperties): TypeAheadType | undefined => {
+  return useTypeAhead({ query, typeAhead });
+};
+
+export const useMoreLikeTheseHook = (): useMoreLikeTheseType => {
+  return useMoreLikeThese();
+};
+
+export const GetConfigurationWithDefaultValuesVantage = (
+  customerConfiguration: ClientConfiguration
+): Configuration => {
+  return GetConfigurationWithDefaultValues(customerConfiguration);
+};
+
+export const VibeCardVantage = ({
+  data,
+  activeVibe,
+  setActiveVibe,
+}: {
+  data: BoardData;
+  activeVibe: boolean;
+  setActiveVibe: (properties: BoardData) => void;
+}): React.JSX.Element => {
+  return VibeCard({ activeVibe, data, setActiveVibe });
+};
+
+export const VibeModalVantage = ({
+  isModalVisible,
+  toggleModal,
+  useVibe,
+}: {
+  isModalVisible: boolean;
+  toggleModal: () => void;
+  useVibe: UseVibeType;
+}): React.JSX.Element => {
+  return VibeModal({ isModalVisible, toggleModal, useVibe });
+};
+
+export * from "./services/SessionStorageService";
+export * from "./animation/LottieImage";
 
 export { VantageSearchQueries } from "./queries/VantageSearchQueries";
 

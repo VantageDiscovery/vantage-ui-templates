@@ -1,6 +1,8 @@
 export type VibeBoard = {
+  id?: string;
   name: string;
   pins: BoardData[];
+  image_url?: string;
 };
 
 export type BoardData = {

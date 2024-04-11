@@ -46,6 +46,7 @@ export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters & {
   filters: string;
   these: MoreLikeTheseParameters[];
   vibe_overall_weight?: number;
+  experimental?: ExprimenatalParameters;
 };
 
 export type MoreLikeTheseParameters = {

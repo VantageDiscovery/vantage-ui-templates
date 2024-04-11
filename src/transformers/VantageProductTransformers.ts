@@ -96,6 +96,9 @@ export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
       boolean_filter:
         searchParameters.filters === "()" ? "" : searchParameters.filters,
     },
+    ...(searchParameters.experimental && {
+      experimental: searchParameters.experimental,
+    }),
   };
 };
 
