@@ -22,6 +22,34 @@ const queryClient = new QueryClient({
   },
 });
 
+export const VantageWrapperNextJs = ({
+  configuration,
+  children,
+}: {
+  configuration: Configuration;
+  children: React.JSX.Element;
+}) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <DemoProvider configuration={configuration}>
+        <Routes>
+          <Route path="*" element={children} />
+        </Routes>
+      </DemoProvider>
+    </QueryClientProvider>
+  );
+};
+
+export const VantageWrapperQueries = ({
+  children,
+}: {
+  children: JSX.Element;
+}) => {
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+};
+
 export const VantageWrapper = ({
   configuration,
   children,

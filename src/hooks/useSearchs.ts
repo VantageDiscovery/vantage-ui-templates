@@ -91,6 +91,7 @@ const useSearchs = ({
           vibe_overall_weight: vibeHandler.vibeOverallWeight,
           query,
         }),
+        experimental: dataConfiguration?.experimental,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -118,6 +119,7 @@ const useSearchs = ({
           document_id: moreLikeDocumentId,
           query,
         }),
+        experimental: dataConfiguration?.experimental,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -143,6 +145,7 @@ const useSearchs = ({
         these: transformToAddWeightToThese({
           these: moreLikeTheseHandler.activeMLThese,
         }),
+        experimental: dataConfiguration?.experimental,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
