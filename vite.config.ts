@@ -19,9 +19,8 @@ export default defineConfig(({ mode }) => {
       tsconfigPaths(),
       dts({
         rollupTypes: true,
-
       }),
-      libCss(),
+      // libCss(),
     ],
     server: {
       port: 3000,
@@ -34,7 +33,7 @@ export default defineConfig(({ mode }) => {
         fileName: (format) => `vantageUiTemplates.${format}.js`,
       },
       rollupOptions: {
-        external: [...Object.keys(packageJson.peerDependencies)],    
+        external: [...Object.keys(packageJson.peerDependencies)],
       },
     },
     test: {
