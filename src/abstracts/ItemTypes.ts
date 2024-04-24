@@ -1,5 +1,5 @@
 export type Item = ItemMandatoryFields & {
-  meta?: OptionalMetaFields;
+  meta?: OptionalMetaFields & any;
 };
 
 export type ItemMandatoryFields = {

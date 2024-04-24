@@ -95,6 +95,7 @@ export const TransformItemDTOToView = (
         "",
         customMetaFieldsMapper?.subtitle
       ),
+      ...item,
     },
   };
 };

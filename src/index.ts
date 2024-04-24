@@ -32,6 +32,7 @@ import {
   PublishCardProperties,
   useMoreLikeTheseType,
   BoardData,
+  SortParameters,
 } from "./abstracts";
 import "./index.scss";
 import useUrlParameters from "./hooks/useUrlParameters";
@@ -377,6 +378,7 @@ export const useVantageSearch = ({
   filters,
   customerAPI,
   moreLikeTheseHandler,
+  sort,
 }: {
   dataConfiguration: DataConfiguration;
   query: string;
@@ -386,6 +388,7 @@ export const useVantageSearch = ({
   vibeHandler: UseVibeType;
   customerAPI: UseCustomerAPIType;
   moreLikeTheseHandler: useMoreLikeTheseType;
+  sort?: SortParameters;
 }): UseQueriesType => {
   return useSearchs({
     customerAPI,
@@ -396,6 +399,7 @@ export const useVantageSearch = ({
     moreLikeTheseHandler,
     query,
     vibeHandler,
+    sort,
   });
 };
 

@@ -28,7 +28,14 @@ export interface SearchParameters {
   accuracy: string;
   pageNumber: number;
   pageSize: number;
+  sortParameters?: SortParameters;
 }
+
+export type SortParameters = {
+  field: string;
+  order?: "asc" | "desc";
+  mode?: "field_selection" | "semantic_threshold";
+};
 
 export type SearchMoreLikeThisParameters = SearchParameters & {
   documentId: string;
@@ -106,4 +113,5 @@ export interface SearchParametersDTO {
     query_text?: string;
     weight?: number;
   }[];
+  sort?: SortParameters;
 }

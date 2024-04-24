@@ -8,6 +8,7 @@ export interface Filter {
   categoryName: string;
   categorySlug: string;
   subCategory?: Filter[];
+  count?: number;
 }
 
 export type UseFiltersType = {

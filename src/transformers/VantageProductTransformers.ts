@@ -60,6 +60,9 @@ export const TransformVantageSearchByQueryParametersViewToDTO = (
     ...(searchParameters.experimental && {
       experimental: searchParameters.experimental,
     }),
+    ...(searchParameters.sortParameters && {
+      sort: searchParameters.sortParameters,
+    }),
   };
 };
 
@@ -98,6 +101,9 @@ export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
     },
     ...(searchParameters.experimental && {
       experimental: searchParameters.experimental,
+    }),
+    ...(searchParameters.sortParameters && {
+      sort: searchParameters.sortParameters,
     }),
   };
 };

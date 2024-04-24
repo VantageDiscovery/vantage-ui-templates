@@ -6,7 +6,7 @@ import {
   transformToAddWeightToThese,
   transformToAddWeightToTheseOnVibe,
 } from "transformers/VantageProductTransformers";
-import { UseCustomerAPIType } from "abstracts";
+import { SortParameters, UseCustomerAPIType } from "abstracts";
 import { useMoreLikeTheseType } from "abstracts/useMoreLikeTheseType";
 
 const useSearchs = ({
@@ -18,6 +18,7 @@ const useSearchs = ({
   filters,
   customerAPI,
   moreLikeTheseHandler,
+  sort,
 }: {
   dataConfiguration: DataConfiguration;
   query: string;
@@ -27,6 +28,7 @@ const useSearchs = ({
   vibeHandler: UseVibeType;
   customerAPI: UseCustomerAPIType;
   moreLikeTheseHandler: useMoreLikeTheseType;
+  sort?: SortParameters;
 }): UseQueriesType => {
   const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
     dataConfiguration.vantageSearchURL,
@@ -42,6 +44,7 @@ const useSearchs = ({
       pageNumber: dataConfiguration.pageNumber,
       pageSize: dataConfiguration.pageSize,
       experimental: dataConfiguration?.experimental,
+      sortParameters: sort,
       ...dataConfiguration.shingling,
       ...dataConfiguration?.fieldValueWeighting,
     },
@@ -64,6 +67,7 @@ const useSearchs = ({
         accuracy: dataConfiguration.defaultAccuracy,
         pageNumber: dataConfiguration.pageNumber,
         pageSize: dataConfiguration.pageSize,
+        sortParameters: sort,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -92,6 +96,7 @@ const useSearchs = ({
           query,
         }),
         experimental: dataConfiguration?.experimental,
+        sortParameters: sort,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -120,6 +125,7 @@ const useSearchs = ({
           query,
         }),
         experimental: dataConfiguration?.experimental,
+        sortParameters: sort,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -146,6 +152,7 @@ const useSearchs = ({
           these: moreLikeTheseHandler.activeMLThese,
         }),
         experimental: dataConfiguration?.experimental,
+        sortParameters: sort,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
