@@ -29,6 +29,7 @@ export interface SearchParameters {
   pageNumber: number;
   pageSize: number;
   sortParameters?: SortParameters;
+  filters: string;
 }
 
 export type SortParameters = {
@@ -44,13 +45,11 @@ export type SearchMoreLikeThisParameters = SearchParameters & {
 export type SearchByQueryParameters = SearchParameters &
   ShinglingParameters &
   FieldValueWeightingParameters & {
-    filters: string;
     query: string;
     experimental?: ExprimenatalParameters;
   };
 
 export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters & {
-  filters: string;
   these: MoreLikeTheseParameters[];
   vibe_overall_weight?: number;
   experimental?: ExprimenatalParameters;

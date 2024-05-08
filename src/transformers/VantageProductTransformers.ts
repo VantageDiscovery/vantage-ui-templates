@@ -78,7 +78,8 @@ export const TransformVantageSearchMoreLikeThisParametersViewToDTO = (
     document_id: searchParameters.documentId,
     // TODO: delete once it is removed on backend
     filter: {
-      boolean_filter: "",
+      boolean_filter:
+        searchParameters.filters === "()" ? "" : searchParameters.filters,
     },
   };
 };

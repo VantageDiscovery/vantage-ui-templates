@@ -63,6 +63,7 @@ const useSearchs = ({
         customerNamespace: collectionId,
       })),
       {
+        filters: filters,
         documentId: moreLikeDocumentId,
         accuracy: dataConfiguration.defaultAccuracy,
         pageNumber: dataConfiguration.pageNumber,
