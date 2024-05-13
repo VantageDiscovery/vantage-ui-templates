@@ -21,7 +21,7 @@ const searchByQuery = async (
 ): Promise<VantageSearchResponse> => {
   return axios
     .post(
-      `${vantageSearchURL}/semantic/`,
+      `${vantageSearchURL}/${searchConfiguration.customerId}/${searchConfiguration.customerNamespace}/semantic/`,
       TransformVantageSearchByQueryParametersViewToDTO(
         searchConfiguration,
         searchParameters
@@ -40,7 +40,7 @@ const searchMoreLikeThis = async (
 ): Promise<VantageSearchResponse> => {
   return axios
     .post(
-      `${vantageSearchURL}/morelikethis/`,
+      `${vantageSearchURL}/${searchConfiguration.customerId}/${searchConfiguration.customerNamespace}/morelikethis/`,
       TransformVantageSearchMoreLikeThisParametersViewToDTO(
         searchConfiguration,
         searchParameters
@@ -59,7 +59,7 @@ const searchMoreLikeThese = async (
 ): Promise<VantageSearchResponse> => {
   return axios
     .post(
-      `${vantageSearchURL}/morelikethese/`,
+      `${vantageSearchURL}/${searchConfiguration.customerId}/${searchConfiguration.customerNamespace}/morelikethese/`,
       TransformVantageSearchMoreLikeTheseParametersViewToDTO(
         searchConfiguration,
         searchParameters
