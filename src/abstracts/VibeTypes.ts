@@ -3,6 +3,7 @@ export type VibeBoard = {
   name: string;
   pins: BoardData[];
   image_url?: string;
+  parent_board?: VibeBoard;
 };
 
 export type BoardData = {
