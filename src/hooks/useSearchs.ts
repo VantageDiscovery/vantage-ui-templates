@@ -47,6 +47,7 @@ const useSearchs = ({
       sortParameters: sort,
       ...dataConfiguration.shingling,
       ...dataConfiguration?.fieldValueWeighting,
+      threshold: sort?.threshold,
     },
     {
       getItemsByIds: customerAPI.getItemsByIds,
@@ -69,6 +70,7 @@ const useSearchs = ({
         pageNumber: dataConfiguration.pageNumber,
         pageSize: dataConfiguration.pageSize,
         sortParameters: sort,
+        threshold: sort?.threshold,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -98,6 +100,7 @@ const useSearchs = ({
         }),
         experimental: dataConfiguration?.experimental,
         sortParameters: sort,
+        threshold: sort?.threshold,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -127,6 +130,7 @@ const useSearchs = ({
         }),
         experimental: dataConfiguration?.experimental,
         sortParameters: sort,
+        threshold: sort?.threshold,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -154,6 +158,7 @@ const useSearchs = ({
         }),
         experimental: dataConfiguration?.experimental,
         sortParameters: sort,
+        threshold: sort?.threshold,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,

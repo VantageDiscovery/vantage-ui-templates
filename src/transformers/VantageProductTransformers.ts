@@ -28,6 +28,7 @@ export const TransformVantageSearchParametersViewToDTO = (
     pagination: {
       page: searchParameters.pageNumber,
       count: searchParameters.pageSize,
+      threshold: searchParameters.threshold,
     },
   };
 };
@@ -61,7 +62,11 @@ export const TransformVantageSearchByQueryParametersViewToDTO = (
       experimental: searchParameters.experimental,
     }),
     ...(searchParameters.sortParameters && {
-      sort: searchParameters.sortParameters,
+      sort: {
+        field: searchParameters.sortParameters.field,
+        mode: searchParameters.sortParameters.mode,
+        order: searchParameters.sortParameters.order,
+      },
     }),
   };
 };
@@ -104,7 +109,11 @@ export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
       experimental: searchParameters.experimental,
     }),
     ...(searchParameters.sortParameters && {
-      sort: searchParameters.sortParameters,
+      sort: {
+        field: searchParameters.sortParameters.field,
+        mode: searchParameters.sortParameters.mode,
+        order: searchParameters.sortParameters.order,
+      },
     }),
   };
 };

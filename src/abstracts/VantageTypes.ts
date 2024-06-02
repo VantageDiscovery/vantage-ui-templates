@@ -30,12 +30,14 @@ export interface SearchParameters {
   pageSize: number;
   sortParameters?: SortParameters;
   filters: string;
+  threshold?: number;
 }
 
 export type SortParameters = {
   field: string;
   order?: "asc" | "desc";
   mode?: "field_selection" | "semantic_threshold";
+  threshold?: number;
 };
 
 export type SearchMoreLikeThisParameters = SearchParameters & {
@@ -88,6 +90,7 @@ export interface SearchParametersDTO {
   pagination: {
     page: number;
     count: number;
+    threshold?: number;
   };
   experimental?: {
     cluster?: boolean;
