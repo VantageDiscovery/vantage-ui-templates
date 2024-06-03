@@ -57,6 +57,7 @@ export const TransformVantageSearchByQueryParametersViewToDTO = (
       query_key_word_weighting_mode: searchParameters.queryKeyWordWeightingMode,
       query_key_word_max_overall_weight:
         searchParameters.queryKeyWordMaxOverallWeight,
+      weighted_field_values: searchParameters.weightedFieldValues,
     },
     ...(searchParameters.experimental && {
       experimental: searchParameters.experimental,
@@ -108,6 +109,12 @@ export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
     ...(searchParameters.experimental && {
       experimental: searchParameters.experimental,
     }),
+    field_value_weighting: {
+      query_key_word_weighting_mode: searchParameters.queryKeyWordWeightingMode,
+      query_key_word_max_overall_weight:
+        searchParameters.queryKeyWordMaxOverallWeight,
+      weighted_field_values: searchParameters.weightedFieldValues,
+    },
     ...(searchParameters.sortParameters && {
       sort: {
         field: searchParameters.sortParameters.field,

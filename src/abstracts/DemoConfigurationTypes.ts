@@ -10,6 +10,7 @@ import {
 import { ItemWithoutScore, OptionalMetaFields } from "./ItemTypes";
 import { VibeBoard } from "./VibeTypes";
 import { ExprimenatalParameters } from "./VantageTypes";
+import { KeyWordWeightingQuery } from "./KeyWordTypes";
 
 type DeepPartial<T> = T extends object
   ? {
@@ -77,6 +78,7 @@ type ShinglingConfiguration = {
 type FieldValueWeightingConfiguration = {
   queryKeyWordWeightingMode: string;
   queryKeyWordMaxOverallWeight: number;
+  KeyWordWeightingQuery?: KeyWordWeightingQuery;
 };
 
 export interface BrandingConfiguration {

@@ -51,11 +51,12 @@ export type SearchByQueryParameters = SearchParameters &
     experimental?: ExprimenatalParameters;
   };
 
-export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters & {
-  these: MoreLikeTheseParameters[];
-  vibe_overall_weight?: number;
-  experimental?: ExprimenatalParameters;
-};
+export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters &
+  FieldValueWeightingParameters & {
+    these: MoreLikeTheseParameters[];
+    vibe_overall_weight?: number;
+    experimental?: ExprimenatalParameters;
+  };
 
 export type MoreLikeTheseParameters = {
   query_document_id?: string;
@@ -78,6 +79,11 @@ export type ExprimenatalParameters = {
 type FieldValueWeightingParameters = {
   queryKeyWordWeightingMode: string;
   queryKeyWordMaxOverallWeight: number;
+  weightedFieldValues?: {
+    field: string;
+    value: string;
+    weight: number;
+  }[];
 };
 
 export interface SearchParametersDTO {
@@ -109,6 +115,11 @@ export interface SearchParametersDTO {
   field_value_weighting?: {
     query_key_word_weighting_mode: string;
     query_key_word_max_overall_weight: number;
+    weighted_field_values?: {
+      field: string;
+      value: string;
+      weight: number;
+    }[];
   };
   these?: {
     query_document_id?: string;

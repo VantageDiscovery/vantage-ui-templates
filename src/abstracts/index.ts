@@ -11,3 +11,4 @@ export * from "./useQueriesType";
 export * from "./VibeTypes";
 export * from "./useMoreLikeTheseType";
 export * from "./typeAheadType";
+export * from "./KeyWordTypes";

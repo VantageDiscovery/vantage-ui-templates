@@ -51,7 +51,8 @@ const useSearchs = ({
     },
     {
       getItemsByIds: customerAPI.getItemsByIds,
-    }
+    },
+    dataConfiguration.fieldValueWeighting.KeyWordWeightingQuery
   );
 
   const multiMLTSearchResults =
@@ -98,6 +99,7 @@ const useSearchs = ({
           vibe_overall_weight: vibeHandler.vibeOverallWeight,
           query,
         }),
+        ...dataConfiguration?.fieldValueWeighting,
         experimental: dataConfiguration?.experimental,
         sortParameters: sort,
         threshold: sort?.threshold,
@@ -128,6 +130,7 @@ const useSearchs = ({
           document_id: moreLikeDocumentId,
           query,
         }),
+        ...dataConfiguration?.fieldValueWeighting,
         experimental: dataConfiguration?.experimental,
         sortParameters: sort,
         threshold: sort?.threshold,
@@ -156,13 +159,16 @@ const useSearchs = ({
         these: transformToAddWeightToThese({
           these: moreLikeTheseHandler.activeMLThese,
         }),
+        ...dataConfiguration?.fieldValueWeighting,
         experimental: dataConfiguration?.experimental,
         sortParameters: sort,
         threshold: sort?.threshold,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
-      }
+      },
+      dataConfiguration.fieldValueWeighting.KeyWordWeightingQuery,
+      query
     );
 
   return {
