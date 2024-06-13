@@ -114,6 +114,7 @@ export interface DataConfiguration {
   vibe?: VibeConfiguration;
   experimental?: ExprimenatalParameters;
   typeAhead?: TypeAheadConfiguration;
+  salesForce?: SaleForceConfiguration;
 }
 
 export interface VibeConfiguration {
@@ -126,6 +127,11 @@ export interface TypeAheadConfiguration {
   typeAheadFiltersNumber?: number;
   typeAheadQueries?: (query: string) => Promise<string[]>;
   typeAheadFilters?: (query: string) => Promise<Filter[]>;
+}
+
+export interface SaleForceConfiguration {
+  salesForceUrl: string;
+  key: string;
 }
 
 export interface FilterConfiguration {
