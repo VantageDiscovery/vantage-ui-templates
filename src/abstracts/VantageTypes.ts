@@ -48,14 +48,14 @@ export type SearchByQueryParameters = SearchParameters &
   ShinglingParameters &
   FieldValueWeightingParameters & {
     query: string;
-    experimental?: ExprimenatalParameters;
+    experimental?: ExperimenatalParameters;
   };
 
 export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters &
   FieldValueWeightingParameters & {
     these: MoreLikeTheseParameters[];
     vibe_overall_weight?: number;
-    experimental?: ExprimenatalParameters;
+    experimental?: ExperimenatalParameters;
   };
 
 export type MoreLikeTheseParameters = {
@@ -71,7 +71,7 @@ export type ShinglingParameters = {
   documentMatchScoreWeight: number;
 };
 
-export type ExprimenatalParameters = {
+export type ExperimenatalParameters = {
   cluster?: boolean;
   cache?: boolean;
 };

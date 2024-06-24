@@ -9,7 +9,7 @@ import {
 } from "./CustomerApiTypes";
 import { ItemWithoutScore, OptionalMetaFields } from "./ItemTypes";
 import { VibeBoard } from "./VibeTypes";
-import { ExprimenatalParameters } from "./VantageTypes";
+import { ExperimenatalParameters } from "./VantageTypes";
 import { KeyWordWeightingQuery } from "./KeyWordTypes";
 
 type DeepPartial<T> = T extends object
@@ -112,7 +112,7 @@ export interface DataConfiguration {
   enableMoreLikeThese: boolean;
   originalSearchResultsURL?: string;
   vibe?: VibeConfiguration;
-  experimental?: ExprimenatalParameters;
+  experimental?: ExperimenatalParameters;
   typeAhead?: TypeAheadConfiguration;
   salesForce?: SaleForceConfiguration;
 }
