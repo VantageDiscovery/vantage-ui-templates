@@ -42,6 +42,7 @@ export type SortParameters = {
 
 export type SearchMoreLikeThisParameters = SearchParameters & {
   documentId: string;
+  experimental?: ExperimenatalParameters;
 };
 
 export type SearchByQueryParameters = SearchParameters &
@@ -74,6 +75,7 @@ export type ShinglingParameters = {
 export type ExperimenatalParameters = {
   cluster?: boolean;
   cache?: boolean;
+  fields?: string[];
 };
 
 type FieldValueWeightingParameters = {
@@ -101,6 +103,7 @@ export interface SearchParametersDTO {
   experimental?: {
     cluster?: boolean;
     cache?: boolean;
+    fields?: string[];
   };
   shingling?: {
     cosine_similarity_score_weight: number;
