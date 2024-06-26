@@ -1,5 +1,6 @@
 import { Filter } from "./FilterTypes";
 import { ItemDTO, ItemWithoutScore } from "./ItemTypes";
+import { VantageSearchResult } from "./VantageTypes";
 
 export enum ECustomerAPIType {
   VANTAGE_API = "vantage",
@@ -21,7 +22,9 @@ export type VantageAPIConfiguration = {
 export type CustomAPIConfiguration = {
   type: ECustomerAPIType.CUSTOM_API;
   getFilters: () => Promise<Filter[]>;
-  getCustomerItems: (ids: string[]) => Promise<ItemDTO[]>;
+  getCustomerItems: (
+    ids: string[] | VantageSearchResult[]
+  ) => Promise<ItemDTO[]>;
 };
 export type CDNAPIConfiguration = {
   type: ECustomerAPIType.CDN_API;
@@ -36,7 +39,9 @@ export type APIConfiguration =
   | CDNAPIConfiguration;
 
 export type UseCustomerAPIType = {
-  getItemsByIds: (id: string[]) => Promise<ItemWithoutScore[]>;
+  getItemsByIds: (
+    id: string[] | VantageSearchResult[]
+  ) => Promise<ItemWithoutScore[]>;
   getFilters: () => Promise<Filter[]>;
 };
 

@@ -1,15 +1,27 @@
-export interface VantageSearchResultDTO {
+import { Item, ItemDTO } from "./ItemTypes";
+
+export interface VantageSearchResultWithoutItemDTO {
   id: string;
   score: number;
 }
 
-export interface VantageSearchResult {
+export type ItemDTOWithScore = ItemDTO & { score: number };
+
+export type VantageSearchResultDTO =
+  | VantageSearchResultWithoutItemDTO
+  | ItemDTOWithScore;
+
+interface VantageSearchResultWithoutItem {
   id: string;
   score: number;
 }
+
+export type VantageSearchResult =
+  | VantageSearchResultWithoutItem
+  | (Item & { [key: string]: any });
 
 export type VantageSearchResponseDTO = {
-  results: VantageSearchResultDTO[];
+  results: VantageSearchResultDTO[] | ItemDTOWithScore[];
   execution_time: number;
 };
 

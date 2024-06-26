@@ -29,7 +29,10 @@ const searchByQuery = async (
       { headers: { Authorization: searchConfiguration.apiKey } }
     )
     .then((response: AxiosResponse<VantageSearchResponseDTO>) =>
-      TransformVantageSearchResponseDTOToView(response.data)
+      TransformVantageSearchResponseDTOToView(
+        response.data,
+        !searchParameters.experimental?.fields
+      )
     );
 };
 
@@ -48,7 +51,10 @@ const searchMoreLikeThis = async (
       { headers: { Authorization: searchConfiguration.apiKey } }
     )
     .then((response: AxiosResponse<VantageSearchResponseDTO>) =>
-      TransformVantageSearchResponseDTOToView(response.data)
+      TransformVantageSearchResponseDTOToView(
+        response.data,
+        !searchParameters.experimental?.fields
+      )
     );
 };
 
@@ -67,7 +73,10 @@ const searchMoreLikeThese = async (
       { headers: { Authorization: searchConfiguration.apiKey } }
     )
     .then((response: AxiosResponse<VantageSearchResponseDTO>) =>
-      TransformVantageSearchResponseDTOToView(response.data)
+      TransformVantageSearchResponseDTOToView(
+        response.data,
+        !searchParameters.experimental?.fields
+      )
     );
 };
 

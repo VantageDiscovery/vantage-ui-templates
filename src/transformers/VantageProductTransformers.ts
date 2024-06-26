@@ -1,15 +1,17 @@
+import { Item } from "abstracts";
 import {
   SearchConfiguration,
   SearchParameters,
   SearchParametersDTO,
   SearchByQueryParameters,
   SearchMoreLikeThisParameters,
-  VantageSearchResultDTO,
   VantageSearchResult,
   VantageSearchResponseDTO,
   VantageSearchResponse,
   SearchMoreLikeTheseParameters,
   MoreLikeTheseParameters,
+  ItemDTOWithScore,
+  VantageSearchResultWithoutItemDTO,
 } from "abstracts/VantageTypes";
 import { BoardData } from "abstracts/VibeTypes";
 import { SelectedMoreLikeTheseCard } from "abstracts/useMoreLikeTheseType";
@@ -177,20 +179,25 @@ export const transformToAddWeightToThese = ({
 };
 
 export const TransformVantageSearchResultDTOToView = (
-  searchResult: VantageSearchResultDTO
+  searchResult: ItemDTOWithScore | VantageSearchResultWithoutItemDTO,
+  isExprimentalOff?: boolean
 ): VantageSearchResult => {
-  return {
-    id: searchResult.id,
-    score: searchResult.score,
-  };
+  return isExprimentalOff
+    ? {
+        id: searchResult.id,
+        score: searchResult.score,
+      }
+    : (searchResult as Item);
 };
 
 export const TransformVantageSearchResponseDTOToView = (
-  responseDTO: VantageSearchResponseDTO
+  responseDTO: VantageSearchResponseDTO,
+  isExprimentalOff?: boolean
 ): VantageSearchResponse => {
   return {
-    results: responseDTO.results.map((searchResult) =>
-      TransformVantageSearchResultDTOToView(searchResult)
+    results: responseDTO.results.map(
+      (searchResult: ItemDTOWithScore | VantageSearchResultWithoutItemDTO) =>
+        TransformVantageSearchResultDTOToView(searchResult, isExprimentalOff)
     ),
     executionTime: responseDTO.execution_time,
   };

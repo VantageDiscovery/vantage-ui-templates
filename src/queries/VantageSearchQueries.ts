@@ -35,7 +35,7 @@ const queryKeys = {
 
 const getItemsWithScores = async (
   vantageSearchResults: VantageSearchResult[],
-  getItemsFunction: () => Promise<Omit<Item, "score">[]>
+  getItemsFunction: () => Promise<ItemWithoutScore[]>
 ): Promise<Item[]> => {
   const getItemScoreById = (id: string): number => {
     const foundItem = vantageSearchResults.find(
@@ -44,10 +44,12 @@ const getItemsWithScores = async (
     return foundItem?.score || 0;
   };
   const customerItems: ItemWithoutScore[] = await getItemsFunction();
-  const customerItemsWithScores: Item[] = customerItems.map((item) => ({
-    ...item,
-    score: getItemScoreById(item.id),
-  }));
+  const customerItemsWithScores: Item[] = customerItems.map(
+    (item: ItemWithoutScore) => ({
+      ...item,
+      score: getItemScoreById(item.id),
+    })
+  );
   return customerItemsWithScores;
 };
 
@@ -85,9 +87,15 @@ const useSearchByConfiguration = (
             searchConfiguration,
             searchParametersWithFieldValue
           );
+
+        if (searchParameters?.experimental?.fields) {
+          return [response.executionTime, response.results];
+        }
         const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
           undefined,
-          response.results.map((result) => result.id)
+          searchParameters?.experimental?.fields
+            ? response.results
+            : response.results.map((result) => result.id)
         );
         const customerItems = await getItemsWithScores(
           response.results,
@@ -125,6 +133,10 @@ const useMoreLikeThisByConfiguration = (
             searchConfiguration,
             searchParameters
           );
+
+        if (searchParameters?.experimental?.fields) {
+          return [response.executionTime, response.results];
+        }
         const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
           undefined,
           response.results.map((result) => result.id)
@@ -184,6 +196,9 @@ const useMoreLikeTheseByConfiguration = (
             searchConfiguration,
             searchParametersWithFieldValue
           );
+        if (searchParameters?.experimental?.fields) {
+          return [response.executionTime, response.results];
+        }
         const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
           undefined,
           response.results.map((result) => result.id)

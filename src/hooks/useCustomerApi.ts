@@ -12,9 +12,12 @@ import { useMemo } from "react";
 import CdnAPIService from "services/CdnApiService";
 import { Filter } from "abstracts/FilterTypes";
 import { TransformItemDTOToView } from "transformers/VantageItemTransformers";
+import { VantageSearchResult } from "abstracts";
 
 interface CustomerAPIStrategy {
-  getItemsByIds(ids: string[]): Promise<ItemWithoutScore[]>;
+  getItemsByIds(
+    ids: string[] | VantageSearchResult[]
+  ): Promise<ItemWithoutScore[]>;
   getFilters(): Promise<Filter[]>;
 }
 
@@ -114,7 +117,9 @@ const useCustomerAPI = ({
     return strategies[strategiesType];
   }, [strategies]);
 
-  const getItemsByIds = (ids: string[]): Promise<ItemWithoutScore[]> => {
+  const getItemsByIds = (
+    ids: string[] | VantageSearchResult[]
+  ): Promise<ItemWithoutScore[]> => {
     return activeStrategy.getItemsByIds(ids);
   };
 
