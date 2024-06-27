@@ -52,7 +52,7 @@ const useSearchs = ({
     {
       getItemsByIds: customerAPI.getItemsByIds,
     },
-    dataConfiguration.fieldValueWeighting.KeyWordWeightingQuery
+    dataConfiguration.fieldValueWeighting.keyWordWeightingQuery
   );
 
   const multiMLTSearchResults =
@@ -167,7 +167,7 @@ const useSearchs = ({
       {
         getItemsByIds: customerAPI.getItemsByIds,
       },
-      dataConfiguration.fieldValueWeighting.KeyWordWeightingQuery,
+      dataConfiguration.fieldValueWeighting.keyWordWeightingQuery,
       query
     );
 

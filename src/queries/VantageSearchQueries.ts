@@ -68,16 +68,13 @@ const useSearchByConfiguration = (
         searchParameters.filters
       ),
       queryFn: async () => {
-        const KeyWordWeightingQueryResults = await keyWordWeightingQuery?.(
-          searchParameters.query
-        );
-
-        const searchParametersWithFieldValue = KeyWordWeightingQueryResults
+        const searchParametersWithFieldValue = keyWordWeightingQuery
           ? {
               ...searchParameters,
-              weightedFieldValues:
-                KeyWordWeightingQueryResults.fieldValueWeighting
-                  .weighted_field_values,
+              keyWordWeightingQuery: {
+                ...keyWordWeightingQuery,
+                query: searchParameters.query,
+              },
             }
           : searchParameters;
 
@@ -177,16 +174,10 @@ const useMoreLikeTheseByConfiguration = (
         searchParameters.documentId
       ),
       queryFn: async () => {
-        const KeyWordWeightingQueryResults = await keyWordWeightingQuery?.(
-          query ?? ""
-        );
-
-        const searchParametersWithFieldValue = KeyWordWeightingQueryResults
+        const searchParametersWithFieldValue = keyWordWeightingQuery
           ? {
               ...searchParameters,
-              weightedFieldValues:
-                KeyWordWeightingQueryResults.fieldValueWeighting
-                  .weighted_field_values,
+              keyWordWeightingQuery: { ...keyWordWeightingQuery, query },
             }
           : searchParameters;
 

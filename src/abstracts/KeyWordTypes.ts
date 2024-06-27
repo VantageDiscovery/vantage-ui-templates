@@ -1,4 +1,10 @@
-export type KeyWordWeightingQuery = (query: string) => Promise<KeyWordDTO>;
+export type KeyWordWeightingQuery = {
+  url: string;
+  account_id: string;
+  field_name: string;
+  timeout?: number;
+  query?: string;
+};
 
 export type KeyWordDTO = {
   fieldValueWeighting: {

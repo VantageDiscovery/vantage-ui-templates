@@ -78,7 +78,7 @@ type ShinglingConfiguration = {
 type FieldValueWeightingConfiguration = {
   queryKeyWordWeightingMode: string;
   queryKeyWordMaxOverallWeight: number;
-  KeyWordWeightingQuery?: KeyWordWeightingQuery;
+  keyWordWeightingQuery?: KeyWordWeightingQuery;
 };
 
 export interface BrandingConfiguration {

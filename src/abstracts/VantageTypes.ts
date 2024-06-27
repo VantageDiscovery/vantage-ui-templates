@@ -1,4 +1,5 @@
 import { Item, ItemDTO } from "./ItemTypes";
+import { KeyWordWeightingQuery } from "./KeyWordTypes";
 
 export interface VantageSearchResultWithoutItemDTO {
   id: string;
@@ -98,6 +99,7 @@ type FieldValueWeightingParameters = {
     value: string;
     weight: number;
   }[];
+  keyWordWeightingQuery?: KeyWordWeightingQuery;
 };
 
 export interface SearchParametersDTO {
@@ -135,6 +137,13 @@ export interface SearchParametersDTO {
       value: string;
       weight: number;
     }[];
+    keyWordWeightingQuery?: {
+      url: string;
+      account_id: string;
+      field_name: string;
+      timeout?: number;
+      query?: string;
+    };
   };
   these?: {
     query_document_id?: string;
