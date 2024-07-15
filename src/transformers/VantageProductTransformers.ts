@@ -1,15 +1,17 @@
+import { Item } from "abstracts";
 import {
   SearchConfiguration,
   SearchParameters,
   SearchParametersDTO,
   SearchByQueryParameters,
   SearchMoreLikeThisParameters,
-  VantageSearchResultDTO,
   VantageSearchResult,
   VantageSearchResponseDTO,
   VantageSearchResponse,
   SearchMoreLikeTheseParameters,
   MoreLikeTheseParameters,
+  ItemDTOWithScore,
+  VantageSearchResultWithoutItemDTO,
 } from "abstracts/VantageTypes";
 import { BoardData } from "abstracts/VibeTypes";
 import { SelectedMoreLikeTheseCard } from "abstracts/useMoreLikeTheseType";
@@ -28,6 +30,7 @@ export const TransformVantageSearchParametersViewToDTO = (
     pagination: {
       page: searchParameters.pageNumber,
       count: searchParameters.pageSize,
+      threshold: searchParameters.threshold,
     },
   };
 };
@@ -56,9 +59,18 @@ export const TransformVantageSearchByQueryParametersViewToDTO = (
       query_key_word_weighting_mode: searchParameters.queryKeyWordWeightingMode,
       query_key_word_max_overall_weight:
         searchParameters.queryKeyWordMaxOverallWeight,
+      weighted_field_values: searchParameters.weightedFieldValues,
+      keyWordWeightingQuery: searchParameters.keyWordWeightingQuery,
     },
     ...(searchParameters.experimental && {
-      experimental: searchParameters.experimental,
+      experimental: { ...searchParameters.experimental },
+    }),
+    ...(searchParameters.sortParameters && {
+      sort: {
+        field: searchParameters.sortParameters.field,
+        mode: searchParameters.sortParameters.mode,
+        order: searchParameters.sortParameters.order,
+      },
     }),
   };
 };
@@ -75,8 +87,12 @@ export const TransformVantageSearchMoreLikeThisParametersViewToDTO = (
     document_id: searchParameters.documentId,
     // TODO: delete once it is removed on backend
     filter: {
-      boolean_filter: "",
+      boolean_filter:
+        searchParameters.filters === "()" ? "" : searchParameters.filters,
     },
+    ...(searchParameters.experimental && {
+      experimental: { ...searchParameters.experimental },
+    }),
   };
 };
 
@@ -97,7 +113,21 @@ export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
         searchParameters.filters === "()" ? "" : searchParameters.filters,
     },
     ...(searchParameters.experimental && {
-      experimental: searchParameters.experimental,
+      experimental: { ...searchParameters.experimental },
+    }),
+    field_value_weighting: {
+      query_key_word_weighting_mode: searchParameters.queryKeyWordWeightingMode,
+      query_key_word_max_overall_weight:
+        searchParameters.queryKeyWordMaxOverallWeight,
+      weighted_field_values: searchParameters.weightedFieldValues,
+      keyWordWeightingQuery: searchParameters.keyWordWeightingQuery,
+    },
+    ...(searchParameters.sortParameters && {
+      sort: {
+        field: searchParameters.sortParameters.field,
+        mode: searchParameters.sortParameters.mode,
+        order: searchParameters.sortParameters.order,
+      },
     }),
   };
 };
@@ -151,20 +181,25 @@ export const transformToAddWeightToThese = ({
 };
 
 export const TransformVantageSearchResultDTOToView = (
-  searchResult: VantageSearchResultDTO
+  searchResult: ItemDTOWithScore | VantageSearchResultWithoutItemDTO,
+  isExprimentalOff?: boolean
 ): VantageSearchResult => {
-  return {
-    id: searchResult.id,
-    score: searchResult.score,
-  };
+  return isExprimentalOff
+    ? {
+        id: searchResult.id,
+        score: searchResult.score,
+      }
+    : (searchResult as Item);
 };
 
 export const TransformVantageSearchResponseDTOToView = (
-  responseDTO: VantageSearchResponseDTO
+  responseDTO: VantageSearchResponseDTO,
+  isExprimentalOff?: boolean
 ): VantageSearchResponse => {
   return {
-    results: responseDTO.results.map((searchResult) =>
-      TransformVantageSearchResultDTOToView(searchResult)
+    results: responseDTO.results.map(
+      (searchResult: ItemDTOWithScore | VantageSearchResultWithoutItemDTO) =>
+        TransformVantageSearchResultDTOToView(searchResult, isExprimentalOff)
     ),
     executionTime: responseDTO.execution_time,
   };

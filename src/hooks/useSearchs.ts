@@ -6,7 +6,7 @@ import {
   transformToAddWeightToThese,
   transformToAddWeightToTheseOnVibe,
 } from "transformers/VantageProductTransformers";
-import { UseCustomerAPIType } from "abstracts";
+import { SortParameters, UseCustomerAPIType } from "abstracts";
 import { useMoreLikeTheseType } from "abstracts/useMoreLikeTheseType";
 
 const useSearchs = ({
@@ -18,6 +18,7 @@ const useSearchs = ({
   filters,
   customerAPI,
   moreLikeTheseHandler,
+  sort,
 }: {
   dataConfiguration: DataConfiguration;
   query: string;
@@ -27,6 +28,7 @@ const useSearchs = ({
   vibeHandler: UseVibeType;
   customerAPI: UseCustomerAPIType;
   moreLikeTheseHandler: useMoreLikeTheseType;
+  sort?: SortParameters;
 }): UseQueriesType => {
   const multiQuerySearchResults = VantageSearchQueries.useSearchByConfiguration(
     dataConfiguration.vantageSearchURL,
@@ -42,12 +44,15 @@ const useSearchs = ({
       pageNumber: dataConfiguration.pageNumber,
       pageSize: dataConfiguration.pageSize,
       experimental: dataConfiguration?.experimental,
+      sortParameters: sort,
       ...dataConfiguration.shingling,
       ...dataConfiguration?.fieldValueWeighting,
+      threshold: sort?.threshold,
     },
     {
       getItemsByIds: customerAPI.getItemsByIds,
-    }
+    },
+    dataConfiguration.fieldValueWeighting.keyWordWeightingQuery
   );
 
   const multiMLTSearchResults =
@@ -60,10 +65,13 @@ const useSearchs = ({
         customerNamespace: collectionId,
       })),
       {
+        filters: filters,
         documentId: moreLikeDocumentId,
         accuracy: dataConfiguration.defaultAccuracy,
         pageNumber: dataConfiguration.pageNumber,
         pageSize: dataConfiguration.pageSize,
+        sortParameters: sort,
+        threshold: sort?.threshold,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -91,7 +99,10 @@ const useSearchs = ({
           vibe_overall_weight: vibeHandler.vibeOverallWeight,
           query,
         }),
+        ...dataConfiguration?.fieldValueWeighting,
         experimental: dataConfiguration?.experimental,
+        sortParameters: sort,
+        threshold: sort?.threshold,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -119,7 +130,10 @@ const useSearchs = ({
           document_id: moreLikeDocumentId,
           query,
         }),
+        ...dataConfiguration?.fieldValueWeighting,
         experimental: dataConfiguration?.experimental,
+        sortParameters: sort,
+        threshold: sort?.threshold,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
@@ -145,11 +159,16 @@ const useSearchs = ({
         these: transformToAddWeightToThese({
           these: moreLikeTheseHandler.activeMLThese,
         }),
+        ...dataConfiguration?.fieldValueWeighting,
         experimental: dataConfiguration?.experimental,
+        sortParameters: sort,
+        threshold: sort?.threshold,
       },
       {
         getItemsByIds: customerAPI.getItemsByIds,
-      }
+      },
+      dataConfiguration.fieldValueWeighting.keyWordWeightingQuery,
+      query
     );
 
   return {

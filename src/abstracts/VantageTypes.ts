@@ -1,15 +1,28 @@
-export interface VantageSearchResultDTO {
+import { Item, ItemDTO } from "./ItemTypes";
+import { KeyWordWeightingQuery } from "./KeyWordTypes";
+
+export interface VantageSearchResultWithoutItemDTO {
   id: string;
   score: number;
 }
 
-export interface VantageSearchResult {
+export type ItemDTOWithScore = ItemDTO & { score: number };
+
+export type VantageSearchResultDTO =
+  | VantageSearchResultWithoutItemDTO
+  | ItemDTOWithScore;
+
+interface VantageSearchResultWithoutItem {
   id: string;
   score: number;
 }
+
+export type VantageSearchResult =
+  | VantageSearchResultWithoutItem
+  | (Item & { [key: string]: any });
 
 export type VantageSearchResponseDTO = {
-  results: VantageSearchResultDTO[];
+  results: VantageSearchResultDTO[] | ItemDTOWithScore[];
   execution_time: number;
 };
 
@@ -28,26 +41,36 @@ export interface SearchParameters {
   accuracy: string;
   pageNumber: number;
   pageSize: number;
+  sortParameters?: SortParameters;
+  filters: string;
+  threshold?: number;
 }
+
+export type SortParameters = {
+  field: string;
+  order?: "asc" | "desc";
+  mode?: "field_selection" | "semantic_threshold";
+  threshold?: number;
+};
 
 export type SearchMoreLikeThisParameters = SearchParameters & {
   documentId: string;
+  experimental?: ExperimenatalParameters;
 };
 
 export type SearchByQueryParameters = SearchParameters &
   ShinglingParameters &
   FieldValueWeightingParameters & {
-    filters: string;
     query: string;
-    experimental?: ExprimenatalParameters;
+    experimental?: ExperimenatalParameters;
   };
 
-export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters & {
-  filters: string;
-  these: MoreLikeTheseParameters[];
-  vibe_overall_weight?: number;
-  experimental?: ExprimenatalParameters;
-};
+export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters &
+  FieldValueWeightingParameters & {
+    these: MoreLikeTheseParameters[];
+    vibe_overall_weight?: number;
+    experimental?: ExperimenatalParameters;
+  };
 
 export type MoreLikeTheseParameters = {
   query_document_id?: string;
@@ -62,14 +85,21 @@ export type ShinglingParameters = {
   documentMatchScoreWeight: number;
 };
 
-export type ExprimenatalParameters = {
+export type ExperimenatalParameters = {
   cluster?: boolean;
   cache?: boolean;
+  fields?: string[];
 };
 
 type FieldValueWeightingParameters = {
   queryKeyWordWeightingMode: string;
   queryKeyWordMaxOverallWeight: number;
+  weightedFieldValues?: {
+    field: string;
+    value: string;
+    weight: number;
+  }[];
+  keyWordWeightingQuery?: KeyWordWeightingQuery;
 };
 
 export interface SearchParametersDTO {
@@ -82,10 +112,12 @@ export interface SearchParametersDTO {
   pagination: {
     page: number;
     count: number;
+    threshold?: number;
   };
   experimental?: {
     cluster?: boolean;
     cache?: boolean;
+    fields?: string[];
   };
   shingling?: {
     cosine_similarity_score_weight: number;
@@ -100,10 +132,23 @@ export interface SearchParametersDTO {
   field_value_weighting?: {
     query_key_word_weighting_mode: string;
     query_key_word_max_overall_weight: number;
+    weighted_field_values?: {
+      field: string;
+      value: string;
+      weight: number;
+    }[];
+    keyWordWeightingQuery?: {
+      url: string;
+      account_id: string;
+      field_name: string;
+      timeout?: number;
+      query?: string;
+    };
   };
   these?: {
     query_document_id?: string;
     query_text?: string;
     weight?: number;
   }[];
+  sort?: SortParameters;
 }

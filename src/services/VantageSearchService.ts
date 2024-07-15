@@ -21,7 +21,7 @@ const searchByQuery = async (
 ): Promise<VantageSearchResponse> => {
   return axios
     .post(
-      `${vantageSearchURL}/semantic/`,
+      `${vantageSearchURL}/${searchConfiguration.customerId}/${searchConfiguration.customerNamespace}/semantic/`,
       TransformVantageSearchByQueryParametersViewToDTO(
         searchConfiguration,
         searchParameters
@@ -29,7 +29,10 @@ const searchByQuery = async (
       { headers: { Authorization: searchConfiguration.apiKey } }
     )
     .then((response: AxiosResponse<VantageSearchResponseDTO>) =>
-      TransformVantageSearchResponseDTOToView(response.data)
+      TransformVantageSearchResponseDTOToView(
+        response.data,
+        !searchParameters.experimental?.fields
+      )
     );
 };
 
@@ -40,7 +43,7 @@ const searchMoreLikeThis = async (
 ): Promise<VantageSearchResponse> => {
   return axios
     .post(
-      `${vantageSearchURL}/morelikethis/`,
+      `${vantageSearchURL}/${searchConfiguration.customerId}/${searchConfiguration.customerNamespace}/morelikethis/`,
       TransformVantageSearchMoreLikeThisParametersViewToDTO(
         searchConfiguration,
         searchParameters
@@ -48,7 +51,10 @@ const searchMoreLikeThis = async (
       { headers: { Authorization: searchConfiguration.apiKey } }
     )
     .then((response: AxiosResponse<VantageSearchResponseDTO>) =>
-      TransformVantageSearchResponseDTOToView(response.data)
+      TransformVantageSearchResponseDTOToView(
+        response.data,
+        !searchParameters.experimental?.fields
+      )
     );
 };
 
@@ -59,7 +65,7 @@ const searchMoreLikeThese = async (
 ): Promise<VantageSearchResponse> => {
   return axios
     .post(
-      `${vantageSearchURL}/morelikethese/`,
+      `${vantageSearchURL}/${searchConfiguration.customerId}/${searchConfiguration.customerNamespace}/morelikethese/`,
       TransformVantageSearchMoreLikeTheseParametersViewToDTO(
         searchConfiguration,
         searchParameters
@@ -67,7 +73,10 @@ const searchMoreLikeThese = async (
       { headers: { Authorization: searchConfiguration.apiKey } }
     )
     .then((response: AxiosResponse<VantageSearchResponseDTO>) =>
-      TransformVantageSearchResponseDTOToView(response.data)
+      TransformVantageSearchResponseDTOToView(
+        response.data,
+        !searchParameters.experimental?.fields
+      )
     );
 };
 

@@ -12,6 +12,7 @@ import {
   VantageSearchResult,
   SearchMoreLikeTheseParameters,
 } from "../abstracts/VantageTypes";
+import { KeyWordWeightingQuery } from "../abstracts/KeyWordTypes";
 import VantageSearchService from "../services/VantageSearchService";
 
 const queryKeys = {
@@ -34,7 +35,7 @@ const queryKeys = {
 
 const getItemsWithScores = async (
   vantageSearchResults: VantageSearchResult[],
-  getItemsFunction: () => Promise<Omit<Item, "score">[]>
+  getItemsFunction: () => Promise<ItemWithoutScore[]>
 ): Promise<Item[]> => {
   const getItemScoreById = (id: string): number => {
     const foundItem = vantageSearchResults.find(
@@ -43,10 +44,12 @@ const getItemsWithScores = async (
     return foundItem?.score || 0;
   };
   const customerItems: ItemWithoutScore[] = await getItemsFunction();
-  const customerItemsWithScores: Item[] = customerItems.map((item) => ({
-    ...item,
-    score: getItemScoreById(item.id),
-  }));
+  const customerItemsWithScores: Item[] = customerItems.map(
+    (item: ItemWithoutScore) => ({
+      ...item,
+      score: getItemScoreById(item.id),
+    })
+  );
   return customerItemsWithScores;
 };
 
@@ -54,7 +57,8 @@ const useSearchByConfiguration = (
   vantageSearchURL: string,
   searchConfigurations: SearchConfiguration[],
   searchParameters: SearchByQueryParameters,
-  customerDataHandler: CustomerDataHandler
+  customerDataHandler: CustomerDataHandler,
+  keyWordWeightingQuery?: KeyWordWeightingQuery
 ): UseQueryResult<[number, Item[]], Error>[] => {
   return useQueries({
     queries: searchConfigurations.map((searchConfiguration) => ({
@@ -64,15 +68,31 @@ const useSearchByConfiguration = (
         searchParameters.filters
       ),
       queryFn: async () => {
+        const searchParametersWithFieldValue = keyWordWeightingQuery
+          ? {
+              ...searchParameters,
+              keyWordWeightingQuery: {
+                ...keyWordWeightingQuery,
+                query: searchParameters.query,
+              },
+            }
+          : searchParameters;
+
         const response: VantageSearchResponse =
           await VantageSearchService.searchByQuery(
             vantageSearchURL,
             searchConfiguration,
-            searchParameters
+            searchParametersWithFieldValue
           );
+
+        if (searchParameters?.experimental?.fields) {
+          return [response.executionTime, response.results];
+        }
         const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
           undefined,
-          response.results.map((result) => result.id)
+          searchParameters?.experimental?.fields
+            ? response.results
+            : response.results.map((result) => result.id)
         );
         const customerItems = await getItemsWithScores(
           response.results,
@@ -110,6 +130,10 @@ const useMoreLikeThisByConfiguration = (
             searchConfiguration,
             searchParameters
           );
+
+        if (searchParameters?.experimental?.fields) {
+          return [response.executionTime, response.results];
+        }
         const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
           undefined,
           response.results.map((result) => result.id)
@@ -138,7 +162,9 @@ const useMoreLikeTheseByConfiguration = (
   enable: boolean,
   searchConfigurations: SearchConfiguration[],
   searchParameters: SearchMoreLikeTheseParameters,
-  customerDataHandler: CustomerDataHandler
+  customerDataHandler: CustomerDataHandler,
+  keyWordWeightingQuery?: KeyWordWeightingQuery,
+  query?: string
 ): UseQueryResult<[number, Item[]], Error>[] =>
   useQueries({
     queries: searchConfigurations.map((searchConfiguration) => ({
@@ -148,12 +174,22 @@ const useMoreLikeTheseByConfiguration = (
         searchParameters.documentId
       ),
       queryFn: async () => {
+        const searchParametersWithFieldValue = keyWordWeightingQuery
+          ? {
+              ...searchParameters,
+              keyWordWeightingQuery: { ...keyWordWeightingQuery, query },
+            }
+          : searchParameters;
+
         const response: VantageSearchResponse =
           await VantageSearchService.searchMoreLikeThese(
             vantageSearchURL,
             searchConfiguration,
-            searchParameters
+            searchParametersWithFieldValue
           );
+        if (searchParameters?.experimental?.fields) {
+          return [response.executionTime, response.results];
+        }
         const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
           undefined,
           response.results.map((result) => result.id)

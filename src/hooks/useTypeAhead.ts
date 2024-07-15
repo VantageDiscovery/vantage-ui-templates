@@ -26,7 +26,7 @@ const useTypeAhead = ({
           elements.slice(0, typeAhead.typeAheadQueriesNumber ?? 5)
         );
       });
-    }, 200);
+    }, 500);
 
     return () => clearTimeout(delayDebounce);
   }, [query]);

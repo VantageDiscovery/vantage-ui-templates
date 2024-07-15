@@ -7,6 +7,8 @@ export interface Filter {
   slug: string;
   categoryName: string;
   categorySlug: string;
+  subCategory?: Filter[];
+  count?: number;
 }
 
 export type UseFiltersType = {
@@ -17,4 +19,5 @@ export type UseFiltersType = {
   toggleFilters: (filters: Filter[]) => void;
   getFilterString: () => string;
   clearActiveFilters: () => void;
+  setActiveSubCategory: (parentCategory: Filter, subCategory: Filter) => void;
 };

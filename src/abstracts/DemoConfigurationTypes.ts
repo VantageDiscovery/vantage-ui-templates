@@ -9,7 +9,8 @@ import {
 } from "./CustomerApiTypes";
 import { ItemWithoutScore, OptionalMetaFields } from "./ItemTypes";
 import { VibeBoard } from "./VibeTypes";
-import { ExprimenatalParameters } from "./VantageTypes";
+import { ExperimenatalParameters } from "./VantageTypes";
+import { KeyWordWeightingQuery } from "./KeyWordTypes";
 
 type DeepPartial<T> = T extends object
   ? {
@@ -77,6 +78,7 @@ type ShinglingConfiguration = {
 type FieldValueWeightingConfiguration = {
   queryKeyWordWeightingMode: string;
   queryKeyWordMaxOverallWeight: number;
+  keyWordWeightingQuery?: KeyWordWeightingQuery;
 };
 
 export interface BrandingConfiguration {
@@ -110,8 +112,9 @@ export interface DataConfiguration {
   enableMoreLikeThese: boolean;
   originalSearchResultsURL?: string;
   vibe?: VibeConfiguration;
-  experimental?: ExprimenatalParameters;
+  experimental?: ExperimenatalParameters;
   typeAhead?: TypeAheadConfiguration;
+  salesForce?: SaleForceConfiguration;
 }
 
 export interface VibeConfiguration {
@@ -124,6 +127,11 @@ export interface TypeAheadConfiguration {
   typeAheadFiltersNumber?: number;
   typeAheadQueries?: (query: string) => Promise<string[]>;
   typeAheadFilters?: (query: string) => Promise<Filter[]>;
+}
+
+export interface SaleForceConfiguration {
+  salesForceUrl: string;
+  key: string;
 }
 
 export interface FilterConfiguration {

@@ -1,3 +1,4 @@
+import { VantageSearchResult } from "abstracts";
 import { ClientConfiguration } from "./abstracts/DemoConfigurationTypes";
 import { Filter } from "./abstracts/FilterTypes";
 import { ItemDTO } from "./abstracts/ItemTypes";
@@ -20,7 +21,9 @@ const getFilters = (): Promise<Filter[]> => {
  * @returns {Item[]} The list of items that will be transformed to match the UI.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const getItemsByIds = async (ids: string[]): Promise<ItemDTO[]> => {
+const getItemsByIds = async (
+  ids: string[] | VantageSearchResult[]
+): Promise<ItemDTO[]> => {
   return [];
 };
 

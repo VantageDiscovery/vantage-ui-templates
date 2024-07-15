@@ -113,6 +113,15 @@ const useFilters = ({
     setActiveFilters([]);
   };
 
+  const setActiveSubCategory = (
+    parentCategory: Filter,
+    subCategory: Filter
+  ) => {
+    setActiveFilters([
+      ...new Set([...activeFilters, parentCategory, subCategory]),
+    ]);
+  };
+
   return {
     availableFilters,
     popularFilters:
@@ -124,6 +133,7 @@ const useFilters = ({
     toggleFilters,
     getFilterString,
     clearActiveFilters,
+    setActiveSubCategory,
   };
 };
 

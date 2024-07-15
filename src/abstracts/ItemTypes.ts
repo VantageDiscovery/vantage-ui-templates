@@ -1,6 +1,10 @@
-export type Item = ItemMandatoryFields & {
-  meta?: OptionalMetaFields;
+import { VantageSearchResult } from "./VantageTypes";
+
+export type ItemWithAny = ItemMandatoryFields & {
+  meta: OptionalMetaFields & any;
 };
+
+export type Item = ItemWithAny & { [key: string]: any };
 
 export type ItemMandatoryFields = {
   id: string;
@@ -12,13 +16,12 @@ export type ItemMandatoryFields = {
   externalUrl: string;
 };
 
+export type ItemWithoutScore = Omit<ItemWithAny, "score">;
+
 export type OptionalMetaFields = {
   subtitle: string;
   imageLabel: string;
 };
-
-export type ItemWithoutScore = Omit<Item, "score">;
-
 export type ItemDTO = {
   id: string;
   title: string;
@@ -29,6 +32,8 @@ export type ItemDTO = {
 } & object;
 
 export type CustomerDataHandler = {
-  getItemsByIds: (results: string[]) => Promise<ItemWithoutScore[]>;
+  getItemsByIds: (
+    results: string[] | VantageSearchResult[]
+  ) => Promise<ItemWithoutScore[]>;
   transformData?: (results: unknown[]) => Item[];
 };

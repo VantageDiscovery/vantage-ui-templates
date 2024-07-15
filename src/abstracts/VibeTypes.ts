@@ -3,6 +3,7 @@ export type VibeBoard = {
   name: string;
   pins: BoardData[];
   image_url?: string;
+  parent_board?: VibeBoard;
 };
 
 export type BoardData = {
@@ -15,6 +16,8 @@ export type BoardData = {
 
 export type UseVibeType = {
   boards: VibeBoard[];
+  activeBoard?: VibeBoard;
+  changeActiveBoard: (toggledData: VibeBoard) => void;
   activeVibe: BoardData[];
   changeActiveVibe: (toggledData: BoardData[]) => void;
   vibeOverallWeight?: number;
