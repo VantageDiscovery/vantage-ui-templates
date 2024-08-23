@@ -17,6 +17,11 @@ import useVibe from "hooks/useVibe";
 import useSearchs from "hooks/useSearchs";
 import useMoreLikeThese from "hooks/useMoreLikeThese";
 import useTypeAhead from "hooks/useTypeAhead";
+import { UseMutationResult } from "@tanstack/react-query";
+import { Item } from "abstracts";
+import useActiveResult from "hooks/useActiveResult";
+import { Action } from "abstracts/ActiveResultTypes";
+import usePeronalization from "hooks/usePersonalization";
 
 const DemoContext = createContext<DemoContextType>({} as DemoContextType);
 
@@ -43,6 +48,8 @@ export const DemoProvider = ({
     dataConfiguration: configuration,
   });
 
+  const personalizationHandler = usePeronalization();
+
   const filterHandlers = useFilters({
     filterType: configuration.filter.type,
     getAvailableFilters: customerAPI.getFilters,
@@ -55,6 +62,8 @@ export const DemoProvider = ({
   const [query, setQuery] = useState<string>(
     search.length > 0 ? search : dataConfiguration.defaultSearchQuery
   );
+  const { activeResult, setResult, lastResult } =
+    useActiveResult(moreLikeDocumentId);
   const [isDeveloperViewToggled, setIsDeveloperViewToggled] =
     useState<boolean>(false);
 
@@ -74,141 +83,131 @@ export const DemoProvider = ({
   const moreLikeTheseHandler = useMoreLikeThese();
 
   const {
-    multiQuerySearchResults,
-    multiMLTSearchResults,
-    multiVibeSearchResults,
-    multiVibeDocumentIdResults,
-    multiMoreLikeTheseResults,
+    querySearchResult,
+    moreLikeThisResult,
+    moreLikeTheseResult,
+    vibeDocumentIdResult,
+    vibeSearchResult,
+    personalizationMoreLikeTheseResults,
   } = useSearchs({
     dataConfiguration,
     query,
     moreLikeDocumentId,
-    isMoreLikeTheseActive: isVibeActive(),
     vibeHandler,
     filters: filterHandlers.getFilterString(),
     customerAPI,
     moreLikeTheseHandler,
+    setActiveResult: setResult,
+    personalization_items: personalizationHandler.personalizationItems,
+    personalization_overall_weight:
+      personalizationHandler.personalizationWeight,
   });
 
-  const returnTypeOfResults = () => {
-    if (moreLikeTheseHandler.isActive) {
-      return multiMoreLikeTheseResults;
-    }
-    if (isVibeActive()) {
-      return moreLikeDocumentId
-        ? multiVibeDocumentIdResults
-        : multiVibeSearchResults;
-    }
-    if (moreLikeDocumentId) {
-      return multiMLTSearchResults;
-    }
-    return multiQuerySearchResults;
+  const ActiveSearchResult: Record<
+    Action,
+    UseMutationResult<[number, Item[]], Error>
+  > = {
+    [Action.SEMANTIC]: querySearchResult,
+    [Action.MORE_LIKE_THIS]: moreLikeThisResult,
+    [Action.MORE_LIKE_THESE]: moreLikeTheseResult,
+    [Action.VIBE_TEXT]: vibeSearchResult,
+    [Action.VIBE_DOCUMENT_ID]: vibeDocumentIdResult,
+    [Action.PERSONALIZATION]: personalizationMoreLikeTheseResults,
   };
 
   const collectionSearchResults: CollectionSearchResult[] = useMemo(() => {
-    const activeSearchResult = returnTypeOfResults();
-
-    return activeSearchResult.map((searchResult, index) => {
-      const { data, isError, isFetching, isSuccess } = searchResult;
-      return {
+    const { data, isError, isPending, isSuccess } =
+      ActiveSearchResult[activeResult];
+    return [
+      {
         items: data?.[1] ?? [],
         executionTime: data?.[0] ?? 0,
         isError,
-        isLoading: isFetching,
+        isLoading: isPending,
         isSuccess,
-        collectionId: configuration.collectionIds[index], // as per Tanstack useQueries configuration
-      };
-    });
+        collectionId: configuration.collectionIds[0], // as per Tanstack useQueries configuration
+      },
+    ];
   }, [
-    multiQuerySearchResults,
-    multiMLTSearchResults,
-    multiVibeSearchResults,
-    multiVibeDocumentIdResults,
-    multiMoreLikeTheseResults,
+    moreLikeThisResult,
+    querySearchResult,
+    moreLikeTheseResult,
+    vibeDocumentIdResult,
+    vibeSearchResult,
   ]);
 
-  const refetchSearchQueryResults = () => {
-    for (const searchResults of multiQuerySearchResults) {
-      searchResults.refetch();
-    }
-  };
-
-  const refetchVibeSearchResults = () => {
-    for (const searchResults of multiVibeSearchResults) {
-      searchResults.refetch();
-    }
-  };
-
-  const refetchVibeDocumentIdResults = () => {
-    for (const searchResults of multiVibeDocumentIdResults) {
-      searchResults.refetch();
-    }
-  };
-
-  const refetchMLTResults = () => {
-    for (const searchResults of multiMoreLikeTheseResults) {
-      searchResults.refetch();
-    }
-  };
-
   useEffect(() => {
-    moreLikeTheseHandler.isActive && refetchMLTResults();
+    if (!moreLikeTheseHandler.isMoreLikeTheseDirty) return;
+    const isThereActiveMLT = moreLikeTheseHandler.activeMLThese.length === 0;
+    performMoreLikeThese(isThereActiveMLT);
   }, [moreLikeTheseHandler.activeMLThese]);
 
   useEffect(() => {
-    performFilterChange();
+    if (vibeHandler.isVibeDirty && isVibeActive()) {
+      performVibeQuery();
+      return;
+    }
+    if (vibeHandler.isVibeDirty) performSearch();
+  }, [vibeHandler.activeVibe]);
+
+  useEffect(() => {
+    if (!filterHandlers.isFilterDirty) return;
+    performActiveResultRefetch();
     setFiltersUrl(
       filterHandlers.activeFilters.length > 0
         ? filterHandlers.getFilterString()
         : undefined
     );
-  }, [filterHandlers.activeFilters]);
+  }, [filterHandlers.activeFilters, filterHandlers.isFilterDirty]);
 
-  const performMoreLikeThese = () => {
-    moreLikeDocumentId
-      ? refetchVibeDocumentIdResults()
-      : refetchVibeSearchResults();
+  const performActiveResultRefetch = () => {
+    ActiveSearchResult[activeResult].mutate({});
   };
 
-  const performFilterChange = () => {
-    if (moreLikeTheseHandler.isActive) {
-      refetchMLTResults();
-      return;
-    }
-    if (isVibeActive()) {
-      performMoreLikeThese();
-      return;
-    }
-    refetchSearchQueryResults();
+  const performLastResultRefetch = () => {
+    ActiveSearchResult[lastResult].mutate({});
   };
+
+  const performVibeQuery = () => {
+    activeResult === Action.MORE_LIKE_THIS ||
+    activeResult === Action.VIBE_DOCUMENT_ID
+      ? vibeDocumentIdResult.mutate({})
+      : vibeSearchResult.mutate({});
+  };
+
   const performSearch = () => {
     setSearchUrl(query);
     if (isVibeActive()) {
-      moreLikeDocumentId
-        ? setMoreLikeDocumentId("")
-        : refetchVibeSearchResults();
+      vibeSearchResult.mutate({});
       return;
     }
-    setMoreLikeDocumentId("");
-    refetchSearchQueryResults();
+    personalizationHandler.isPersonalizationActive
+      ? personalizationMoreLikeTheseResults.mutate({})
+      : querySearchResult.mutate({});
   };
 
   const performMoreLikeThis = (id: string) => {
-    if (isVibeActive() && moreLikeDocumentId === id) {
-      refetchVibeDocumentIdResults();
-      return;
-    }
     setDocumentId(id);
     setMoreLikeDocumentId(id);
-  };
-
-  useEffect(() => {
     if (isVibeActive()) {
-      performMoreLikeThese();
+      vibeDocumentIdResult.mutate({});
       return;
     }
-    if (!moreLikeDocumentId) refetchSearchQueryResults();
-  }, [vibeHandler.activeVibe]);
+    personalizationHandler.isPersonalizationActive
+      ? personalizationMoreLikeTheseResults.mutate({})
+      : moreLikeThisResult.mutate({});
+  };
+
+  const performMoreLikeThese = (toggle?: boolean) => {
+    if (toggle === true || toggle === undefined) {
+      moreLikeTheseHandler.toggleActivate();
+      !moreLikeTheseHandler.isActive
+        ? moreLikeTheseResult.mutate({})
+        : performLastResultRefetch();
+      return;
+    }
+    moreLikeTheseHandler.isActive && moreLikeTheseResult.mutate({});
+  };
 
   return (
     <DemoContext.Provider
@@ -216,12 +215,14 @@ export const DemoProvider = ({
         moreLikeTheseActions: moreLikeTheseHandler,
         filterActions: filterHandlers,
         vibeActions: vibeHandler,
+        personalizationActions: personalizationHandler,
         searchResults: collectionSearchResults,
         demoActions: {
           performSearch,
           performMoreLikeThis,
           setQuery,
           setIsDeveloperViewToggled,
+          performMoreLikeThese,
         },
         variables: {
           query,

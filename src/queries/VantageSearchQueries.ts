@@ -1,4 +1,4 @@
-import { useQueries, UseQueryResult } from "@tanstack/react-query";
+import { UseMutationResult, useMutation } from "@tanstack/react-query";
 import {
   CustomerDataHandler,
   Item,
@@ -14,23 +14,24 @@ import {
 } from "../abstracts/VantageTypes";
 import { KeyWordWeightingQuery } from "../abstracts/KeyWordTypes";
 import VantageSearchService from "../services/VantageSearchService";
+import { Action } from "../abstracts/ActiveResultTypes";
 
 const queryKeys = {
-  seachMoreLikeThis: (
-    customerId: string,
-    customerNamespace: string,
-    documentId: string
-  ) => ["SEARCH_MORE_LIKE_THIS", customerId, customerNamespace, documentId],
-  searchByQuery: (
-    customerId: string,
-    customerNamespace: string,
-    filters: string
-  ) => ["SEARCH_BY_QUERY", customerId, customerNamespace, filters],
-  seachMoreLikeThese: (
-    customerId: string,
-    customerNamespace: string,
-    documentId: string
-  ) => ["SEARCH_MORE_LIKE_THESE", customerId, customerNamespace, documentId],
+  seachMoreLikeThis: (customerId: string, customerNamespace: string) => [
+    "SEARCH_MORE_LIKE_THIS",
+    customerId,
+    customerNamespace,
+  ],
+  searchByQuery: (customerId: string, customerNamespace: string) => [
+    "SEARCH_BY_QUERY",
+    customerId,
+    customerNamespace,
+  ],
+  seachMoreLikeThese: (customerId: string, customerNamespace: string) => [
+    "SEARCH_MORE_LIKE_THESE",
+    customerId,
+    customerNamespace,
+  ],
 };
 
 const getItemsWithScores = async (
@@ -53,178 +54,159 @@ const getItemsWithScores = async (
   return customerItemsWithScores;
 };
 
-const useSearchByConfiguration = (
+const useSearchMutationByConfiguration = (
   vantageSearchURL: string,
-  searchConfigurations: SearchConfiguration[],
+  searchConfiguration: SearchConfiguration,
   searchParameters: SearchByQueryParameters,
   customerDataHandler: CustomerDataHandler,
+  setActiveResult: (result: Action) => void,
+  activeResult: Action,
   keyWordWeightingQuery?: KeyWordWeightingQuery
-): UseQueryResult<[number, Item[]], Error>[] => {
-  return useQueries({
-    queries: searchConfigurations.map((searchConfiguration) => ({
-      queryKey: queryKeys.searchByQuery(
-        searchConfiguration.customerId,
-        searchConfiguration.customerNamespace,
-        searchParameters.filters
-      ),
-      queryFn: async () => {
-        const searchParametersWithFieldValue = keyWordWeightingQuery
-          ? {
-              ...searchParameters,
-              keyWordWeightingQuery: {
-                ...keyWordWeightingQuery,
-                query: searchParameters.query,
-              },
-            }
-          : searchParameters;
+): UseMutationResult<[number, Item[]], Error> => {
+  return useMutation({
+    mutationKey: queryKeys.searchByQuery(
+      searchConfiguration.customerId,
+      searchConfiguration.customerNamespace
+    ),
+    mutationFn: async () => {
+      const searchParametersWithFieldValue = keyWordWeightingQuery
+        ? {
+            ...searchParameters,
+            keyWordWeightingQuery: {
+              ...keyWordWeightingQuery,
+              query: searchParameters.query,
+            },
+          }
+        : searchParameters;
 
-        const response: VantageSearchResponse =
-          await VantageSearchService.searchByQuery(
-            vantageSearchURL,
-            searchConfiguration,
-            searchParametersWithFieldValue
-          );
-
-        if (searchParameters?.experimental?.fields) {
-          return [response.executionTime, response.results];
-        }
-        const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
-          undefined,
-          searchParameters?.experimental?.fields
-            ? response.results
-            : response.results.map((result) => result.id)
+      const response: VantageSearchResponse =
+        await VantageSearchService.searchByQuery(
+          vantageSearchURL,
+          searchConfiguration,
+          searchParametersWithFieldValue
         );
-        const customerItems = await getItemsWithScores(
-          response.results,
-          response.results.length > 0
-            ? getItemsByIdsFunction
-            : () => Promise.resolve([])
-        );
-        customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
 
-        return [response.executionTime, customerItems];
-      },
-      enabled: false,
-    })),
+      if (searchParameters?.experimental?.fields) {
+        return [response.executionTime, response.results as Item[]];
+      }
+
+      const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
+        undefined,
+        searchParameters?.experimental?.fields
+          ? response.results
+          : response.results.map((result) => result.id)
+      );
+      const customerItems = await getItemsWithScores(
+        response.results,
+        response.results.length > 0
+          ? getItemsByIdsFunction
+          : () => Promise.resolve([])
+      );
+      customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
+
+      return [response.executionTime, customerItems];
+    },
+    onMutate: () => setActiveResult(activeResult),
   });
 };
 
 const useMoreLikeThisByConfiguration = (
   vantageSearchURL: string,
-  enable: boolean,
-  searchConfigurations: SearchConfiguration[],
+  searchConfiguration: SearchConfiguration,
   searchParameters: SearchMoreLikeThisParameters,
-  customerDataHandler: CustomerDataHandler
-): UseQueryResult<[number, Item[]], Error>[] =>
-  useQueries({
-    queries: searchConfigurations.map((searchConfiguration) => ({
-      queryKey: queryKeys.seachMoreLikeThis(
-        searchConfiguration.customerId,
-        searchConfiguration.customerNamespace,
-        searchParameters.documentId
-      ),
-      queryFn: async () => {
-        const response: VantageSearchResponse =
-          await VantageSearchService.searchMoreLikeThis(
-            vantageSearchURL,
-            searchConfiguration,
-            searchParameters
-          );
-
-        if (searchParameters?.experimental?.fields) {
-          return [response.executionTime, response.results];
-        }
-        const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
-          undefined,
-          response.results.map((result) => result.id)
+  customerDataHandler: CustomerDataHandler,
+  setActiveResult: (result: Action) => void,
+  activeResult: Action
+): UseMutationResult<[number, Item[]], Error> => {
+  return useMutation({
+    mutationKey: queryKeys.seachMoreLikeThis(
+      searchConfiguration.customerId,
+      searchConfiguration.customerNamespace
+    ),
+    mutationFn: async () => {
+      const response: VantageSearchResponse =
+        await VantageSearchService.searchMoreLikeThis(
+          vantageSearchURL,
+          searchConfiguration,
+          searchParameters
         );
 
-        if (response.results.length === 0) {
-          return [response.executionTime, 0];
-        }
+      if (searchParameters?.experimental?.fields) {
+        return [response.executionTime, response.results as Item[]];
+      }
 
-        const customerItems = await getItemsWithScores(
-          response.results,
-          response.results.length > 0
-            ? getItemsByIdsFunction
-            : () => Promise.resolve([])
-        );
-        customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
+      const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
+        undefined,
+        response.results.map((result) => result.id)
+      );
 
-        return [response.executionTime, customerItems];
-      },
-      enabled: enable,
-    })),
+      const customerItems = await getItemsWithScores(
+        response.results,
+        response.results.length > 0
+          ? getItemsByIdsFunction
+          : () => Promise.resolve([])
+      );
+      customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
+
+      return [response.executionTime, customerItems];
+    },
+    onMutate: () => setActiveResult(activeResult),
   });
+};
 
 const useMoreLikeTheseByConfiguration = (
   vantageSearchURL: string,
-  enable: boolean,
-  searchConfigurations: SearchConfiguration[],
+  searchConfiguration: SearchConfiguration,
   searchParameters: SearchMoreLikeTheseParameters,
   customerDataHandler: CustomerDataHandler,
+  setActiveResult: (result: Action) => void,
+  activeResult: Action,
   keyWordWeightingQuery?: KeyWordWeightingQuery,
   query?: string
-): UseQueryResult<[number, Item[]], Error>[] =>
-  useQueries({
-    queries: searchConfigurations.map((searchConfiguration) => ({
-      queryKey: queryKeys.seachMoreLikeThese(
-        searchConfiguration.customerId,
-        searchConfiguration.customerNamespace,
-        searchParameters.documentId
-      ),
-      queryFn: async () => {
-        const searchParametersWithFieldValue = keyWordWeightingQuery
-          ? {
-              ...searchParameters,
-              keyWordWeightingQuery: { ...keyWordWeightingQuery, query },
-            }
-          : searchParameters;
+): UseMutationResult<[number, Item[]], Error> => {
+  return useMutation({
+    mutationKey: queryKeys.seachMoreLikeThese(
+      searchConfiguration.customerId,
+      searchConfiguration.customerNamespace
+    ),
+    mutationFn: async () => {
+      const searchParametersWithFieldValue = keyWordWeightingQuery
+        ? {
+            ...searchParameters,
+            keyWordWeightingQuery: { ...keyWordWeightingQuery, query },
+          }
+        : searchParameters;
 
-        const response: VantageSearchResponse =
-          await VantageSearchService.searchMoreLikeThese(
-            vantageSearchURL,
-            searchConfiguration,
-            searchParametersWithFieldValue
-          );
-        if (searchParameters?.experimental?.fields) {
-          return [response.executionTime, response.results];
-        }
-        const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
-          undefined,
-          response.results.map((result) => result.id)
+      const response: VantageSearchResponse =
+        await VantageSearchService.searchMoreLikeThese(
+          vantageSearchURL,
+          searchConfiguration,
+          searchParametersWithFieldValue
         );
 
-        if (response.results.length === 0) {
-          return [response.executionTime, 0];
-        }
+      if (searchParameters?.experimental?.fields) {
+        return [response.executionTime, response.results as Item[]];
+      }
+      const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
+        undefined,
+        response.results.map((result) => result.id)
+      );
 
-        const customerItems = await getItemsWithScores(
-          response.results,
-          response.results.length > 0
-            ? getItemsByIdsFunction
-            : () => Promise.resolve([])
-        );
-        customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
+      const customerItems = await getItemsWithScores(
+        response.results,
+        response.results.length > 0
+          ? getItemsByIdsFunction
+          : () => Promise.resolve([])
+      );
+      customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
 
-        return [response.executionTime, customerItems];
-      },
-      enabled: enable,
-    })),
+      return [response.executionTime, customerItems];
+    },
+    onMutate: () => setActiveResult(activeResult),
   });
+};
 
 export const VantageSearchQueries = {
-  /**
-   * Performs Vantage Search then it performs getItemsByIds from customerDataHandler.
-   *
-   * @param vantageSearchURL: Url of vantage search,
-   * @param searchConfiguration Search configuration that is customer only related.
-   * @param searchParameters A parameters send to Broker to retrieve results.
-   * @param customerDataHandler A custom data handler to specify how to fetch customer specific data.
-   * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
-   */
-
-  useSearchByConfiguration,
   /**
    * Performs Vantage More Like This and then it performs getItemsByIds from customerDataHandler.
    *
@@ -248,4 +230,5 @@ export const VantageSearchQueries = {
    * @returns {[number, Item[]]} A number representing execution time in ms and list of results.
    */
   useMoreLikeTheseByConfiguration,
+  useSearchMutationByConfiguration,
 };

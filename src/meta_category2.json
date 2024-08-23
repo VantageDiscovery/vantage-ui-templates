@@ -1,0 +1,16 @@
+[
+    {
+        "name": "Women",
+        "slug": "Women",
+        "categoryName": "Gender",
+        "categorySlug": "category2",
+        "count": 27218
+    },
+    {
+        "name": "Men",
+        "slug": "Men",
+        "categoryName": "Gender",
+        "categorySlug": "category2",
+        "count": 10454
+    }
+]

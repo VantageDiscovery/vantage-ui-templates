@@ -14,6 +14,7 @@ const useVibe = ({
     vibeOverallWeightDefault
   );
   const [activeBoard, setActiveBoard] = useState<VibeBoard>();
+  const [isVibeDirty, setIsVibeDirty] = useState(false);
 
   useEffect(() => {
     if (getBoards) {
@@ -29,10 +30,12 @@ const useVibe = ({
   }, [boards]);
 
   const changeActiveBoard = (toggledData: VibeBoard) => {
+    !isVibeDirty && setIsVibeDirty(true);
     setActiveBoard(toggledData);
   };
 
   const changeActiveVibe = (toggledData: BoardData[]) => {
+    !isVibeDirty && setIsVibeDirty(true);
     setActiveVibe(toggledData);
   };
 
@@ -47,6 +50,7 @@ const useVibe = ({
     changeActiveVibe,
     setSlideVibeOverallWeight,
     vibeOverallWeight,
+    isVibeDirty,
   };
 };
 

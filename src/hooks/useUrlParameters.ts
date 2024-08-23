@@ -26,12 +26,10 @@ const useUrlParameters = ({
   const setDocument = (id: string) => {
     setDocumentIdUrl(id, "pushIn");
     setSearchUrl(undefined, "replaceIn");
-    setFiltersUrl(undefined, "replaceIn");
   };
 
   const setFilters = (filters?: string) => {
     setFiltersUrl(filters ?? undefined, filters ? "pushIn" : "replaceIn");
-    setDocumentIdUrl(undefined, "replaceIn");
   };
 
   return {

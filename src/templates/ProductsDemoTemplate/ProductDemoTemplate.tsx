@@ -81,6 +81,7 @@ const ProductDemoTemplate = ({
         primaryColor={brandingConfiguration.colors.primary}
         secondaryColor={brandingConfiguration.colors.secondary}
         dataConfiguration={dataConfiguration}
+        performMoreLikeThese={demoActions.performMoreLikeThese}
       />
     ) : (
       <ProductResultsHeader
@@ -141,6 +142,7 @@ const ProductDemoTemplate = ({
                       : undefined
                   }
                   typeAheadHandler={typeAheadHandler}
+                  performMoreLikeThese={demoActions.performMoreLikeThese}
                 />
               </div>
             )}
@@ -165,9 +167,6 @@ const ProductDemoTemplate = ({
                     primaryColor={brandingConfiguration.colors.primary}
                     secondaryColor={brandingConfiguration.colors.secondary}
                     onMoreLikeThisClicked={() => {
-                      demoActions.setQuery(
-                        `${item.title} - ${item.description}`
-                      );
                       demoActions.performMoreLikeThis(item.id);
                     }}
                     isDeveloperView={variables.isDeveloperViewToggled}

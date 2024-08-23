@@ -2,7 +2,7 @@ import {
   SelectedMoreLikeTheseCard,
   useMoreLikeTheseType,
 } from "abstracts/useMoreLikeTheseType";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useToggle from "./useToggle";
 
 const toggleActive = (
@@ -19,14 +19,22 @@ const useMoreLikeThese = (): useMoreLikeTheseType => {
   const [activeMoreLikeTheseItems, setActiveMoreLikeTheseItems] = useState<
     SelectedMoreLikeTheseCard[]
   >([]);
+  const [isMoreLikeTheseDirty, setIsMoreLikeTheseDirty] = useState(false);
 
   const [isActive, toggleActivate] = useToggle();
 
   const neutralMLTItem = (id: string) => {
+    isMoreLikeTheseDirty &&
+      activeMoreLikeTheseItems.length === 1 &&
+      setIsMoreLikeTheseDirty(false);
     setActiveMoreLikeTheseItems(
       activeMoreLikeTheseItems.filter((element) => element.item.id !== id)
     );
   };
+
+  useEffect(() => {
+    !isMoreLikeTheseDirty && isActive && setIsMoreLikeTheseDirty(true);
+  }, [isActive]);
 
   const isAlreadySelected = (id: string, liked: boolean): boolean => {
     return activeMoreLikeTheseItems.some(
@@ -46,6 +54,7 @@ const useMoreLikeThese = (): useMoreLikeTheseType => {
     isActive,
     isAlreadySelected,
     changedLiked,
+    isMoreLikeTheseDirty,
   };
 };
 
