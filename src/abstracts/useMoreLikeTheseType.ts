@@ -9,6 +9,7 @@ export type SelectedMoreLikeTheseCard = {
   onMoreLikeThisClicked?: () => void;
   moreLikeTheseActions?: useMoreLikeTheseType;
   isDeveloperView?: boolean;
+  performMoreLikeThese?: () => void;
 };
 
 export type useMoreLikeTheseType = {
@@ -19,4 +20,5 @@ export type useMoreLikeTheseType = {
   neutralMLTItem: (id: string) => void;
   isAlreadySelected: (id: string, liked: boolean) => boolean;
   changedLiked: (item: SelectedMoreLikeTheseCard) => void;
+  isMoreLikeTheseDirty: boolean;
 };

@@ -19,6 +19,7 @@ const ProductSearchSection = ({
   vibeActions,
   moreLikeTheseActions,
   typeAheadHandler,
+  performMoreLikeThese,
 }: ProductSearchProperies) => {
   const {
     availableFilters,
@@ -47,8 +48,8 @@ const ProductSearchSection = ({
           <img
             key={data.item.id}
             alt={data.item.id}
-            src={data.item.imageSrc}
-            className="object-contain h-12 w-auto"
+            src={data.item.imageSrc ?? data.item.image_url}
+            className="object-contain h-12 w-auto p-0.5"
           />
         );
       })
@@ -66,7 +67,7 @@ const ProductSearchSection = ({
         <DislikeIcon fill="black" stroke="black" width="32" height="32" />
         <button
           disabled={moreLikeTheseActions.activeMLThese.length === 0}
-          onClick={moreLikeTheseActions.toggleActivate}
+          onClick={() => performMoreLikeThese?.(true)}
           className="border-black border-[1px] justify-center items-center flex rounded-md w-full h-full"
         >
           {renderSelectedMLTImages()}
@@ -98,7 +99,7 @@ const ProductSearchSection = ({
               setActiveFilters([filter]);
               setIsDropDownOpen(false);
             }}
-            recomendedFilters={typeAheadHandler.recomendedFilters}
+            recomendedFilters={typeAheadHandler?.recomendedFilters}
             onSearchPerformed={onSearchPerformed}
           />
         </span>

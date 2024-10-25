@@ -33,6 +33,11 @@ import {
   useMoreLikeTheseType,
   BoardData,
   SortParameters,
+  TypeAheadProperties,
+  TypeAheadType,
+  Action,
+  activeResultType,
+  personalizationType,
 } from "./abstracts";
 import "./index.scss";
 import useUrlParameters from "./hooks/useUrlParameters";
@@ -45,11 +50,12 @@ import Footer from "./component/layout/Footer";
 import ProductSearchSection from "./component/search/ProductSearchSection";
 import useSearchs from "hooks/useSearchs";
 import useVibe from "hooks/useVibe";
-import { TypeAheadProperties, TypeAheadType } from "abstracts/typeAheadType";
 import useTypeAhead from "hooks/useTypeAhead";
 import useMoreLikeThese from "hooks/useMoreLikeThese";
 import VibeCard from "component/vibe/VibeCard";
 import VibeModal from "component/vibe/VibeModal";
+import useActiveResult from "hooks/useActiveResult";
+import usePeronalization from "hooks/usePersonalization";
 
 /**
  * Generate a demo based on a given client configuration.
@@ -165,7 +171,7 @@ export const useFilterHook = ({
 }: {
   filterType: EFiltersType;
   getAvailableFilters: () => Promise<Filter[]>;
-  initialActiveFilters: string;
+  initialActiveFilters?: string;
   getPopularFilters?: (filters: Filter[]) => Filter[];
 }): UseFiltersType => {
   return useFilters({
@@ -373,12 +379,14 @@ export const useVantageSearch = ({
   dataConfiguration,
   query,
   moreLikeDocumentId,
-  isMoreLikeTheseActive,
   vibeHandler,
   filters,
   customerAPI,
   moreLikeTheseHandler,
   sort,
+  setActiveResult,
+  personalization_items,
+  personalization_overall_weight,
 }: {
   dataConfiguration: DataConfiguration;
   query: string;
@@ -388,18 +396,23 @@ export const useVantageSearch = ({
   vibeHandler: UseVibeType;
   customerAPI: UseCustomerAPIType;
   moreLikeTheseHandler: useMoreLikeTheseType;
+  setActiveResult: (result: Action) => void;
   sort?: SortParameters;
+  personalization_items?: string[];
+  personalization_overall_weight?: number;
 }): UseQueriesType => {
   return useSearchs({
     customerAPI,
     dataConfiguration,
     filters,
-    isMoreLikeTheseActive,
     moreLikeDocumentId,
     moreLikeTheseHandler,
     query,
     vibeHandler,
+    setActiveResult,
     sort,
+    personalization_items,
+    personalization_overall_weight,
   });
 };
 
@@ -419,6 +432,16 @@ export const useVibeHook = ({
   vibeOverallWeightDefault?: number;
 }): UseVibeType => {
   return useVibe({ getBoards, vibeOverallWeightDefault });
+};
+
+export const useActiveResultHook = (
+  moreLikeDocumentId: string
+): activeResultType => {
+  return useActiveResult(moreLikeDocumentId);
+};
+
+export const usePersonalizationHook = (): personalizationType => {
+  return usePeronalization();
 };
 
 export const useTypeAheadHook = ({

@@ -5,6 +5,7 @@ import { UseFiltersType } from "./FilterTypes";
 import { UseVibeType } from "./VibeTypes";
 import { useMoreLikeTheseType } from "./useMoreLikeTheseType";
 import { TypeAheadType } from "./typeAheadType";
+import { personalizationType } from "./PerosnalizationTypes";
 
 export type CollectionSearchResult = {
   collectionId: string;
@@ -25,6 +26,7 @@ export type DemoVariables = {
 export type DemoActions = {
   performSearch: () => void;
   performMoreLikeThis: (id: string) => void;
+  performMoreLikeThese: () => void;
   setQuery: Dispatch<React.SetStateAction<string>>;
   setIsDeveloperViewToggled: Dispatch<React.SetStateAction<boolean>>;
 };
@@ -38,4 +40,5 @@ export type DemoContextType = {
   demoActions: DemoActions;
   moreLikeTheseActions: useMoreLikeTheseType;
   typeAheadHandler: TypeAheadType | undefined;
+  personalizationActions: personalizationType;
 };

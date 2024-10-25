@@ -132,6 +132,32 @@ export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
   };
 };
 
+export const transformToAddWeightToTheseOnPersonalization = ({
+  personalization_items,
+  document_id,
+  query,
+  personalization_overall_weight = 0,
+}: {
+  personalization_items: string[];
+  document_id?: string;
+  query?: string;
+  personalization_overall_weight?: number;
+}): MoreLikeTheseParameters[] => {
+  const firstParameter = document_id
+    ? { query_document_id: document_id }
+    : { query_text: query };
+  return [
+    { ...firstParameter, weight: 1 - personalization_overall_weight },
+    ...personalization_items.map((data) => {
+      return {
+        query_document_id: data,
+        weight:
+          (1 / personalization_items.length) * personalization_overall_weight,
+      };
+    }),
+  ];
+};
+
 export const transformToAddWeightToTheseOnVibe = ({
   these,
   document_id,

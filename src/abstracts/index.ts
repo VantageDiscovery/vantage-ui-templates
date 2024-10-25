@@ -12,3 +12,5 @@ export * from "./VibeTypes";
 export * from "./useMoreLikeTheseType";
 export * from "./typeAheadType";
 export * from "./KeyWordTypes";
+export * from "./ActiveResultTypes";
+export * from "./PerosnalizationTypes";

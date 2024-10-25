@@ -51,7 +51,7 @@ const ProductCard = ({
       >
         <div className="flex w-full justify-center bg-gray-50 rounded-lg">
           <img
-            src={item.imageSrc}
+            src={item.imageSrc ?? item.image_url}
             alt="product"
             data-testid="product-image"
             className="relative rounded-lg h-[320px] w-full object-cover"

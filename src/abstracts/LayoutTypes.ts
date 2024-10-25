@@ -41,4 +41,5 @@ export type ProductSearchProperies = {
   vibeActions?: UseVibeType;
   moreLikeTheseActions?: useMoreLikeTheseType;
   typeAheadHandler?: TypeAheadType;
+  performMoreLikeThese?: (toggle?: boolean) => void;
 };

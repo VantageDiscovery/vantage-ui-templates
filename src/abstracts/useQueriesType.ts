@@ -1,10 +1,14 @@
-import { UseQueryResult } from "@tanstack/react-query";
+import { UseMutationResult } from "@tanstack/react-query";
 import { Item } from "./ItemTypes";
 
 export type UseQueriesType = {
-  multiQuerySearchResults: UseQueryResult<[number, Item[]], Error>[];
-  multiMLTSearchResults: UseQueryResult<[number, Item[]], Error>[];
-  multiVibeSearchResults: UseQueryResult<[number, Item[]], Error>[];
-  multiVibeDocumentIdResults: UseQueryResult<[number, Item[]], Error>[];
-  multiMoreLikeTheseResults: UseQueryResult<[number, Item[]], Error>[];
+  querySearchResult: UseMutationResult<[number, Item[]], Error>;
+  moreLikeThisResult: UseMutationResult<[number, Item[]], Error>;
+  vibeSearchResult: UseMutationResult<[number, Item[]], Error>;
+  vibeDocumentIdResult: UseMutationResult<[number, Item[]], Error>;
+  moreLikeTheseResult: UseMutationResult<[number, Item[]], Error>;
+  personalizationMoreLikeTheseResults: UseMutationResult<
+    [number, Item[]],
+    Error
+  >;
 };

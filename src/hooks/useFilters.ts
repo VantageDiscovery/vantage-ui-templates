@@ -64,19 +64,21 @@ const useFilters = ({
   initialActiveFilters,
 }: {
   filterType: EFiltersType;
-  initialActiveFilters: string;
+  initialActiveFilters?: string;
   getAvailableFilters: () => Promise<Filter[]>;
   getPopularFilters?: (filters: Filter[]) => Filter[];
 }): UseFiltersType => {
   const [availableFilters, setAvailableFilters] = useState<Filter[]>([]);
   const [activeFilters, setActiveFilters] = useState<Filter[]>([]);
+  const [isFilterDirty, setIsFilterDirty] = useState(false);
 
   useEffect(() => {
     getAvailableFilters().then((filters: Filter[]) => {
       setAvailableFilters(filters);
-      setActiveFilters(
-        TransformFiltersStringToFilterObjects(initialActiveFilters, filters)
-      );
+      initialActiveFilters &&
+        setActiveFiltersMulti(
+          TransformFiltersStringToFilterObjects(initialActiveFilters, filters)
+        );
     });
   }, []);
 
@@ -113,6 +115,11 @@ const useFilters = ({
     setActiveFilters([]);
   };
 
+  const setActiveFiltersMulti = (filters: Filter[]) => {
+    !isFilterDirty && setIsFilterDirty(true);
+    setActiveFilters(filters);
+  };
+
   const setActiveSubCategory = (
     parentCategory: Filter,
     subCategory: Filter
@@ -129,11 +136,12 @@ const useFilters = ({
         ? getPopularFilters(availableFilters)
         : [],
     activeFilters,
-    setActiveFilters,
+    setActiveFilters: setActiveFiltersMulti,
     toggleFilters,
     getFilterString,
     clearActiveFilters,
     setActiveSubCategory,
+    isFilterDirty,
   };
 };
 

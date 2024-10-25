@@ -31,8 +31,10 @@ const SelectedMoreLikeTheseSection = ({
   setIsDeveloperViewToggled,
   filterActions,
   dataConfiguration,
+  performMoreLikeThese,
 }: {
   moreLikeTheseActions: useMoreLikeTheseType;
+  performMoreLikeThese: (toggle?: boolean) => void;
   isDeveloperViewToggled: boolean;
   setIsDeveloperViewToggled: (isEnabled: boolean) => void;
   filterActions: UseFiltersType;
@@ -73,7 +75,7 @@ const SelectedMoreLikeTheseSection = ({
         <div className="flex justify-between w-full h-full">
           <button
             className="flex items-center gap-3 w-full font-bold"
-            onClick={moreLikeTheseActions.toggleActivate}
+            onClick={() => performMoreLikeThese(true)}
           >
             <ArrowLeftIcon width={"15px"} /> Back to Search Results
           </button>
@@ -120,6 +122,7 @@ const SelectedMoreLikeTheseSection = ({
                 secondaryColor={secondaryColor}
                 isDeveloperView={isDeveloperViewToggled}
                 moreLikeTheseActions={moreLikeTheseActions}
+                performMoreLikeThese={performMoreLikeThese}
               />
             ))}
           </div>
