@@ -12,6 +12,8 @@ import {
   MoreLikeTheseParameters,
   ItemDTOWithScore,
   VantageSearchResultWithoutItemDTO,
+  SearchVibeParameters,
+  VibeImagesParameter,
 } from "abstracts/VantageTypes";
 import { BoardData } from "abstracts/VibeTypes";
 import { SelectedMoreLikeTheseCard } from "abstracts/useMoreLikeTheseType";
@@ -132,6 +134,43 @@ export const TransformVantageSearchMoreLikeTheseParametersViewToDTO = (
   };
 };
 
+export const TransformVantageSearchVibeParametersViewToDTO = (
+  searchConfiguration: SearchConfiguration,
+  searchParameters: SearchVibeParameters
+): SearchParametersDTO => {
+  return {
+    ...TransformVantageSearchParametersViewToDTO(
+      searchConfiguration,
+      searchParameters
+    ),
+    ...(searchParameters.vibe_id &&
+      searchParameters.images && {
+        vibe_id: searchParameters.vibe_id,
+        images: searchParameters.images,
+      }),
+    // TODO: delete once it is removed on backend
+    text: searchParameters?.query,
+    filter: {
+      boolean_filter:
+        searchParameters.filters === "()" ? "" : searchParameters.filters,
+    },
+    ...(searchParameters.experimental && {
+      experimental: {
+        cache: searchParameters?.experimental?.cache,
+        cluster: searchParameters.experimental?.cluster,
+        fields: searchParameters?.experimental?.fields,
+      },
+    }),
+    ...(searchParameters.sortParameters && {
+      sort: {
+        field: searchParameters.sortParameters.field,
+        mode: searchParameters.sortParameters.mode,
+        order: searchParameters.sortParameters.order,
+      },
+    }),
+  };
+};
+
 export const transformToAddWeightToTheseOnPersonalization = ({
   personalization_items,
   document_id,
@@ -184,6 +223,16 @@ export const transformToAddWeightToTheseOnVibe = ({
       };
     }),
   ];
+};
+
+export const transformActiveVibeToImages = ({
+  images,
+}: {
+  images: BoardData[];
+}): VibeImagesParameter[] => {
+  return images.map((data) =>
+    data.image_base64 ? { image: data.image_base64 } : { url: data.image_url }
+  );
 };
 export const transformToAddWeightToThese = ({
   these,

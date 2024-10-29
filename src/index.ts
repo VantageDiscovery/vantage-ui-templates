@@ -426,12 +426,10 @@ export const VantageWrapperQuerieProvider = ({
 
 export const useVibeHook = ({
   getBoards,
-  vibeOverallWeightDefault,
 }: {
   getBoards?: () => Promise<VibeBoard[]>;
-  vibeOverallWeightDefault?: number;
 }): UseVibeType => {
-  return useVibe({ getBoards, vibeOverallWeightDefault });
+  return useVibe({ getBoards });
 };
 
 export const useActiveResultHook = (

@@ -11,6 +11,7 @@ import {
   VantageSearchResponse,
   VantageSearchResult,
   SearchMoreLikeTheseParameters,
+  SearchVibeParameters,
 } from "../abstracts/VantageTypes";
 import { KeyWordWeightingQuery } from "../abstracts/KeyWordTypes";
 import VantageSearchService from "../services/VantageSearchService";
@@ -206,6 +207,49 @@ const useMoreLikeTheseByConfiguration = (
   });
 };
 
+const useVibeByConfiguration = (
+  vantageSearchURL: string,
+  searchConfiguration: SearchConfiguration,
+  searchParameters: SearchVibeParameters,
+  customerDataHandler: CustomerDataHandler,
+  setActiveResult: (result: Action) => void,
+  activeResult: Action
+): UseMutationResult<[number, Item[]], Error> => {
+  return useMutation({
+    mutationKey: queryKeys.seachMoreLikeThese(
+      searchConfiguration.customerId,
+      searchConfiguration.customerNamespace
+    ),
+    mutationFn: async () => {
+      const response: VantageSearchResponse =
+        await VantageSearchService.searchVibe(
+          vantageSearchURL,
+          searchConfiguration,
+          searchParameters
+        );
+
+      if (searchParameters?.experimental?.fields) {
+        return [response.executionTime, response.results as Item[]];
+      }
+      const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
+        undefined,
+        response.results.map((result) => result.id)
+      );
+
+      const customerItems = await getItemsWithScores(
+        response.results,
+        response.results.length > 0
+          ? getItemsByIdsFunction
+          : () => Promise.resolve([])
+      );
+      customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
+
+      return [response.executionTime, customerItems];
+    },
+    onMutate: () => setActiveResult(activeResult),
+  });
+};
+
 export const VantageSearchQueries = {
   /**
    * Performs Vantage More Like This and then it performs getItemsByIds from customerDataHandler.
@@ -231,4 +275,5 @@ export const VantageSearchQueries = {
    */
   useMoreLikeTheseByConfiguration,
   useSearchMutationByConfiguration,
+  useVibeByConfiguration,
 };

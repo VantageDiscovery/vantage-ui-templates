@@ -68,9 +68,20 @@ export type SearchByQueryParameters = SearchParameters &
 export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters &
   FieldValueWeightingParameters & {
     these: MoreLikeTheseParameters[];
-    vibe_overall_weight?: number;
     experimental?: ExperimenatalParameters;
   };
+
+export type SearchVibeParameters = SearchMoreLikeThisParameters &
+  FieldValueWeightingParameters & {
+    vibe_id: string;
+    query: string;
+    images: VibeImagesParameter[];
+  };
+
+export type VibeImagesParameter = {
+  url?: string;
+  image?: string;
+};
 
 export type MoreLikeTheseParameters = {
   query_document_id?: string;
@@ -100,6 +111,11 @@ type FieldValueWeightingParameters = {
     weight: number;
   }[];
   keyWordWeightingQuery?: KeyWordWeightingQuery;
+};
+
+export type VibeParametersDTO = {
+  vibe_id: string;
+  images: { url?: string; image?: string }[];
 };
 
 export interface SearchParametersDTO {
@@ -151,4 +167,6 @@ export interface SearchParametersDTO {
     weight?: number;
   }[];
   sort?: SortParameters;
+  vibe_id?: string;
+  images?: { url?: string; image?: string }[];
 }

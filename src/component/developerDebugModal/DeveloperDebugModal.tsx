@@ -25,7 +25,6 @@ const DeveloperDebugModal = ({
     },
     { label: "Page number:", value: dataConfiguration.pageNumber },
     { label: "Page size:", value: dataConfiguration.pageSize },
-    { label: "Vibe weight:", value: dataConfiguration.vibe?.vibeOverallWeight },
     {
       label: "Cosine similarity score weight:",
       value:
