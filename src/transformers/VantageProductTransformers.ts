@@ -148,23 +148,19 @@ export const TransformVantageSearchVibeParametersViewToDTO = (
         vibe_id: searchParameters.vibe_id,
         images: searchParameters.images,
       }),
-
     // TODO: delete once it is removed on backend
-    document_id: "0",
+    text: searchParameters?.query,
     filter: {
       boolean_filter:
         searchParameters.filters === "()" ? "" : searchParameters.filters,
     },
     ...(searchParameters.experimental && {
-      experimental: { ...searchParameters.experimental },
+      experimental: {
+        cache: searchParameters?.experimental?.cache,
+        cluster: searchParameters.experimental?.cluster,
+        fields: searchParameters?.experimental?.fields,
+      },
     }),
-    field_value_weighting: {
-      query_key_word_weighting_mode: searchParameters.queryKeyWordWeightingMode,
-      query_key_word_max_overall_weight:
-        searchParameters.queryKeyWordMaxOverallWeight,
-      weighted_field_values: searchParameters.weightedFieldValues,
-      keyWordWeightingQuery: searchParameters.keyWordWeightingQuery,
-    },
     ...(searchParameters.sortParameters && {
       sort: {
         field: searchParameters.sortParameters.field,

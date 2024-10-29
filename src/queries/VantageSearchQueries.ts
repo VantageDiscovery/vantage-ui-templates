@@ -213,9 +213,7 @@ const useVibeByConfiguration = (
   searchParameters: SearchVibeParameters,
   customerDataHandler: CustomerDataHandler,
   setActiveResult: (result: Action) => void,
-  activeResult: Action,
-  keyWordWeightingQuery?: KeyWordWeightingQuery,
-  query?: string
+  activeResult: Action
 ): UseMutationResult<[number, Item[]], Error> => {
   return useMutation({
     mutationKey: queryKeys.seachMoreLikeThese(
@@ -223,18 +221,11 @@ const useVibeByConfiguration = (
       searchConfiguration.customerNamespace
     ),
     mutationFn: async () => {
-      const searchParametersWithFieldValue = keyWordWeightingQuery
-        ? {
-            ...searchParameters,
-            keyWordWeightingQuery: { ...keyWordWeightingQuery, query },
-          }
-        : searchParameters;
-
       const response: VantageSearchResponse =
         await VantageSearchService.searchVibe(
           vantageSearchURL,
           searchConfiguration,
-          searchParametersWithFieldValue
+          searchParameters
         );
 
       if (searchParameters?.experimental?.fields) {

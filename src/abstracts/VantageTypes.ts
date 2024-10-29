@@ -74,9 +74,8 @@ export type SearchMoreLikeTheseParameters = SearchMoreLikeThisParameters &
 export type SearchVibeParameters = SearchMoreLikeThisParameters &
   FieldValueWeightingParameters & {
     vibe_id: string;
-    query?: string;
+    query: string;
     images: VibeImagesParameter[];
-    experimental?: ExperimenatalParameters;
   };
 
 export type VibeImagesParameter = {
