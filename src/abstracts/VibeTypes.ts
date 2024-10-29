@@ -1,9 +1,9 @@
 export type VibeBoard = {
-  id?: string;
   name: string;
   pins: BoardData[];
   image_url?: string;
   parent_board?: VibeBoard;
+  id?: string;
 };
 
 export type BoardData = {
@@ -16,11 +16,15 @@ export type BoardData = {
 
 export type UseVibeType = {
   boards: VibeBoard[];
-  activeBoard?: VibeBoard;
-  changeActiveBoard: (toggledData: VibeBoard) => void;
   activeVibe: BoardData[];
-  changeActiveVibe: (toggledData: BoardData[]) => void;
-  vibeOverallWeight?: number;
-  setSlideVibeOverallWeight: (value: number) => void;
   isVibeDirty: boolean;
+  activeBoard?: VibeBoard;
+  id?: string;
+  brokerServiceUrl?: string;
+  accountId?: string;
+  collectionId?: string;
+  apiKey?: string;
+
+  changeActiveBoard: (toggledData: VibeBoard) => void;
+  changeActiveVibe: (toggledData: BoardData[]) => void;
 };

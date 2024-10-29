@@ -5,6 +5,7 @@ import {
   VantageSearchResponseDTO,
   SearchMoreLikeThisParameters,
   SearchMoreLikeTheseParameters,
+  SearchVibeParameters,
 } from "abstracts/VantageTypes";
 import axios, { AxiosResponse } from "axios";
 import {
@@ -12,6 +13,7 @@ import {
   TransformVantageSearchResponseDTOToView,
   TransformVantageSearchMoreLikeThisParametersViewToDTO,
   TransformVantageSearchMoreLikeTheseParametersViewToDTO,
+  TransformVantageSearchVibeParametersViewToDTO,
 } from "transformers/VantageProductTransformers";
 
 const searchByQuery = async (
@@ -80,10 +82,33 @@ const searchMoreLikeThese = async (
     );
 };
 
+const searchVibe = async (
+  vantageSearchURL: string,
+  searchConfiguration: SearchConfiguration,
+  searchParameters: SearchVibeParameters
+): Promise<VantageSearchResponse> => {
+  return axios
+    .post(
+      `${vantageSearchURL}/${searchConfiguration.customerId}/${searchConfiguration.customerNamespace}/vibe`,
+      TransformVantageSearchVibeParametersViewToDTO(
+        searchConfiguration,
+        searchParameters
+      ),
+      { headers: { Authorization: searchConfiguration.apiKey } }
+    )
+    .then((response: AxiosResponse<VantageSearchResponseDTO>) =>
+      TransformVantageSearchResponseDTOToView(
+        response.data,
+        !searchParameters.experimental?.fields
+      )
+    );
+};
+
 const VantageSearchService = {
   searchByQuery,
   searchMoreLikeThis,
   searchMoreLikeThese,
+  searchVibe,
 };
 
 export default VantageSearchService;

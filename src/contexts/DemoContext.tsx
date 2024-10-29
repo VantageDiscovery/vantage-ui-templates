@@ -69,7 +69,6 @@ export const DemoProvider = ({
 
   const vibeHandler = useVibe({
     getBoards: dataConfiguration?.vibe?.getBoards,
-    vibeOverallWeightDefault: dataConfiguration.vibe?.vibeOverallWeight,
   });
 
   const isVibeActive = (): boolean => {
@@ -93,7 +92,7 @@ export const DemoProvider = ({
     dataConfiguration,
     query,
     moreLikeDocumentId,
-    vibeHandler,
+    vibeHandler: { ...vibeHandler, id: dataConfiguration.vibe?.vibeId },
     filters: filterHandlers.getFilterString(),
     customerAPI,
     moreLikeTheseHandler,

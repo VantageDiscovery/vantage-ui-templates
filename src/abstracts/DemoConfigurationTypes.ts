@@ -118,8 +118,12 @@ export interface DataConfiguration {
 }
 
 export interface VibeConfiguration {
-  getBoards: () => Promise<VibeBoard[]>;
-  vibeOverallWeight?: number;
+  vibeId: string;
+  getBoards?: () => Promise<VibeBoard[]>;
+  brokerServiceUrl?: string;
+  accountId?: string;
+  collectionId?: string;
+  apiKey?: string;
 }
 
 export interface TypeAheadConfiguration {

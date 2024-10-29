@@ -3,6 +3,7 @@ import { DataConfiguration } from "abstracts/DemoConfigurationTypes";
 import { VantageSearchQueries } from "queries/VantageSearchQueries";
 import { UseVibeType } from "abstracts/VibeTypes";
 import {
+  transformActiveVibeToImages,
   transformToAddWeightToThese,
   transformToAddWeightToTheseOnPersonalization,
   transformToAddWeightToTheseOnVibe,
@@ -89,12 +90,13 @@ const useSearchs = ({
       Action.MORE_LIKE_THIS
     );
 
-  const vibeSearchResult = VantageSearchQueries.useMoreLikeTheseByConfiguration(
-    dataConfiguration.vantageSearchURL,
+  const vibeSearchResult = VantageSearchQueries.useVibeByConfiguration(
+    vibeHandler?.brokerServiceUrl ?? dataConfiguration.vantageSearchURL,
     {
-      apiKey: dataConfiguration.apiKey,
-      customerId: dataConfiguration.accountId,
-      customerNamespace: dataConfiguration.collectionIds[0],
+      apiKey: vibeHandler.apiKey ?? dataConfiguration.apiKey,
+      customerId: vibeHandler.accountId ?? dataConfiguration.accountId,
+      customerNamespace:
+        vibeHandler.collectionId ?? dataConfiguration.collectionIds[0],
     },
     {
       documentId: moreLikeDocumentId,
@@ -102,11 +104,10 @@ const useSearchs = ({
       pageNumber: dataConfiguration.pageNumber,
       pageSize: dataConfiguration.pageSize,
       filters: filters,
-      vibe_overall_weight: vibeHandler.vibeOverallWeight,
-      these: transformToAddWeightToTheseOnVibe({
-        these: vibeHandler.activeVibe,
-        vibe_overall_weight: vibeHandler.vibeOverallWeight,
-        query,
+      query,
+      vibe_id: vibeHandler.id ?? "",
+      images: transformActiveVibeToImages({
+        images: vibeHandler.activeVibe,
       }),
       ...dataConfiguration?.fieldValueWeighting,
       experimental: dataConfiguration?.experimental,
@@ -133,10 +134,9 @@ const useSearchs = ({
         pageNumber: dataConfiguration.pageNumber,
         pageSize: dataConfiguration.pageSize,
         filters: filters,
-        vibe_overall_weight: vibeHandler.vibeOverallWeight,
         these: transformToAddWeightToTheseOnVibe({
           these: vibeHandler.activeVibe,
-          vibe_overall_weight: vibeHandler.vibeOverallWeight,
+          vibe_overall_weight: 0.5,
           document_id: moreLikeDocumentId,
           query,
         }),
@@ -166,7 +166,6 @@ const useSearchs = ({
         pageNumber: dataConfiguration.pageNumber,
         pageSize: dataConfiguration.pageSize,
         filters: filters,
-        vibe_overall_weight: vibeHandler.vibeOverallWeight,
         these: transformToAddWeightToThese({
           these: moreLikeTheseHandler.activeMLThese,
         }),
@@ -198,7 +197,6 @@ const useSearchs = ({
         pageNumber: dataConfiguration.pageNumber,
         pageSize: dataConfiguration.pageSize,
         filters: filters,
-        vibe_overall_weight: vibeHandler.vibeOverallWeight,
         these: transformToAddWeightToTheseOnPersonalization({
           personalization_items,
           personalization_overall_weight,
