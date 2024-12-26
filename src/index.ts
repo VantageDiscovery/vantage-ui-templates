@@ -486,7 +486,6 @@ export const VibeModalVantage = ({
 };
 
 export * from "./services/SessionStorageService";
-export * from "./animation/LottieImage";
 
 export { VantageSearchQueries } from "./queries/VantageSearchQueries";
 

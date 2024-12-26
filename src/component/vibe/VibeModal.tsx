@@ -6,7 +6,6 @@ import VibeChip from "./VibeChip";
 import PinterestForm from "./PinterestForm";
 import sessionStorageService from "services/SessionStorageService";
 import ResetIcon from "icons/ResetIcon";
-import LottieImage from "animation/LottieImage";
 import VibeCard from "./VibeCard";
 import Masonry from "react-layout-masonry";
 import cn from "utils/cn";
@@ -99,9 +98,7 @@ const VibeModal = ({
 
   const bodySection = (): React.JSX.Element => {
     return showAnimation ? (
-      <div className="w-full h-full items-center flex">
-        <LottieImage />
-      </div>
+      <div className="w-full h-full items-center flex"></div>
     ) : (
       <>
         <div className="flex px-5 w-full h-24 items-center overflow-x-scroll scrollbar-small">

@@ -1,12 +1,11 @@
 import useToggle from "hooks/useToggle";
 import React from "react";
 import VibeModal from "./VibeModal";
-import Slider from "@mui/material/Slider";
 import { UseVibeType } from "abstracts/VibeTypes";
 import PinterestLogo from "icons/PinterestLogo";
 
 const VibeSection = ({ useVibe }: { useVibe: UseVibeType }) => {
-  const { activeVibe, vibeOverallWeight, setSlideVibeOverallWeight } = useVibe;
+  const { activeVibe } = useVibe;
   const [isModalVisible, toggleModal] = useToggle();
 
   const buttonModalSection = () => {
@@ -33,21 +32,7 @@ const VibeSection = ({ useVibe }: { useVibe: UseVibeType }) => {
           >
             {buttonModalSection()}
           </button>
-          <div className="w-[100px] mt-1 mr-1 ml-1.5 items-end">
-            <Slider
-              color="error"
-              size="small"
-              step={0.01}
-              max={1}
-              value={vibeOverallWeight}
-              onChange={(event, value) => {
-                setSlideVibeOverallWeight(value as number);
-              }}
-              aria-label="Small"
-              valueLabelDisplay="auto"
-              className="w-full"
-            />
-          </div>
+          <div className="w-[100px] mt-1 mr-1 ml-1.5 items-end"></div>
         </div>
         <span className="flex flex-col mb-6 justify-end w-full h-full text-xs">
           <p className="line-clamp-1 text-center align-text-top w-full text-xs">
