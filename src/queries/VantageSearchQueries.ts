@@ -62,7 +62,7 @@ const useSearchMutationByConfiguration = (
   setActiveResult: (result: Action) => void,
   activeResult: Action,
   keyWordWeightingQuery?: KeyWordWeightingQuery
-): UseMutationResult<[number, Item[]], Error> => {
+): UseMutationResult<[number, Item[], number], Error> => {
   return useMutation({
     mutationKey: queryKeys.searchByQuery(
       searchConfiguration.customerId,
@@ -87,7 +87,11 @@ const useSearchMutationByConfiguration = (
         );
 
       if (searchParameters?.experimental?.fields) {
-        return [response.executionTime, response.results as Item[]];
+        return [
+          response.executionTime,
+          response.results as Item[],
+          response.responseId,
+        ];
       }
 
       const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
@@ -104,7 +108,7 @@ const useSearchMutationByConfiguration = (
       );
       customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
 
-      return [response.executionTime, customerItems];
+      return [response.executionTime, customerItems, response.responseId];
     },
     onMutate: () => setActiveResult(activeResult),
   });
@@ -117,7 +121,7 @@ const useMoreLikeThisByConfiguration = (
   customerDataHandler: CustomerDataHandler,
   setActiveResult: (result: Action) => void,
   activeResult: Action
-): UseMutationResult<[number, Item[]], Error> => {
+): UseMutationResult<[number, Item[], number], Error> => {
   return useMutation({
     mutationKey: queryKeys.seachMoreLikeThis(
       searchConfiguration.customerId,
@@ -132,7 +136,11 @@ const useMoreLikeThisByConfiguration = (
         );
 
       if (searchParameters?.experimental?.fields) {
-        return [response.executionTime, response.results as Item[]];
+        return [
+          response.executionTime,
+          response.results as Item[],
+          response.responseId,
+        ];
       }
 
       const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
@@ -148,7 +156,7 @@ const useMoreLikeThisByConfiguration = (
       );
       customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
 
-      return [response.executionTime, customerItems];
+      return [response.executionTime, customerItems, response.responseId];
     },
     onMutate: () => setActiveResult(activeResult),
   });
@@ -163,7 +171,7 @@ const useMoreLikeTheseByConfiguration = (
   activeResult: Action,
   keyWordWeightingQuery?: KeyWordWeightingQuery,
   query?: string
-): UseMutationResult<[number, Item[]], Error> => {
+): UseMutationResult<[number, Item[], number], Error> => {
   return useMutation({
     mutationKey: queryKeys.seachMoreLikeThese(
       searchConfiguration.customerId,
@@ -185,7 +193,11 @@ const useMoreLikeTheseByConfiguration = (
         );
 
       if (searchParameters?.experimental?.fields) {
-        return [response.executionTime, response.results as Item[]];
+        return [
+          response.executionTime,
+          response.results as Item[],
+          response.responseId,
+        ];
       }
       const getItemsByIdsFunction = customerDataHandler.getItemsByIds.bind(
         undefined,
@@ -200,7 +212,7 @@ const useMoreLikeTheseByConfiguration = (
       );
       customerItems.sort((itemA, itemB) => itemB.score - itemA.score);
 
-      return [response.executionTime, customerItems];
+      return [response.executionTime, customerItems, response.responseId];
     },
     onMutate: () => setActiveResult(activeResult),
   });
