@@ -14,6 +14,7 @@ export type CollectionSearchResult = {
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
+  lastResponseId?: number;
 };
 
 export type DemoVariables = {

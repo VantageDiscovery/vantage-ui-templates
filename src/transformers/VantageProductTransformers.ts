@@ -21,7 +21,7 @@ export const TransformVantageSearchParametersViewToDTO = (
   searchParameters: SearchParameters
 ): SearchParametersDTO => {
   return {
-    request_id: 333_666,
+    request_id: searchParameters.requestId,
     collection: {
       account_id: searchConfiguration.customerId,
       collection_id: searchConfiguration.customerNamespace,
@@ -228,5 +228,6 @@ export const TransformVantageSearchResponseDTOToView = (
         TransformVantageSearchResultDTOToView(searchResult, isExprimentalOff)
     ),
     executionTime: responseDTO.execution_time,
+    responseId: responseDTO.request_id ?? 333_666,
   };
 };

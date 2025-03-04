@@ -24,11 +24,13 @@ export type VantageSearchResult =
 export type VantageSearchResponseDTO = {
   results: VantageSearchResultDTO[] | ItemDTOWithScore[];
   execution_time: number;
+  request_id: number;
 };
 
 export type VantageSearchResponse = {
   results: VantageSearchResult[];
   executionTime: number;
+  responseId: number;
 };
 
 export interface SearchConfiguration {
@@ -44,6 +46,7 @@ export interface SearchParameters {
   sortParameters?: SortParameters;
   filters: string;
   threshold?: number;
+  requestId?: number;
 }
 
 export type SortParameters = {
@@ -103,7 +106,7 @@ type FieldValueWeightingParameters = {
 };
 
 export interface SearchParametersDTO {
-  request_id: number;
+  request_id?: number;
   collection: {
     account_id: string;
     collection_id: string;

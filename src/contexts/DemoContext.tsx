@@ -105,7 +105,7 @@ export const DemoProvider = ({
 
   const ActiveSearchResult: Record<
     Action,
-    UseMutationResult<[number, Item[]], Error>
+    UseMutationResult<[number, Item[], number], Error>
   > = {
     [Action.SEMANTIC]: querySearchResult,
     [Action.MORE_LIKE_THIS]: moreLikeThisResult,
